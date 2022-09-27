@@ -1,3 +1,5 @@
+//URL Modeo logico: https://drive.google.com/drive/u/1/folders/1Ft6YIWQ6SrcyI8jig1LkfsCCDWLxSY1M
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -424,9 +426,11 @@ model Empresa {
   cnpj      Int     @db.Int
   email     String  @db.VarChar(180)
   senha     String  @db.VarChar(45)
+  nome_fantasia String @db.VarChar(180)
   ativo     Boolean @db.TinyInt
   biografia String? @db.Text
   logo      String? @db.VarChar(120)
+  
 
   // Relacionamento com EnderecoEmpresa
   enderecoEmpresa EnderecoEmpresa @relation(fields: [idEndereco], references: [id])
@@ -716,14 +720,14 @@ model Administrador {
   // Relacionamento com TesteCompetencia
   testeCompetencia TesteCompetencia[]
 
-  administradoProvas AdministradoProvas[]
+  administradorProvas AdministradorProvas[]
 
   denunciaAdmin DenunciaAdmin[]
 
   @@map("tbladministrador")
 }
 
-model AdministradoProvas {
+model AdministradorProvas {
   id Int @id @unique @default(autoincrement()) @db.Int
 
   administrador   Administrador @relation(fields: [idAdministrador], references: [id])
@@ -830,7 +834,7 @@ model Prova {
   provaAndamento       ProvaAndamento[]
   provasSalvasUsuarios ProvasSalvasUsuarios[]
   provasTodasQuestoes  ProvasTodasQuestoes[]
-  administradoProvas   AdministradoProvas[]
+  administradorProvas   AdministradorProvas[]
 
   provaTipo   ProvaTipo @relation(fields: [idProvaTipo], references: [id])
   idProvaTipo Int       @map("id_tipo") @db.Int
