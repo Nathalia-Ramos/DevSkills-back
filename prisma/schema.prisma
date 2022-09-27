@@ -37,6 +37,8 @@ model Usuario {
   usuarioHabilidade UsuarioHabilidade[]
   usuarioIdioma     UsuarioIdioma[]
 
+  UsuarioTelefone UsuarioTelefone[]
+
   //relacionamento com a tabela usuarioProva
   usuarioProva UsuarioProva[]
 
@@ -46,9 +48,14 @@ model Usuario {
   //relacionamento com a tabela GrupoUsuario
   grupoUsuario GrupoUsuario[]
 
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  UsuarioTelefone UsuarioTelefone[]
+  // Relacionamento com a tabela UsuarioTesteCompetencia
+  usuarioTesteCompetencia UsuarioTesteCompetencia[]
+
+  // Relacionamento com a tabela TestesCompetenciaSalvos
+  testesCompetenciaSalvos TestesCompetenciaSalvos[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("tblusuario")
 }
@@ -108,8 +115,11 @@ model Idioma {
   id   Int    @id @unique @default(autoincrement()) @db.Int
   nome String @db.VarChar(80)
 
-  usuarioIdioma UsuarioIdioma[]
-  provaIdioma   ProvaIdioma[]
+  usuarioIdioma          UsuarioIdioma[]
+  provaIdioma            ProvaIdioma[]
+
+  // Relacionamento com a tabela TesteCompetenciaIdioma
+  testeCompetenciaIdioma TesteCompetenciaIdioma[]
 
   @@map("tblidioma")
 }
@@ -128,9 +138,10 @@ model Stack {
   id   Int    @id @unique @default(autoincrement()) @db.Int
   nome String @db.VarChar(30)
 
-  habilidade   Habilidade[]
-  UsuarioStack UsuarioStack[]
-  provaStack   ProvaStack[]
+  habilidade            Habilidade[]
+  usuarioStack          UsuarioStack[]
+  provaStack            ProvaStack[]
+  testeCompetenciaStack TesteCompetenciaStack[]
 
   @@map("tblstack")
 }
@@ -150,6 +161,9 @@ model Habilidade {
 
   usuarioHabilidade UsuarioHabilidade[]
   provaHabilidade   ProvaHabilidade[]
+
+  // Relacionamento com a tabela TesteCompetenciaHabilidade
+  testeCompetenciaHabilidade TesteCompetenciaHabilidade[]
 
   @@map("tblhabilidade")
 }
@@ -214,8 +228,8 @@ model Cidade {
   estado   Estado @relation(fields: [idEstado], references: [id])
   idEstado Int    @map("id_estado") @db.Int
 
-  EnderecoUsuario EnderecoUsuario[]
-  EnderecoEmpresa EnderecoEmpresa[]
+  enderecoUsuario EnderecoUsuario[]
+  enderecoEmpresa EnderecoEmpresa[]
 
   @@map("tblcidade")
 }
@@ -523,6 +537,24 @@ model TesteCompetencia {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Relacionamento com a tabela TesteCompetenciaStack
+  testeCompetenciaStack TesteCompetenciaStack[]
+
+  // Relacionamento com a tabela TesteCompetenciaHabilidade
+  testeCompetenciaHabilidade TesteCompetenciaHabilidade[]
+
+  // Relacionamento com a tabela TesteCompetenciaTodasQuestoes
+  testeCompetenciaTodasQuestoes TesteCompetenciaTodasQuestoes[]
+
+  // Relacionamento com a tabela UsuarioTesteCompetencia
+  usuarioTesteCompetencia UsuarioTesteCompetencia[]
+
+  // Relacionamento com a tabela TestesCompetenciaSalvos
+  testesCompetenciaSalvos TestesCompetenciaSalvos[]
+
+  // Relacionamento com a tabela TesteCompetenciaIdioma
+  testeCompetenciaIdioma  TesteCompetenciaIdioma[]
+
   @@map("tblteste_competencia")
 }
 
@@ -537,6 +569,138 @@ model TesteEmblema {
   testeCompetencia TesteCompetencia[]
 
   @@map("tblemblema")
+}
+
+model TesteCompetenciaStack {
+  id Int @id @unique @default(autoincrement())
+
+  // Relacionamento com a tabela TesteCompetencia
+  testeCompetencia TesteCompetencia @relation(fields: [idTeste], references: [id])
+  idTeste          Int              @map("id_teste") @db.Int
+
+  // Relacionamento com a tabela Stack
+  stack   Stack @relation(fields: [idStack], references: [id])
+  idStack Int   @map("id_stack") @db.Int
+
+  @@map("tblteste_competencia_stack")
+}
+
+model TesteCompetenciaHabilidade {
+  id Int @id @unique @default(autoincrement())
+
+  // Relacionamento com a tabela TesteCompetencia
+  testeCompetencia TesteCompetencia @relation(fields: [idTeste], references: [id])
+  idTeste          Int              @map("id_teste") @db.Int
+
+  // Relacionamento com a tabela Habilidade
+  habilidade   Habilidade @relation(fields: [idHabilidade], references: [id])
+  idHabilidade Int        @map("id_habilidade") @db.Int
+
+  @@map("tblteste_competencia_habilidade")
+}
+
+model QuestaoTesteCompetencia {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  enunciado String @db.VarChar(100)
+
+  // Relacionamento com a tabela TesteCompetenciaTodasQuestoes
+  testeCompetenciaTodasQuestoes TesteCompetenciaTodasQuestoes[]
+
+  // Relacionamento com a tabela AlternativaTesteCompetencia
+  alternativaTesteCompetencia AlternativaTesteCompetencia[]
+
+  @@map("tblquestao_teste_competencia")
+}
+
+model TesteCompetenciaTodasQuestoes {
+  id Int @unique @default(autoincrement()) @db.Int
+
+  // Relacionamento com a tabela QuestaoTesteCompetencia
+  questaoTesteCompetencia QuestaoTesteCompetencia @relation(fields: [idQuestaoTeste], references: [id])
+  idQuestaoTeste          Int                     @map("id_questao_teste") @db.Int
+
+  // Relacionamento com a tabela TesteCompetencia
+  testeCompetencia TesteCompetencia @relation(fields: [idTeste], references: [id])
+  idTeste          Int              @map("id_teste") @db.Int
+
+  @@map("tblteste_competencia_todas_questoes")
+}
+
+model AlternativaTesteCompetencia {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  alternativa         String  @db.VarChar(50)
+  alternativa_correta Boolean @db.TinyInt
+
+  // Relacionamento com a tablea QuestaoTesteCompetencia
+  questaoTesteCompetencia QuestaoTesteCompetencia @relation(fields: [idQuestao], references: [id])
+  idQuestao               Int                     @map("id_questao") @db.Int
+
+  // Relacionamento com a tabela RespostaTesteCompetencia
+  RespostaTesteCompetencia RespostaTesteCompetencia[]
+
+  @@map("tblalternativa_teste_competencia")
+}
+
+model RespostaTesteCompetencia {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  // Relacionamento com a tabela AlternativaTesteCompetencia
+  alternativaTesteCompetencia AlternativaTesteCompetencia @relation(fields: [idAlternativa], references: [id])
+  idAlternativa               Int                         @map("id_alternativa") @db.Int
+
+  usuarioTesteCompetencia UsuarioTesteCompetencia @relation(fields: [idUsuarioTeste], references: [id])
+  idUsuarioTeste          Int                     @map("id_usuario_teste") @db.Int
+
+  @@map("tblresposta_teste_competencia")
+}
+
+model UsuarioTesteCompetencia {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  pontuacao Int @db.Int
+
+  // Relacionamento com a tabela Usuario
+  usuario   Usuario @relation(fields: [idUsuario], references: [id])
+  idUsuario Int     @map("id_usuario") @db.Int
+
+  // Relacionamento com a tabela TesteCompetencia
+  testeCompetencia TesteCompetencia @relation(fields: [idTeste], references: [id])
+  idTeste          Int              @map("id_teste") @db.Int
+
+  // Relacionamento com a tabela RespostaTesteCompetencia
+  respostaTesteCompetencia RespostaTesteCompetencia[]
+
+  @@map("tblusuario_teste")
+}
+
+model TestesCompetenciaSalvos {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  // Relacionamento com a tabela TesteCompetencia
+  testeCompetencia TesteCompetencia @relation(fields: [idTeste], references: [id])
+  idTeste          Int              @map("id_teste") @db.Int
+
+  // Relacionamento com a tabela Usuario
+  usuario   Usuario @relation(fields: [idUsuario], references: [id])
+  idUsuario Int     @map("id_usuario") @db.Int
+
+  @@map("tbltestes_competencia_salvos")
+}
+
+model TesteCompetenciaIdioma {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  // Relacionamento com a tabela TesteCompetencia
+  testeCompetencia TesteCompetencia @relation(fields: [idTeste], references: [id])
+  idTeste          Int              @map("id_teste") @db.Int
+
+  // Relacionamento com a tabela Idioma
+  idioma   Idioma @relation(fields: [idIdioma], references: [id])
+  idIdioma Int    @map("id_idioma") @db.Int
+
+  @@map("tblteste_competencia_idioma")
 }
 
 // Administrador
@@ -922,7 +1086,7 @@ model Grupo {
   status    Boolean @db.TinyInt
   descricao String  @db.Text
 
-  provaGrupo ProvaGrupo[]
+  provaGrupo   ProvaGrupo[]
   grupoUsuario GrupoUsuario[]
 
   @@map("tblgrupo")
@@ -937,21 +1101,17 @@ model ProvaGrupo {
   grupo   Grupo @relation(fields: [idGrupo], references: [id])
   idGrupo Int   @map("id_grupo") @db.Int
 
-
-
   @@map("tblprova_grupo")
 }
 
 model GrupoUsuario {
-   id Int @id @unique @default(autoincrement()) @db.Int
+  id Int @id @unique @default(autoincrement()) @db.Int
 
-   grupo   Grupo @relation(fields: [idGrupo], references: [id])
-   idGrupo Int   @map("id_grupo") @db.Int
+  grupo   Grupo @relation(fields: [idGrupo], references: [id])
+  idGrupo Int   @map("id_grupo") @db.Int
 
-   usuario Usuario @relation(fields: [idUsuario], references: [id])
-   idUsuario Int @map("id_usuario") @db.Int
+  usuario   Usuario @relation(fields: [idUsuario], references: [id])
+  idUsuario Int     @map("id_usuario") @db.Int
 
-
-   @@map("tblgrupo_usuario")
-
+  @@map("tblgrupo_usuario")
 }
