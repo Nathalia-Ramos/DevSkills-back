@@ -3,12 +3,11 @@ import {Request, Response} from "express"
 import { Empresa } from "@prisma/client"
 import { prismaClient } from "../../database/prismaClient"
 
-interface data {
-    cnpj: number;
+interface Data {
+    cnpj: string;
     email: string;
     senha: string;
     nome_fantasia: string;
-    logo: string;
     idEndereco: number
 }
 
@@ -19,9 +18,8 @@ export default class UserCompanyModel{
         email,
         senha,
         nome_fantasia,
-        logo,
-        idEndereco
-      }: data): Promise<Empresa | false> {
+        idEndereco : idEndereco
+      }: Data): Promise<Empresa | boolean> {
 
         // Tentando criar um Livro
         try {
@@ -32,7 +30,7 @@ export default class UserCompanyModel{
                 senha,
                 nome_fantasia,
                 ativo: true,
-                idEndereco
+                idEndereco 
             },
           });
     
