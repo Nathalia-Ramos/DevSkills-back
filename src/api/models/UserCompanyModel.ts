@@ -12,16 +12,16 @@ interface Data {
 }
 
 export default class UserCompanyModel{
-
-    static async execute({
-        cnpj,
-        email,
-        senha,
-        nome_fantasia,
-        idEndereco : idEndereco
-      }: Data): Promise<Empresa | boolean> {
-
-        // Tentando criar um Livro
+  
+  static async execute({
+    cnpj,
+    email,
+    senha,
+    nome_fantasia,
+    idEndereco : idEndereco
+  }: Data): Promise<Empresa | boolean> {
+    
+    
         try {
           const newCompany = await prismaClient.empresa.create({
             data: {

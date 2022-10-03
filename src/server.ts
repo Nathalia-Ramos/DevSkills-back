@@ -7,12 +7,18 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-//importando a rota do state
-//import AdressRoutes from "../routes/CompanyRoutes/AddressRoutes"
-import UserRoutes from "../routes/CompanyRoutes/UserCompanyRoutes"
 
+import UserRoutes from "../routes/CompanyRoutes/UserCompanyRoutes"
+import AddresRoutes from "../routes/CompanyRoutes/AddressRoutes" 
+import AuthRoutes from "../routes/CompanyRoutes/AuthRoutes"
+import ForgetPassword from "../routes/CompanyRoutes/ForgotPassword"
+import ResetPass  from "../routes/CompanyRoutes/ResetPassword"
 
 app.use('/user', UserRoutes)
+app.use('/teste', AddresRoutes)
+app.use('/auth', AuthRoutes)
+app.use('/forgot_pass', ForgetPassword)
+app.use('/reset', ResetPass)
 
 app.listen(8080, () => {
     console.log("Server running")

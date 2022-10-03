@@ -424,8 +424,8 @@ model Empresa {
   id Int @id @unique @default(autoincrement()) @db.Int
 
   cnpj      String  @db.VarChar(14)
-  email     String  @db.VarChar(180)
-  senha     String  @db.VarChar(45)
+  email     String @unique @db.VarChar(180)
+  senha     String  @db.VarChar(80)
   nome_fantasia String @db.VarChar(180)
   ativo     Boolean @db.TinyInt
   biografia String? @db.Text

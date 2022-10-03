@@ -2,18 +2,36 @@ import {NextFunction, Request, Response} from "express"
 
 import { EnderecoEmpresa } from "@prisma/client"
 import { prismaClient } from "../../../database/prismaClient"
+import AddressModel from "../../models/AddressModel"
+
+interface IAddressRegister{ 
+    bairro: string,
+    cep: string,
+    logradouro : string,
+    numero: string,
+    complemento: string,
+    idCidade: number
+}
 
 export default class AddressController { 
-    static async create(req: any, res: Response, next: NextFunction) : Promise <any >{
+    static async execute (req: any, res: Response){
         
-        const {logradouro, numero, bairro, cep, complemento, idCidade} : EnderecoEmpresa = req.body
+        const {logradouro, numero, bairro, cep, complemento, idCidade} = req.body
 
         try {
-            const newAdress = await prismaClient.enderecoEmpresa.findFirst()
+            const newAdress = await AddressModel.execute({
+               bairro,
+               cep,
+               logradouro,
+               numero,
+               complemento,
+               idCidade 
+            })
+
+               
+            res.status(201).json({ message: "Empresa cadastrada com sucesso!", newAdress,});
            
-              req.address = newAdress
-              next()
-              
+            return;
               
         } catch (error : any) {
            
