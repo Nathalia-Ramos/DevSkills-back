@@ -16,7 +16,7 @@ model Usuario {
   nome                 String   @db.VarChar(180)
   email                String   @db.VarChar(110)
   senha                String   @db.VarChar(60)
-  cpf                  Int      @db.Int
+  cpf                  String   @db.VarChar(15)
   data_nascimento      DateTime @db.Date
   tag                  String   @db.VarChar(45)
   ativo                Boolean  @db.TinyInt
@@ -24,7 +24,7 @@ model Usuario {
   foto_perfil          String?  @db.VarChar(150)
   biografia            String?  @db.Text
   link_github          String?  @db.Text
-  link_portifolio      String?  @db.Text
+  link_portfolio       String?  @db.Text
 
   //Relacionamento com a tabela Endereco_Usuario
   EnderecoUsuario            EnderecoUsuario[]
@@ -214,7 +214,7 @@ model UsuarioIdioma {
 
 //Login 
 model LoginEmpresa  {
-  id Int @unique @default(autoincrement()) @db.Int
+  id Int @id @unique @default(autoincrement()) @db.Int
 
   login String @db.VarChar(100)
   senha String @db.VarChar(60)
@@ -227,7 +227,7 @@ model LoginEmpresa  {
 
 }
 model LoginAdmin { 
-  id Int @unique @default(autoincrement()) @db.Int
+  id Int @id @unique @default(autoincrement()) @db.Int
 
   login String @db.VarChar(100)
   senha String @db.VarChar(60)
@@ -240,7 +240,7 @@ model LoginAdmin {
 }
 
 model LoginUsuario {
-  id Int @unique @default(autoincrement()) @db.Int
+  id Int @id @unique @default(autoincrement()) @db.Int
 
   login String @db.VarChar(100)
   senha String @db.VarChar(60)
