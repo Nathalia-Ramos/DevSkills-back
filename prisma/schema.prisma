@@ -29,6 +29,7 @@ model Usuario {
   //Relacionamento com a tabela Endereco_Usuario
   EnderecoUsuario            EnderecoUsuario[]
   usuarioTesteComportamental UsuarioTesteComportamental[]
+  LoginUsuario LoginUsuario[]
 
   // Relacionando com a tabela de Gênero
   genero   Genero @relation(fields: [idGenero], references: [id])
@@ -210,6 +211,46 @@ model UsuarioIdioma {
 }
 
 // FIM - Linguagens
+
+//Login 
+model LoginEmpresa  {
+  id Int @unique @default(autoincrement()) @db.Int
+
+  login String @db.VarChar(100)
+  senha String @db.VarChar(60)
+  token String @db.VarChar(100)
+
+  empresa Empresa @relation(fields: [idEmpresa], references: [id])
+  idEmpresa Int @map("id_empresa") @db.Int
+
+  @@map("tbllogin_empresa")  
+
+}
+model LoginAdmin { 
+  id Int @unique @default(autoincrement()) @db.Int
+
+  login String @db.VarChar(100)
+  senha String @db.VarChar(60)
+  token String @db.VarChar(100)
+
+  administrador Administrador @relation(fields: [idAdministrador], references: [id])
+  idAdministrador Int @map("id_administrador") @db.Int
+
+  @@map("tbllogin_admin")
+}
+
+model LoginUsuario {
+  id Int @unique @default(autoincrement()) @db.Int
+
+  login String @db.VarChar(100)
+  senha String @db.VarChar(60)
+  token String @db.VarChar(100)
+
+  usuario Usuario @relation(fields: [idUsuario], references: [id])
+  idUsuario Int @map("id_administrador") @db.Int
+
+  @@map("tbllogin_usuario")
+}
 
 //LAYER Endereço
 model Estado {
@@ -438,6 +479,8 @@ model Empresa {
 
   // Relacionamento com EmpresaTelefone
   empresaTelefone EmpresaTelefone[]
+
+  LoginEmpresa LoginEmpresa[]
 
   // Relacionamento com FotosAmbiente
   fotosAmbiente FotosAmbiente[]
@@ -723,6 +766,9 @@ model Administrador {
   administradorProvas AdministradorProvas[]
 
   denunciaAdmin DenunciaAdmin[]
+
+  LoginAdmin LoginAdmin []
+
 
   @@map("tbladministrador")
 }

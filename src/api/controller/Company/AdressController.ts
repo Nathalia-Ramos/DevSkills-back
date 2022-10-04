@@ -18,6 +18,8 @@ export default class AddressController {
         
         const {logradouro, numero, bairro, cep, complemento, idCidade} = req.body
 
+        
+
         try {
             const newAdress = await AddressModel.execute({
                bairro,

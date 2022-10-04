@@ -1,7 +1,9 @@
 import {Request, Response} from "express"
+
 import UserCompanyController from "./UserCompanyController"
 import UserCompanyModel from "../../models/UserCompanyModel"
 import { prismaClient } from "../../../database/prismaClient"
+
 import { Empresa } from "@prisma/client"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
@@ -10,7 +12,7 @@ import crypto from "crypto"
 
 interface ICompanyAuth{
     email: string,
-    senha: string
+    senha?: string
 }
 
 export default class AuthController {
@@ -30,14 +32,16 @@ export default class AuthController {
 
             if(!userExist) return res.status(400).send({error: "Usuário não encontrado"})
             
-            if(await bcrypt.compare(senha, userExist?.senha as string)){
+            if(await bcrypt.compare(senha, userExist?.senha)){
                 const data = {
                     nome : userExist?.nome_fantasia,
                     cnpj: userExist?.cnpj,
                     email: userExist?.email
                 }
                 const token = jwt.sign({id: userExist?.id}, 'secret', {expiresIn: '1d'})
-              
+           
+             
+
                 res.json({userExist, token})
             }else{
                 res.status(500).json({message: "Usuário ou senhas inválida"})
@@ -65,6 +69,7 @@ export default class AuthController {
                 //gerando token aleatorio de 15 caracteres
                 const token = crypto.randomBytes(15).toString("hex")
 
+                
                 //tempo de expiração do token
                 const now = new Date()
                 now.setHours(now.getHours() + 1)
@@ -81,9 +86,9 @@ export default class AuthController {
 
                 transporter.sendMail({
                     from: 'Administrador <0a4aaf5b8b-d7590b+1@inbox.mailtrap.io>',
-                    to: email as string,
+                    to: email,
                     subject: 'Token para recuperação de senha ',
-                    text: `Olá, sua nova senha é: ${token}`
+                    text: `Olá, o seu token para recuperação de senha é: ${token}`
                 })
 
                 res.send()
@@ -99,12 +104,11 @@ export default class AuthController {
         try {
 
             //verificando se o usuário existe
-            const userExist = await prismaClient.empresa.findFirst({where: email} )
+            const userExist = await prismaClient.empresa.findFirst({
+                where: email.email
+            })
             
-            await userExist?.senha
-            
-            res.send()
-
+            //if(token !== userExis)
             
         } catch (error) {
             console.log(error)

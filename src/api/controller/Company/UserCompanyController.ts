@@ -17,12 +17,14 @@ export default class UserCompanyController{
     static async execute(req: Request, res: Response){
         
        
-
         const {cnpj, email, senha, nome_fantasia, idEndereco} =  req.body
+
+       
 
         if(!cnpj || !email || !senha || !nome_fantasia|| !idEndereco ) 
           res.status(500).json({message: "Existem campos obrigatórios que não foram preenchidos!"})
             
+
 
          //valida o tamanho do cnpj
         if (cnpj.length > 14) res.status(400).json({message: "CNPJ inválido"})
@@ -30,6 +32,8 @@ export default class UserCompanyController{
         
         if(!senha.match(/^(?=.*[A-Z])(?=.*[!#@$%&])(?=.*[0-9])(?=.*[a-z]).{8,15}$/))
            res.status(400).json({message: "Senha inválida!"})
+
+        
 
         else{
             try {
