@@ -1,14 +1,12 @@
 import {Request, Response} from "express"
-
-import UserCompanyController from "./UserCompanyController"
-import UserCompanyModel from "../../models/UserCompanyModel"
 import { prismaClient } from "../../../database/prismaClient"
 
-import { LoginEmpresa } from "@prisma/client"
+import { Empresa } from "@prisma/client"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import nodemailer from "nodemailer"
 import crypto from "crypto"
+import { type } from "os"
 
 interface ICompanyAuth{
     email: string,
@@ -16,11 +14,13 @@ interface ICompanyAuth{
 }
 
 export default class AuthController {
-    static async auth(req: Request, res: Response){
+    static async auth(req: Request, res: Response)
+    {
 
-        const { email, senha } = req.body
+        const { email, senha} = req.body
+        const { id } = req.params
 
-        if(!email || !senha) res.status(500).json({message: "Existem campos obrigatórios que não foram preenchidos!"})
+        if(!email || !senha) return res.status(500).json({message: "Existem campos obrigatórios que não foram preenchidos!"})
 
         //verificando se o usuário existe
         try {
@@ -30,26 +30,38 @@ export default class AuthController {
                 }
             })
 
+            //verificando se o usuario existe
             if(!userExist) return res.status(400).send({error: "Usuário não encontrado"})
             
-            if(await bcrypt.compare(senha, userExist?.senha)){
+            if(await bcrypt.compare(senha, userExist.senha)){
                 const data = {
-                    nome : userExist?.nome_fantasia,
-                    cnpj: userExist?.cnpj,
-                    email: userExist?.email
+                    nome: userExist?.nome_fantasia,
+                    id: userExist?.id,
+                    type: "COMPANY"
                 }
-                const token = jwt.sign({id: userExist?.id}, 'secret', {expiresIn: '1d'})
-           
-             
 
-                res.json({userExist, token})
+                //gerando o token 
+                const token = jwt.sign({id: userExist.id}, 'secret', {expiresIn: '1d'})
+                
+                const decoded = jwt.verify(token, 'secret')
+                console.log(decoded)
+
+                try {
+                    const decoded = jwt.verify(token, 'error')
+                } catch (error) {
+                    console.log(error)
+                }
+
+                
+                return res.json({data, token})
+
             }else{
                 res.status(500).json({message: "Usuário ou senhas inválida"})
             }
         }   
 
         catch (error: any) {
-            res.status(404).json({message: "Falha na autenticação"})
+            return res.status(400).json({message: "Falha na autenticação"})
         }
     }
 
@@ -68,9 +80,6 @@ export default class AuthController {
 
                 //gerando token aleatorio de 15 caracteres
                 const token = crypto.randomBytes(15).toString("hex")
-
-
-
 
                 const transporter = nodemailer.createTransport({
                     host: "smtp.mailtrap.io",
@@ -105,7 +114,6 @@ export default class AuthController {
                 where: email.email
             })
             
-            //if(token !== userExis)
             
         } catch (error) {
             console.log(error)

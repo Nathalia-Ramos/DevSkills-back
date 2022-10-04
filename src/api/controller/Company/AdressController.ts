@@ -18,7 +18,9 @@ export default class AddressController {
         
         const {logradouro, numero, bairro, cep, complemento, idCidade} = req.body
 
-        
+        if(!logradouro || !numero || !bairro || !cep || !complemento|| !idCidade) return res.status(400).json({message: "Existem campos obrigatórios que não foram preenchidos"})
+
+
 
         try {
             const newAdress = await AddressModel.execute({

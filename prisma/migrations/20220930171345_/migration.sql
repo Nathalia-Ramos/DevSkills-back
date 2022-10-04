@@ -11,7 +11,6 @@
   - You are about to alter the column `data_inicio` on the `tblprova_andamento` table. The data in that column could be lost. The data in that column will be cast from `DateTime(0)` to `DateTime`.
   - You are about to alter the column `data_fim` on the `tblprova_andamento` table. The data in that column could be lost. The data in that column will be cast from `DateTime(0)` to `DateTime`.
   - You are about to alter the column `data_entrega` on the `tblusuario_prova` table. The data in that column could be lost. The data in that column will be cast from `DateTime(0)` to `DateTime`.
-  - Added the required column `resetToken` to the `tbllogin_empresa` table without a default value. This is not possible if the table is not empty.
 
 */
 -- AlterTable
@@ -20,9 +19,6 @@ ALTER TABLE `tblDenuncia` MODIFY `data_solicitacao` DATETIME NOT NULL,
 
 -- AlterTable
 ALTER TABLE `tblemblema` MODIFY `condicao` DECIMAL NOT NULL;
-
--- AlterTable
-ALTER TABLE `tbllogin_empresa` ADD COLUMN `resetToken` VARCHAR(100) NOT NULL;
 
 -- AlterTable
 ALTER TABLE `tblpagamento` MODIFY `data_pagamento` DATETIME NOT NULL,
