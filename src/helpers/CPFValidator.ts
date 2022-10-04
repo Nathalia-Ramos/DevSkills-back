@@ -5,13 +5,19 @@ const Sum = TotalSum
 const Multiplier = ArrayMultiplier
 
 const validator = (CPF : string) =>{
-    const values = CPF.split(/[-.]+/)
-    const last_digits = values.pop()
-    const first_digit = last_digits?.split('')
 
-    const CPFnumbers = values.join('').split('')
+    const values = CPF.split(/[-.]+/)
+
+    const numbers = values.join('').split('')
+
+    // const values = CPF.split(/[-.]+/)
+    // const last_digits = values.pop()
+    // const first_digit = last_digits?.split('')
+
+    // const CPFnumbers = values.join('').split('')
     
 }
+
 
 const firstValidate = (numbers: Array<number>, firstDigit : number) => {
     

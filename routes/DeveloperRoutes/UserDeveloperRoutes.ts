@@ -4,6 +4,5 @@ import UserDeveloperController from "../../src/api/controller/Developer/UserDeve
 const router = Router()
 
 router.post('/', UserDeveloperController.create)
-router.get('/')
 
 export default router
