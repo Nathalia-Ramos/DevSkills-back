@@ -4,7 +4,7 @@ import UserCompanyController from "./UserCompanyController"
 import UserCompanyModel from "../../models/UserCompanyModel"
 import { prismaClient } from "../../../database/prismaClient"
 
-import { Empresa } from "@prisma/client"
+import { LoginEmpresa } from "@prisma/client"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import nodemailer from "nodemailer"
@@ -69,10 +69,7 @@ export default class AuthController {
                 //gerando token aleatorio de 15 caracteres
                 const token = crypto.randomBytes(15).toString("hex")
 
-                
-                //tempo de expiração do token
-                const now = new Date()
-                now.setHours(now.getHours() + 1)
+
 
 
                 const transporter = nodemailer.createTransport({

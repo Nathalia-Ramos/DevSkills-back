@@ -214,11 +214,12 @@ model UsuarioIdioma {
 
 //Login 
 model LoginEmpresa  {
-  id Int @unique @default(autoincrement()) @db.Int
+  id Int @id @unique @default(autoincrement()) @db.Int
 
   login String @db.VarChar(100)
   senha String @db.VarChar(60)
   token String @db.VarChar(100)
+  resetToken String @db.VarChar(100)
 
   empresa Empresa @relation(fields: [idEmpresa], references: [id])
   idEmpresa Int @map("id_empresa") @db.Int
@@ -227,7 +228,7 @@ model LoginEmpresa  {
 
 }
 model LoginAdmin { 
-  id Int @unique @default(autoincrement()) @db.Int
+  id Int @id @unique @default(autoincrement()) @db.Int
 
   login String @db.VarChar(100)
   senha String @db.VarChar(60)
@@ -240,7 +241,7 @@ model LoginAdmin {
 }
 
 model LoginUsuario {
-  id Int @unique @default(autoincrement()) @db.Int
+  id Int @id @unique @default(autoincrement()) @db.Int
 
   login String @db.VarChar(100)
   senha String @db.VarChar(60)
