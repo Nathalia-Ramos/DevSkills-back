@@ -29,7 +29,7 @@ model Usuario {
   //Relacionamento com a tabela Endereco_Usuario
   EnderecoUsuario            EnderecoUsuario[]
   usuarioTesteComportamental UsuarioTesteComportamental[]
-  LoginUsuario LoginUsuario[]
+  LoginUsuario               LoginUsuario[]
 
   // Relacionando com a tabela de Gênero
   genero   Genero @relation(fields: [idGenero], references: [id])
@@ -118,8 +118,8 @@ model Idioma {
   id   Int    @id @unique @default(autoincrement()) @db.Int
   nome String @db.VarChar(80)
 
-  usuarioIdioma          UsuarioIdioma[]
-  provaIdioma            ProvaIdioma[]
+  usuarioIdioma UsuarioIdioma[]
+  provaIdioma   ProvaIdioma[]
 
   // Relacionamento com a tabela TesteCompetenciaIdioma
   testeCompetenciaIdioma TesteCompetenciaIdioma[]
@@ -218,14 +218,13 @@ model LoginEmpresa  {
 
   login String @db.VarChar(100)
   senha String @db.VarChar(60)
-  token String @db.VarChar(100)
+  
+  empresa   Empresa @relation(fields: [idEmpresa], references: [id])
+  idEmpresa Int     @map("id_empresa") @db.Int
 
-  empresa Empresa @relation(fields: [idEmpresa], references: [id])
-  idEmpresa Int @map("id_empresa") @db.Int
-
-  @@map("tbllogin_empresa")  
-
+  @@map("tbllogin_empresa")
 }
+
 model LoginAdmin { 
   id Int @id @unique @default(autoincrement()) @db.Int
 
@@ -233,8 +232,8 @@ model LoginAdmin {
   senha String @db.VarChar(60)
   token String @db.VarChar(100)
 
-  administrador Administrador @relation(fields: [idAdministrador], references: [id])
-  idAdministrador Int @map("id_administrador") @db.Int
+  administrador   Administrador @relation(fields: [idAdministrador], references: [id])
+  idAdministrador Int           @map("id_administrador") @db.Int
 
   @@map("tbllogin_admin")
 }
@@ -246,8 +245,8 @@ model LoginUsuario {
   senha String @db.VarChar(60)
   token String @db.VarChar(100)
 
-  usuario Usuario @relation(fields: [idUsuario], references: [id])
-  idUsuario Int @map("id_administrador") @db.Int
+  usuario   Usuario @relation(fields: [idUsuario], references: [id])
+  idUsuario Int     @map("id_administrador") @db.Int
 
   @@map("tbllogin_usuario")
 }
@@ -464,14 +463,13 @@ model FormaPagamento {
 model Empresa {
   id Int @id @unique @default(autoincrement()) @db.Int
 
-  cnpj      String  @db.VarChar(14)
-  email     String @unique @db.VarChar(180)
-  senha     String  @db.VarChar(80)
-  nome_fantasia String @db.VarChar(180)
-  ativo     Boolean @db.TinyInt
-  biografia String? @db.Text
-  logo      String? @db.VarChar(120)
-  
+  cnpj          String  @unique @db.VarChar(14)
+  email         String  @unique @db.VarChar(180)
+  senha         String  @db.VarChar(80)
+  nome_fantasia String  @db.VarChar(180)
+  ativo         Boolean @db.TinyInt
+  biografia     String? @db.Text
+  logo          String? @db.VarChar(120)
 
   // Relacionamento com EnderecoEmpresa
   enderecoEmpresa EnderecoEmpresa @relation(fields: [idEndereco], references: [id])
@@ -600,7 +598,7 @@ model TesteCompetencia {
   testesCompetenciaSalvos TestesCompetenciaSalvos[]
 
   // Relacionamento com a tabela TesteCompetenciaIdioma
-  testeCompetenciaIdioma  TesteCompetenciaIdioma[]
+  testeCompetenciaIdioma TesteCompetenciaIdioma[]
 
   @@map("tblteste_competencia")
 }
@@ -767,8 +765,7 @@ model Administrador {
 
   denunciaAdmin DenunciaAdmin[]
 
-  LoginAdmin LoginAdmin []
-
+  LoginAdmin LoginAdmin[]
 
   @@map("tbladministrador")
 }
@@ -880,7 +877,7 @@ model Prova {
   provaAndamento       ProvaAndamento[]
   provasSalvasUsuarios ProvasSalvasUsuarios[]
   provasTodasQuestoes  ProvasTodasQuestoes[]
-  administradorProvas   AdministradorProvas[]
+  administradorProvas  AdministradorProvas[]
 
   provaTipo   ProvaTipo @relation(fields: [idProvaTipo], references: [id])
   idProvaTipo Int       @map("id_tipo") @db.Int

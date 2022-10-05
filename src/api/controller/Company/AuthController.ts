@@ -1,55 +1,74 @@
 import {Request, Response} from "express"
-
-import UserCompanyController from "./UserCompanyController"
-import UserCompanyModel from "../../models/UserCompanyModel"
 import { prismaClient } from "../../../database/prismaClient"
 
+import { LoginEmpresa} from "@prisma/client"
 import { Empresa } from "@prisma/client"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import nodemailer from "nodemailer"
 import crypto from "crypto"
+import { type } from "os"
 
 interface ICompanyAuth{
-    email: string,
-    senha?: string
+    login: string,
+    senha?: string,
+    idEmpresa: number
 }
 
 export default class AuthController {
-    static async auth(req: Request, res: Response){
 
-        const { email, senha } = req.body
+    static async auth(req: Request, res: Response)
+    {
 
-        if(!email || !senha) res.status(500).json({message: "Existem campos obrigatórios que não foram preenchidos!"})
+        const { senha, cnpj, email, login} = req.body
+        const { id } = req.params
+
+        if(!login || !senha) return res.status(500).json({Error: "Existem campos obrigatórios que não foram preenchidos!"})
 
         //verificando se o usuário existe
         try {
-            const userExist = await prismaClient.empresa.findFirst({
-                where: {
-                    email
-                }
-            })
-
-            if(!userExist) return res.status(400).send({error: "Usuário não encontrado"})
             
-            if(await bcrypt.compare(senha, userExist?.senha)){
-                const data = {
-                    nome : userExist?.nome_fantasia,
-                    cnpj: userExist?.cnpj,
-                    email: userExist?.email
+            const userExist = await prismaClient.empresa.findUnique({
+                
+                where: {
+                    
+                    email: email.userExist,
+                    cnpj: cnpj.userExist
                 }
-                const token = jwt.sign({id: userExist?.id}, 'secret', {expiresIn: '1d'})
-           
-             
+                
+            })
+            
+            if(!userExist) return res.status(400).send({error: "Usuário não encontrado"})
+      
 
-                res.json({userExist, token})
+            if(login === login?.email || login === login?.cnpj) {
+
+                if(await bcrypt.compare(senha, login.senha)){
+                    const data = {
+                        nome: login.nome_fantasia,
+                        idEmpresa: login.id,
+                        type: "COMPANY"
+                    }
+    
+                    //gerando o token 
+                    const token = jwt.sign({id: login.id}, 'secret', {expiresIn: '1d'})
+                    
+                  
+                    return res.json({data, token})
+    
+                }else{
+                    res.status(500).json({message: "Usuário ou senhas inválida"})
+                }
             }else{
-                res.status(500).json({message: "Usuário ou senhas inválida"})
-            }
-        }   
+                return res.status(400).send({error: "Usuário não encontrado"})
+            }   
+         }
+
+
 
         catch (error: any) {
-            res.status(404).json({message: "Falha na autenticação"})
+            console.error(error)
+            return res.status(400).json({error: "Falha na autenticação"})
         }
     }
 
@@ -68,12 +87,6 @@ export default class AuthController {
 
                 //gerando token aleatorio de 15 caracteres
                 const token = crypto.randomBytes(15).toString("hex")
-
-                
-                //tempo de expiração do token
-                const now = new Date()
-                now.setHours(now.getHours() + 1)
-
 
                 const transporter = nodemailer.createTransport({
                     host: "smtp.mailtrap.io",
@@ -108,7 +121,6 @@ export default class AuthController {
                 where: email.email
             })
             
-            //if(token !== userExis)
             
         } catch (error) {
             console.log(error)

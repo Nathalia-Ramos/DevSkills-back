@@ -18,7 +18,9 @@ export default class AddressController {
         
         const {logradouro, numero, bairro, cep, complemento, idCidade} = req.body
 
-        
+        if(!logradouro || !numero || !bairro || !cep || !complemento|| !idCidade) return res.status(400).json({message: "Existem campos obrigatórios que não foram preenchidos"})
+
+
 
         try {
             const newAdress = await AddressModel.execute({
@@ -31,7 +33,7 @@ export default class AddressController {
             })
 
                
-            res.status(201).json({ message: "Empresa cadastrada com sucesso!", newAdress,});
+            res.status(201).json({ message: "Registro cadastro com sucesso!", newAdress,});
            
             return;
               

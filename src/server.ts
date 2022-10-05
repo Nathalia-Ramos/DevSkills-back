@@ -22,7 +22,7 @@ import StackRoutes from "../routes/CommonRoutes/StacksRoutes"
 import SkillRoutes from "../routes/CommonRoutes/SkillsRoutes"
 
 app.use('/user', UserRoutes)
-app.use('/teste', AddresRoutes)
+app.use('/address', AddresRoutes)
 app.use('/auth', AuthRoutes)
 app.use('/forgot_pass', ForgetPassword)
 app.use('/reset', ResetPass)
