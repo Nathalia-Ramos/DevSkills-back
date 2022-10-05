@@ -463,7 +463,7 @@ model FormaPagamento {
 model Empresa {
   id Int @id @unique @default(autoincrement()) @db.Int
 
-  cnpj          String  @db.VarChar(14)
+  cnpj          String  @unique @db.VarChar(14)
   email         String  @unique @db.VarChar(180)
   senha         String  @db.VarChar(80)
   nome_fantasia String  @db.VarChar(180)

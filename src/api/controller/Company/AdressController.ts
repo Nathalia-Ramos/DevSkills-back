@@ -33,7 +33,7 @@ export default class AddressController {
             })
 
                
-            res.status(201).json({ message: "Empresa cadastrada com sucesso!", newAdress,});
+            res.status(201).json({ message: "Registro cadastro com sucesso!", newAdress,});
            
             return;
               

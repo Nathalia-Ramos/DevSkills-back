@@ -22,21 +22,23 @@ export default class UserCompanyController{
         if(!cnpj || !email || !senha || !nome_fantasia|| !idEndereco ) 
           res.status(500).json({message: "Existem campos obrigatórios que não foram preenchidos!"})
             
-
-
          //valida o tamanho do cnpj
         if (cnpj.length > 14 || cnpj.length < 14) return res.status(400).json({message: "CNPJ inválido"})
-
-
-
         
         if(!senha.match(/^(?=.*[A-Z])(?=.*[!#@$%&])(?=.*[0-9])(?=.*[a-z]).{8,15}$/))
            return res.status(400).json({message: "Senha inválida!"})
 
-      
-        else{
             try {
 
+                /*try {
+                    const userExist = await prismaClient.loginEmpresa.findUnique({
+                        where:{ 
+                            
+                        }
+                    }) 
+                } catch (error) {
+                    
+                }*/
                   const senhaHash = await bcrypt.hash(senha, 10)
                   
                   const newUser = await UserCompanyModel.execute({
@@ -52,6 +54,6 @@ export default class UserCompanyController{
               } catch (error: any ) {
                   return res.send("Não foi possivel inserir!!!")
               }
-        }
+        
     }
 }
