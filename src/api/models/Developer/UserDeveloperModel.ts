@@ -1,4 +1,4 @@
-import { PrismaClient, Usuario, LoginUsuario } from "@prisma/client";
+import { PrismaClient, Usuario } from "@prisma/client";
 import bcrypt, { compare } from "bcrypt";
 import Jwt from "jsonwebtoken";
 
@@ -25,7 +25,7 @@ interface UserData {
 interface LoginDeveloper {
   login: string,
   senha: string,
-  token: string,
+  id_usuario: number,
 }
 
 export default class UserDeveloperModel {
@@ -58,16 +58,34 @@ export default class UserDeveloperModel {
         },
       });
 
-      const token = Jwt.sign({id: newDeveloper.id}, "secret", {expiresIn: "1d"})
+      prisma.$disconnect;
 
-      const newLogin = await prisma.loginUsuario.create({
-        data:{
-          idUsuario: newDeveloper.id,
-          login: email,
+      return newDeveloper;
+
+    } catch (error) {
+      console.error(error);
+
+      prisma.$disconnect;
+
+      return false;
+    }
+  }
+
+
+  static async createLogin({
+    login,
+    senha,
+    id_usuario
+  }: LoginDeveloper): Promise<any | boolean> {
+
+    try {
+      const newLogin = await prisma.LoginUsuario.create({
+        data: {
+          login,
           senha,
-          token
-        }
-      })
+          id_usuario,
+        },
+      });
 
       prisma.$disconnect;
 
@@ -82,26 +100,21 @@ export default class UserDeveloperModel {
     }
   }
 
-  static async auth({
-    login,
-    senha,
-    token
-  }: LoginDeveloper): Promise<LoginUsuario | boolean> {
+  static async findLogin(login : string) {
 
     try {
-      const userDeveloper = await prisma.usuario.findFirst({
+      const userLogin = await prisma.LoginUsuario.findFirst({
         where: {
           email: login
         }
       })
 
-      console.log(userDeveloper)
+      return userLogin
 
     } catch (error) {
       console.log(error)
     }
 
-    return false;
   }
 
 

@@ -1,6 +1,7 @@
 import UserDeveloperModel from "../../models/Developer/UserDeveloperModel";
+import DeveloperPhoneController from "../../controller/Phone/DeveloperPhoneController"
 import CPFValidator from "../../../helpers/CPFValidator"
-import validateRegex from "../../../utils/validateRegex";
+import validateRegex from "../../../utils/ValidateRegex";
 import message from "../../../config/ReturnMessages";
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
@@ -12,11 +13,12 @@ interface UserData {
     senha: string,
     cpf: string,
     data_nascimento: Date,
-
-    tag: string,
-    pontuacao_plataforma: number,
-    ativo: boolean,
-    genero: string,
+    
+    id_genero: number,
+    
+    ddd: string,
+    numero: string,
+    id_tipo_telefone: number,
 }
 
 export default class UserDeveloperController {
@@ -34,10 +36,20 @@ export default class UserDeveloperController {
 
             try {
                 const newUser = await UserDeveloperModel.execute({ ...user, senha: hashPassword });
-                
-                return res.status(200).json({ message: message.Success, data: newUser })
+
+                const userPhone = await DeveloperPhoneController.create(req.body, res)
+
+                const loginUser = {
+                    login: newUser.email,
+                    senha: newUser.senha,
+                    id_usuario: newUser.id
+                }
+
+                const newLogin = await UserDeveloperModel.createLogin(loginUser)
+
+                return res.status(200).json({ message: message.Success, data: newUser + userPhone })
             } catch (error) {
-                return res.json(error)
+                return res.json({ error: error })
             }
 
         } else {
