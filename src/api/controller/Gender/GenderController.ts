@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import GenderModel from "../../models/Gender/GenderModel";
 import message from "../../../config/ReturnMessages";
-import validateRegex from "../../../utils/ValidateRegex";
+import validateRegex from "../../../utils/RegexValidate";
 
 export default class GenderController{
     static async execute(req: Request, res: Response){

@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import SkillTypeModel from "../../models/Skill/SkillTypeModel";
 import message from "../../../config/ReturnMessages";
-import validateRegex from "../../../utils/ValidateRegex";
+import validateRegex from "../../../utils/RegexValidate";
 
 export default class SkillController{
     static async execute(req: Request, res: Response){

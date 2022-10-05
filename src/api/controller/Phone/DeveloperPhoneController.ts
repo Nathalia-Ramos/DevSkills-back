@@ -1,5 +1,5 @@
 import DeveloperPhoneModel from "../../models/Phone/DeveloperPhoneModel";
-import ValidateRegex from "../../../utils/validateRegex";
+import validateRegex from "../../../utils/RegexValidate";
 import message from "../../../config/ReturnMessages";
 import { Request, Response } from "express";
 
@@ -15,7 +15,7 @@ export default class UserDeveloperController {
 
         const phone = req.body;
 
-        if (ValidateRegex(phone.ddd, '^[0-9]*$') && ValidateRegex(phone.numero, '^[0-9]*$')) {
+        if (validateRegex(phone.ddd, '^[0-9]*$') && validateRegex(phone.numero, '^[0-9]*$')) {
             try {
                 const newDeveloperPhone = await DeveloperPhoneModel.execute(phone)
                 return res.status(200).json({message: message.Success, dados: newDeveloperPhone})

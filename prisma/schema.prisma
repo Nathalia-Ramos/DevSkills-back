@@ -230,7 +230,6 @@ model LoginAdmin {
 
   login String @db.VarChar(100)
   senha String @db.VarChar(60)
-  token String @db.VarChar(100)
 
   administrador   Administrador @relation(fields: [idAdministrador], references: [id])
   idAdministrador Int           @map("id_administrador") @db.Int
@@ -243,10 +242,9 @@ model LoginUsuario {
 
   login String @db.VarChar(100)
   senha String @db.VarChar(60)
-  token String @db.VarChar(100)
 
   usuario   Usuario @relation(fields: [idUsuario], references: [id])
-  idUsuario Int     @map("id_administrador") @db.Int
+  idUsuario Int     @map("id_usuario") @db.Int
 
   @@map("tbllogin_usuario")
 }

@@ -1,7 +1,7 @@
 import UserDeveloperModel from "../../models/Developer/UserDeveloperModel";
-import DeveloperPhoneController from "../../controller/Phone/DeveloperPhoneController"
+import DeveloperPhoneModel from "../../models/Phone/DeveloperPhoneModel"
 import CPFValidator from "../../../helpers/CPFValidator"
-import validateRegex from "../../../utils/ValidateRegex";
+import validateRegex from "../../../utils/RegexValidate";
 import message from "../../../config/ReturnMessages";
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
@@ -12,44 +12,36 @@ interface UserData {
     email: string,
     senha: string,
     cpf: string,
-    data_nascimento: Date,
-    
+    data_nascimento: string,
+
     id_genero: number,
-    
-    ddd: string,
-    numero: string,
-    id_tipo_telefone: number,
+
+    // ddd: string,
+    // numero: string,
+    // id_tipo_telefone: number,
 }
 
 export default class UserDeveloperController {
     static async create(req: Request, res: Response) {
 
-        const user = req.body
+        let user: UserData = req.body
 
         const password = user.senha
 
         // uma maiuscula, uma minuscula, um especial, min 8 e max 15, com NUMEROS
         if (validateRegex(password, '^(?=.*[A-Z])(?=.*[!#@$%&])(?=.*[0-9])(?=.*[a-z]).{8,15}$')) {
 
-            const hashPassword = await bcrypt.hash(password, 10)
-            delete user.senha
+            user.senha = await bcrypt.hash(password, 10)
 
             try {
-                const newUser = await UserDeveloperModel.execute({ ...user, senha: hashPassword });
+                const newUser = await UserDeveloperModel.execute(user);
 
-                const userPhone = await DeveloperPhoneController.create(req.body, res)
+                // const userPhone = await DeveloperPhoneModel.execute()
 
-                const loginUser = {
-                    login: newUser.email,
-                    senha: newUser.senha,
-                    id_usuario: newUser.id
-                }
+                return res.status(200).json({ message: message.Success, data: newUser })
 
-                const newLogin = await UserDeveloperModel.createLogin(loginUser)
-
-                return res.status(200).json({ message: message.Success, data: newUser + userPhone })
             } catch (error) {
-                return res.json({ error: error })
+                console.log(error)
             }
 
         } else {

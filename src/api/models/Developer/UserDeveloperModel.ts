@@ -1,4 +1,4 @@
-import { PrismaClient, Usuario } from "@prisma/client";
+import { PrismaClient, Usuario, LoginUsuario } from "@prisma/client";
 import bcrypt, { compare } from "bcrypt";
 import Jwt from "jsonwebtoken";
 
@@ -8,18 +8,10 @@ interface UserData {
   nome: string,
   email: string,
   senha: string,
-  cpf: any,
-  data_nascimento: Date,
+  cpf: string,
+  data_nascimento: string,
 
-  tag: string,
-  foto_perfil: string,
-  biografia: string,
-  pontuacao_plataforma: number,
-  link_github: string,
-  link_portifolio: string,
-  ativo: boolean,
   id_genero: number,
-  token?: string,
 }
 
 interface LoginDeveloper {
@@ -36,12 +28,8 @@ export default class UserDeveloperModel {
     senha,
     cpf,
     data_nascimento,
-    tag,
-    pontuacao_plataforma,
-    ativo,
     id_genero,
-    token,
-  }: UserData): Promise<any | boolean> {
+  }: UserData): Promise<Usuario | boolean> {
 
     try {
       const newDeveloper = await prisma.usuario.create({
@@ -51,10 +39,14 @@ export default class UserDeveloperModel {
           senha,
           cpf,
           data_nascimento: new Date(),
-          tag,
-          pontuacao_plataforma,
           ativo: true,
-          idGenero: id_genero,
+          pontuacao_plataforma: 0,
+          tag: "teste",
+          genero: {
+            connect:{
+              id: id_genero,
+            }
+          },
         },
       });
 
@@ -79,11 +71,11 @@ export default class UserDeveloperModel {
   }: LoginDeveloper): Promise<any | boolean> {
 
     try {
-      const newLogin = await prisma.LoginUsuario.create({
+      const newLogin = await prisma.loginUsuario.create({
         data: {
           login,
           senha,
-          id_usuario,
+          idUsuario: id_usuario,
         },
       });
 
@@ -103,9 +95,9 @@ export default class UserDeveloperModel {
   static async findLogin(login : string) {
 
     try {
-      const userLogin = await prisma.LoginUsuario.findFirst({
+      const userLogin = await prisma.loginUsuario.findFirst({
         where: {
-          email: login
+          login: login
         }
       })
 
