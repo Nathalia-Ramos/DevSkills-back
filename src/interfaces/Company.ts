@@ -1,5 +1,5 @@
 export default interface CompanyData {
-    cnpj: number,
+    cnpj: string,
     email: string,
     senha: string,
     confirmar_senha: string,
@@ -15,5 +15,6 @@ export default interface CompanyData {
     logradouro: string,
     numero_rua: string,
     complemento?: string,
-    cep: string,
+    cep: string
+    
 }

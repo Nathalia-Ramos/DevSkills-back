@@ -46,4 +46,6 @@ export default class UserCompanyModel{
 
         
       }
-    }
+
+
+}

@@ -36,7 +36,6 @@ export default class UserDeveloperModel {
         data: {
           nome,
           email,
-         // senha,
           cpf,
           data_nascimento: new Date(),
           ativo: true,
@@ -65,7 +64,7 @@ export default class UserDeveloperModel {
 
 
   static async createLogin({
-    login,
+
     senha,
     id_usuario
   }: LoginDeveloper): Promise<any | boolean> {
@@ -73,7 +72,7 @@ export default class UserDeveloperModel {
     try {
       const newLogin = await prisma.loginUsuario.create({
         data: {
-          login,
+     
           senha,
           idUsuario: id_usuario,
         },
@@ -97,7 +96,7 @@ export default class UserDeveloperModel {
     try {
       const userLogin = await prisma.loginUsuario.findFirst({
         where: {
-          login: login
+        //  login: login
         }
       })
 

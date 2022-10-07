@@ -15,7 +15,7 @@ model Usuario {
 
   nome                 String   @db.VarChar(180)
   email                String   @db.VarChar(110)
-  cpf                  String   @db.VarChar(15)
+  cpf                  String   @unique @db.VarChar(15)
   data_nascimento      DateTime @db.Date
   tag                  String   @db.VarChar(45)
   ativo                Boolean  @db.TinyInt
@@ -60,6 +60,17 @@ model Usuario {
   updatedAt DateTime @updatedAt
 
   @@map("tblusuario")
+}
+
+model LoginUsuario {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  senha String @db.VarChar(60)
+
+  usuario   Usuario @relation(fields: [idUsuario], references: [id])
+  idUsuario Int     @map("id_usuario") @db.Int
+
+  @@map("tbllogin_usuario")
 }
 
 model Genero {
@@ -211,40 +222,8 @@ model UsuarioIdioma {
 
 // FIM - Linguagens
 
-//Login 
-model LoginEmpresa  {
-  id Int @id @unique @default(autoincrement()) @db.Int
 
 
-  senha String @db.VarChar(60)
-  
-  empresa   Empresa @relation(fields: [idEmpresa], references: [id])
-  idEmpresa Int     @map("id_empresa") @db.Int
-
-  @@map("tbllogin_empresa")
-}
-
-model LoginAdmin { 
-  id Int @id @unique @default(autoincrement()) @db.Int
-
-  senha String @db.VarChar(60)
-
-  administrador   Administrador @relation(fields: [idAdministrador], references: [id])
-  idAdministrador Int           @map("id_administrador") @db.Int
-
-  @@map("tbllogin_admin")
-}
-
-model LoginUsuario {
-  id Int @id @unique @default(autoincrement()) @db.Int
-
-  senha String @db.VarChar(60)
-
-  usuario   Usuario @relation(fields: [idUsuario], references: [id])
-  idUsuario Int     @map("id_usuario") @db.Int
-
-  @@map("tbllogin_usuario")
-}
 
 //LAYER Endereço
 model Estado {
@@ -487,6 +466,18 @@ model Empresa {
   provaAndamento ProvaAndamento[]
 
   @@map("tblempresa")
+}
+
+model LoginEmpresa  {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+
+  senha String @db.VarChar(60)
+  
+  empresa   Empresa @relation(fields: [idEmpresa], references: [id])
+  idEmpresa Int     @map("id_empresa") @db.Int
+
+  @@map("tbllogin_empresa")
 }
 
 model ProvaAndamento {
@@ -761,6 +752,17 @@ model Administrador {
   LoginAdmin LoginAdmin[]
 
   @@map("tbladministrador")
+}
+ 
+model LoginAdmin { 
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  senha String @db.VarChar(60)
+
+  administrador   Administrador @relation(fields: [idAdministrador], references: [id])
+  idAdministrador Int           @map("id_administrador") @db.Int
+
+  @@map("tbllogin_admin")
 }
 
 model AdministradorProvas {
