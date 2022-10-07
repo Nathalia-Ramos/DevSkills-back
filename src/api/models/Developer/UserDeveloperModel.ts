@@ -36,7 +36,7 @@ export default class UserDeveloperModel {
         data: {
           nome,
           email,
-          senha,
+         // senha,
           cpf,
           data_nascimento: new Date(),
           ativo: true,

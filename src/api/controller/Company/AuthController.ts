@@ -2,38 +2,49 @@ import {Request, Response} from "express"
 import { prismaClient } from "../../../database/prismaClient"
 
 import { LoginEmpresa} from "@prisma/client"
+import AuthCompanyModel from "../../models/Company/AuthCompanyModel"
 import { Empresa } from "@prisma/client"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import nodemailer from "nodemailer"
 import crypto from "crypto"
-import { type } from "os"
 
-interface ICompanyAuth{
-    login: string,
-    senha?: string,
-    idEmpresa: number
+
+interface login { 
+    id: number,
+    cnpj: string,
+    email: string,
+    senha: string,
+    idEmpresa: string
 }
 
 export default class AuthController {
 
-    static async auth(req: Request, res: Response)
+   static async autentic(req: Request,res: Response)
     {
 
-        const { senha, cnpj, email, login} = req.body
-        const { id } = req.params
-
-        if(!login || !senha) return res.status(500).json({Error: "Existem campos obrigatórios que não foram preenchidos!"})
+        const { senha, idEmpresa, cnpj, email, nome_fantasia} = req.body
+      
+       if(!senha || !idEmpresa) return res.status(500).json({Error: "Existem campos obrigatórios que não foram preenchidos!"})
 
         //verificando se o usuário existe
         try {
             
-            const userExist = await prismaClient.empresa.findUnique({
+            const userExist = await prismaClient.loginEmpresa.findFirst ({
                 
                 where: {
-                    
-                    email: email.userExist,
-                    cnpj: cnpj.userExist
+                    OR: [
+                        {
+                         empresa: {
+                            cnpj
+                         }
+                        },
+                        {
+                            empresa: {
+                                email
+                            }
+                        }
+                    ]
                 }
                 
             })
@@ -41,17 +52,15 @@ export default class AuthController {
             if(!userExist) return res.status(400).send({error: "Usuário não encontrado"})
       
 
-            if(login === login?.email || login === login?.cnpj) {
-
-                if(await bcrypt.compare(senha, login.senha)){
+                if(await bcrypt.compare(senha, userExist.senha)){
                     const data = {
-                        nome: login.nome_fantasia,
-                        idEmpresa: login.id,
+                       // nome:  userExist?.nome_fantasia,
+                        idEmpresa: userExist?.idEmpresa , 
                         type: "COMPANY"
                     }
     
                     //gerando o token 
-                    const token = jwt.sign({id: login.id}, 'secret', {expiresIn: '1d'})
+                    const token = jwt.sign({id: userExist.id}, 'secret', {expiresIn: '1d'})
                     
                   
                     return res.json({data, token})
@@ -59,9 +68,8 @@ export default class AuthController {
                 }else{
                     res.status(500).json({message: "Usuário ou senhas inválida"})
                 }
-            }else{
-                return res.status(400).send({error: "Usuário não encontrado"})
-            }   
+            
+              //  return res.json({ message: "AE"})
          }
 
 
@@ -71,7 +79,6 @@ export default class AuthController {
             return res.status(400).json({error: "Falha na autenticação"})
         }
     }
-
 
     //recuperação de senha
     static async forgot_pass (req: Request, res: Response) {
@@ -124,6 +131,29 @@ export default class AuthController {
             
         } catch (error) {
             console.log(error)
+        }
+    }
+
+    static async auth(req: Request, res: Response) {
+
+        const {senha, idEmpresa} =  req.body
+
+        if(!senha.match(/^(?=.*[A-Z])(?=.*[!#@$%&])(?=.*[0-9])(?=.*[a-z]).{8,15}$/))
+           return res.status(400).json({message: "Senha inválida!"})
+
+           const senhaHash = await bcrypt.hash(senha, 10)
+
+        try {
+            const  User = await AuthCompanyModel.execute({
+               senha: senhaHash,
+               idEmpresa
+              })
+
+             return res.status(201).json({ message: "Empresa cadastrada com sucesso!", User});;
+ 
+        } catch (error: any) {
+            console.log(error)
+
         }
     }
 }

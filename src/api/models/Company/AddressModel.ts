@@ -1,7 +1,7 @@
 import {Request, Response} from "express"
 
 import { EnderecoEmpresa } from "@prisma/client"
-import { prismaClient } from "../../database/prismaClient"
+import { prismaClient } from "../../../database/prismaClient"
 
 interface Data {
     bairro: string,

@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from "express"
 
 import { EnderecoEmpresa } from "@prisma/client"
 import { prismaClient } from "../../../database/prismaClient"
-import AddressModel from "../../models/AddressModel"
+import AddressModel from "../../models/Company/AddressModel"
 
 interface IAddressRegister{ 
     bairro: string,

@@ -15,7 +15,6 @@ model Usuario {
 
   nome                 String   @db.VarChar(180)
   email                String   @db.VarChar(110)
-  senha                String   @db.VarChar(60)
   cpf                  String   @db.VarChar(15)
   data_nascimento      DateTime @db.Date
   tag                  String   @db.VarChar(45)
@@ -216,7 +215,7 @@ model UsuarioIdioma {
 model LoginEmpresa  {
   id Int @id @unique @default(autoincrement()) @db.Int
 
-  login String @db.VarChar(100)
+
   senha String @db.VarChar(60)
   
   empresa   Empresa @relation(fields: [idEmpresa], references: [id])
@@ -228,7 +227,6 @@ model LoginEmpresa  {
 model LoginAdmin { 
   id Int @id @unique @default(autoincrement()) @db.Int
 
-  login String @db.VarChar(100)
   senha String @db.VarChar(60)
 
   administrador   Administrador @relation(fields: [idAdministrador], references: [id])
@@ -240,7 +238,6 @@ model LoginAdmin {
 model LoginUsuario {
   id Int @id @unique @default(autoincrement()) @db.Int
 
-  login String @db.VarChar(100)
   senha String @db.VarChar(60)
 
   usuario   Usuario @relation(fields: [idUsuario], references: [id])
@@ -463,7 +460,6 @@ model Empresa {
 
   cnpj          String  @unique @db.VarChar(14)
   email         String  @unique @db.VarChar(180)
-  senha         String  @db.VarChar(80)
   nome_fantasia String  @db.VarChar(180)
   ativo         Boolean @db.TinyInt
   biografia     String? @db.Text
@@ -752,7 +748,6 @@ model Administrador {
 
   nome  String  @db.VarChar(180)
   email String  @db.VarChar(110)
-  senha String  @db.VarChar(45)
   ativo Boolean @db.TinyInt
   root  Boolean @db.TinyInt
 

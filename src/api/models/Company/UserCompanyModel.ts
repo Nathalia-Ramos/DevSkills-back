@@ -1,12 +1,12 @@
 import {Request, Response} from "express"
 
 import { Empresa } from "@prisma/client"
-import { prismaClient } from "../../database/prismaClient"
+import { LoginEmpresa } from "@prisma/client";
+import { prismaClient } from "../../../database/prismaClient"
 
 interface Data {
     cnpj: string;
     email: string;
-    senha: string;
     nome_fantasia: string;
     idEndereco: number
 }
@@ -16,7 +16,6 @@ export default class UserCompanyModel{
   static async execute({
     cnpj,
     email,
-    senha,
     nome_fantasia,
     idEndereco : idEndereco
   }: Data): Promise<Empresa | boolean> {
@@ -27,7 +26,6 @@ export default class UserCompanyModel{
             data: {
                 cnpj,
                 email,
-                senha,
                 nome_fantasia,
                 ativo: true,
                 idEndereco 
@@ -45,5 +43,7 @@ export default class UserCompanyModel{
     
           return false;
         }
+
+        
       }
     }
