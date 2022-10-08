@@ -10,7 +10,7 @@ export default class SkillController{
 
         if (validateRegex(skill.nome, '^[a-zA-Z ]*$')) {
             try {
-                const newSkill = await SkillModel.execute(skill)
+                const newSkill = await SkillModel.create(skill)
                 return res.status(200).json({message: message.Success, dados: newSkill})
             } catch (error) {
                 console.log(error)

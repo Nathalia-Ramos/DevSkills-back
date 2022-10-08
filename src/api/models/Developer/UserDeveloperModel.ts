@@ -1,50 +1,35 @@
-import { PrismaClient, Usuario, LoginUsuario } from "@prisma/client";
+import { PrismaClient, Usuario, LoginUsuario, UsuarioHabilidade, UsuarioStack, UsuarioTelefone } from "@prisma/client";
 import bcrypt, { compare } from "bcrypt";
 import Jwt from "jsonwebtoken";
+import DeveloperData from "../../../interfaces/Developer";
+import PhoneData from "../../../interfaces/DeveloperPhone";
+import DeveloperStacks from "../../../interfaces/DeveloperStacks";
+import DeveloperSkills from "../../../interfaces/DeveloperSkills";
 
-const prisma = new PrismaClient()
-
-interface UserData {
-  nome: string,
-  email: string,
-  senha: string,
-  cpf: string,
-  data_nascimento: string,
-
-  id_genero: number,
-}
-
-interface LoginDeveloper {
-  login: string,
-  senha: string,
-  id_usuario: number,
-}
+const prisma = new PrismaClient();
 
 export default class UserDeveloperModel {
-
-  static async execute({
+  static async create({
     nome,
     email,
-    senha,
     cpf,
     data_nascimento,
     id_genero,
-  }: UserData): Promise<Usuario | boolean> {
-
+  }: DeveloperData): Promise<Object> {
     try {
       const newDeveloper = await prisma.usuario.create({
         data: {
           nome,
           email,
           cpf,
-          data_nascimento: new Date(),
+          data_nascimento: new Date(data_nascimento),
           ativo: true,
           pontuacao_plataforma: 0,
           tag: "teste",
           genero: {
-            connect:{
+            connect: {
               id: id_genero,
-            }
+            },
           },
         },
       });
@@ -52,61 +37,166 @@ export default class UserDeveloperModel {
       prisma.$disconnect;
 
       return newDeveloper;
-
+      
     } catch (error) {
-      console.error(error);
 
       prisma.$disconnect;
 
-      return false;
+      return { error };
     }
   }
 
+  static async findByCPF(cpf: string) : Promise<Object> {
+    
+    try {
+      const user = await prisma.usuario.findUnique({
+        where:{
+          cpf,
+        }})
 
-  static async createLogin({
+      prisma.$disconnect;
 
-    senha,
+      return { user }
+
+    } catch (error) {
+
+      prisma.$disconnect;
+
+      return { error: error }
+    
+    }
+
+  }
+
+  static async findByEmail(email: string) : Promise<Object> {
+    try {
+      const user = await prisma.usuario.findFirst({
+        where:{
+          email,
+        }})
+
+      prisma.$disconnect;
+
+      return { user }
+
+    } catch (error) {
+
+      prisma.$disconnect;
+
+      return { error: error }
+    
+    }
+  }
+
+  static async relatePhone({
+    ddd,
+    numero,
+    id_tipo,
     id_usuario
-  }: LoginDeveloper): Promise<any | boolean> {
+  } : PhoneData) {
 
+      try {
+        const newDeveloperPhone = await prisma.usuarioTelefone.create({
+          data: {
+            ddd,
+            numero,
+            tipoTelefone: {
+              connect: {
+                id: id_tipo
+              }
+            },
+            usuario:{
+              connect: {
+                id: id_usuario
+              }
+            }
+          },
+        });
+  
+        prisma.$disconnect;
+  
+        return newDeveloperPhone;
+  
+      } catch (error) {
+        console.error(error);
+  
+        prisma.$disconnect;
+  
+        return { error: error };
+      }
+    }
+
+  static async relateStacks({
+    id_usuario,
+    id_stack
+  } : DeveloperStacks) : Promise<Object> {
+
+    try {
+      
+      const newDeveloperStack = await prisma.usuarioStack.create({
+        data:{
+          idUsuario: id_usuario,
+          idStack: id_stack,
+        }});
+
+        prisma.$disconnect;
+
+        return newDeveloperStack;
+
+    } catch (error) {
+
+      prisma.$disconnect;
+
+      return { error: error };
+    }
+
+  }
+
+  static async relateSkills({
+    id_usuario,
+    id_habilidade,
+  }: DeveloperSkills) : Promise<Object> {
+
+    try {
+      
+      const newDeveloperSkill = await prisma.usuarioHabilidade.create({
+        data:{
+          idUsuario: id_usuario,
+          idHabilidade: id_habilidade,
+        }});
+
+        prisma.$disconnect;
+
+        return newDeveloperSkill;
+
+    } catch (error) {
+      
+      prisma.$disconnect;
+
+      return { error: error };
+
+    }
+
+  }
+
+  static async createLogin(senha: string, id_usuario: number) : Promise<Object> {
     try {
       const newLogin = await prisma.loginUsuario.create({
         data: {
-     
           senha,
-          idUsuario: id_usuario,
+          idUsuario: id_usuario
         },
       });
 
       prisma.$disconnect;
 
       return newLogin;
-
+      
     } catch (error) {
-      console.error(error);
 
       prisma.$disconnect;
 
-      return false;
+      return { error: error };
     }
   }
-
-  static async findLogin(login : string) {
-
-    try {
-      const userLogin = await prisma.loginUsuario.findFirst({
-        where: {
-        //  login: login
-        }
-      })
-
-      return userLogin
-
-    } catch (error) {
-      console.log(error)
-    }
-
-  }
-
-
 }

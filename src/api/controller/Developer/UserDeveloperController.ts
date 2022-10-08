@@ -1,51 +1,26 @@
-import UserDeveloperModel from "../../models/Developer/UserDeveloperModel";
-import DeveloperPhoneModel from "../../models/Phone/DeveloperPhoneModel"
+import DeveloperService from "../../../services/developer/DeveloperService"
 import CPFValidator from "../../../helpers/CPFValidator"
-import validateRegex from "../../../utils/RegexValidate";
-import message from "../../../config/ReturnMessages";
 import { Request, Response } from "express";
-import bcrypt from "bcrypt";
-import Jwt from "jsonwebtoken";
-
-interface UserData {
-    nome: string,
-    email: string,
-    senha: string,
-    cpf: string,
-    data_nascimento: string,
-
-    id_genero: number,
-
-    // ddd: string,
-    // numero: string,
-    // id_tipo_telefone: number,
-}
-
+import RegisterDeveloperData from "../../../interfaces/RegisterDeveloper";
+ 
 export default class UserDeveloperController {
-    static async create(req: Request, res: Response) {
+   static async create(req: Request, res: Response) {
+ 
+       let user : RegisterDeveloperData = req.body
+ 
+       const answer = await DeveloperService.create(user)
 
-        let user: UserData = req.body
+       res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {message: answer.message})
 
-        const password = user.senha
+   }
 
-        // uma maiuscula, uma minuscula, um especial, min 8 e max 15, com NUMEROS
-        if (validateRegex(password, '^(?=.*[A-Z])(?=.*[!#@$%&])(?=.*[0-9])(?=.*[a-z]).{8,15}$')) {
+   static async auth(req: Request, res: Response) {
 
-            user.senha = await bcrypt.hash(password, 10)
+    const login = req.body
 
-            try {
-                const newUser = await UserDeveloperModel.execute(user);
+    const answer = await DeveloperService.auth(login)
 
-                // const userPhone = await DeveloperPhoneModel.execute()
+    res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {message: answer.message})
 
-                return res.status(200).json({ message: message.Success, data: newUser })
-
-            } catch (error) {
-                console.log(error)
-            }
-
-        } else {
-            return res.json({ message: message.PasswordError })
-        }
-    }
+   }
 }
