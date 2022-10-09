@@ -1,5 +1,4 @@
 import RegisterDeveloperData from "../../interfaces/RegisterDeveloper";
-import LoginDeveloper from "../../interfaces/LoginDeveloper";
 import DeveloperPhoneData from "../../interfaces/DeveloperPhone";
 import DeveloperModel from "../../api/models/Developer/UserDeveloperModel";
 import DeveloperPhoneModel from "../../api/models/Phone/DeveloperPhoneModel";
@@ -15,14 +14,12 @@ export default class DeveloperService {
     
     const userExist = await DeveloperModel.findByCPF(userInfo.cpf);
 
-    if (Object.values(userExist)[0] == null) {
+    if (userExist == null) {
       if (userInfo.nome, userInfo.email, userInfo.cpf, userInfo.data_nascimento) {
         if (userInfo.senha == userInfo.confirmar_senha) {
 
           // uma maiuscula, uma minuscula, um especial, min 8 e max 15, com NUMEROS
           if (validateRegex(userInfo.senha, "^(?=.*[A-Z])(?=.*[!#@$%&])(?=.*[0-9])(?=.*[a-z]).{8,15}$")) {
-            // email com no min 3 caracteres antes do @ e no min 2 caracteres apos os .
-            if (validateRegex(userInfo.email, "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]{3,90}@[a-zA-Z0-9](?:[a-zA-Z0-9-]{2,61}[a-zA-Z0-9])+\.(?:\.?[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9]){1,10})*$")) {
   
               const hashPassword = await bcrypt.hash(userInfo.senha, 10);
       
@@ -39,7 +36,7 @@ export default class DeveloperService {
 
                 // console.log({ usuario: newDeveloper })
                 
-                const developerID = Object.values(newDeveloper)[0];
+                const developerID = newDeveloper.id;
       
                 const PhoneData = {
                   ddd: userInfo.ddd,
@@ -101,12 +98,6 @@ export default class DeveloperService {
                   statusCode: 401,
                 };
               }
-              } else {
-                return {
-                  error: message.EmailError,
-                  statusCode: 401,
-                };
-              }
             } else {
               return {
                 error: message.PasswordError,
@@ -132,20 +123,35 @@ export default class DeveloperService {
       }
   }
 }
-  static async auth(loginInfo: LoginDeveloper) {
+  static async auth(login: string, senha: string) {
 
-    const userExist = await DeveloperModel.findByEmail(loginInfo.login);
+    const userExist = await DeveloperModel.findByEmail(login);
 
-    if (Object.values(userExist)[0] != null) {
-      const DeveloperSenha = Object.keys(userExist).values()
+    if (userExist != null) {
+      const developerLogin = await DeveloperModel.findLogin(userExist.id)
 
-      console.log(DeveloperSenha)
-
-
-      return {
-        message: message.Success,
-        statusCode: 201,
-      }
+      if (developerLogin) {
+        if (await bcrypt.compare(senha, developerLogin?.senha)) {
+          const token = Jwt.sign({id: userExist.id}, 'secret', {expiresIn: '1d'})
+          
+          return {
+            message: message.UserAuthorized,
+            token: token,
+            userType: "DEVELOPER",
+            statusCode: 200,
+          }
+        } else {
+          return {
+            message: message.PasswordError,
+            statusCode: 401,
+          }
+        }
+      } else {
+        return {
+          error: message.UserNotFound,
+          statusCode: 401,
+        }
+      } 
   } else {
     return {
       error: message.UserNotFound,

@@ -3,6 +3,7 @@ export default {
         UserAlreadyExist: "O usuário já existe no sistema",
         UserError: "O usuário não pode ser criado.",
         UserCreated: "Usuário criado com sucesso.",
+        UserAuthorized: "Usuário autenticado com sucesso.",
 
         CPFError: "CPF inválido!",
         CNPJError: "CNPJ inválido!",
