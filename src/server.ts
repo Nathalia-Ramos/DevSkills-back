@@ -19,10 +19,12 @@ import GenderRoutes from "../routes/CommonRoutes/GenderRoutes"
 import DeveloperRoutes from "../routes/DeveloperRoutes/UserDeveloperRoutes";
 import StackRoutes from "../routes/CommonRoutes/StacksRoutes"
 import SkillRoutes from "../routes/CommonRoutes/SkillsRoutes"
+import PhoneRoutes from "../routes/CompanyRoutes/PhoneCompanyRoutes"
+import UserCompanyController from "../routes/CompanyRoutes/find"
+import AuthRoutes from "../routes/CompanyRoutes/AuthRoutes"
 
 
-
-app.use('/user', UserRoutes)
+app.use('/company', UserRoutes)
 app.use('/address', AddresRoutes)
 app.use('/forgot_pass', ForgetPassword)
 app.use('/reset', ResetPass)
@@ -30,9 +32,12 @@ app.use('/developer', DeveloperRoutes)
 app.use('/gender', GenderRoutes)
 app.use('/stack', StackRoutes)
 app.use('/skill', SkillRoutes)
+app.use('/phone', PhoneRoutes)
+app.use('/find', UserCompanyController)
+app.use('/auth', AuthRoutes)
 
 
-app.listen(8080, () => {
+app.listen(3030, () => {
     console.log("Server running")
 })
 

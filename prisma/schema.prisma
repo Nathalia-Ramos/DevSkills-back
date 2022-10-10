@@ -222,9 +222,6 @@ model UsuarioIdioma {
 
 // FIM - Linguagens
 
-
-
-
 //LAYER Endereço
 model Estado {
   id Int @id @unique @default(autoincrement()) @db.Int
@@ -468,12 +465,11 @@ model Empresa {
   @@map("tblempresa")
 }
 
-model LoginEmpresa  {
+model LoginEmpresa {
   id Int @id @unique @default(autoincrement()) @db.Int
 
-
   senha String @db.VarChar(60)
-  
+
   empresa   Empresa @relation(fields: [idEmpresa], references: [id])
   idEmpresa Int     @map("id_empresa") @db.Int
 
@@ -753,8 +749,8 @@ model Administrador {
 
   @@map("tbladministrador")
 }
- 
-model LoginAdmin { 
+
+model LoginAdmin {
   id Int @id @unique @default(autoincrement()) @db.Int
 
   senha String @db.VarChar(60)

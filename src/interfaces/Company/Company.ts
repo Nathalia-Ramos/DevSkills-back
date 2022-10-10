@@ -4,17 +4,21 @@ export default interface CompanyData {
     senha: string,
     confirmar_senha: string,
     nome_fantasia: string,
+  
 
     ddd: string,
     numero_telefone: string,
-    id_tipo_telefone: number,
 
-    estado: string,
-    cidade: string,
+
+    estado: any,
+    nome_cidade: any,
     bairro: string,
     logradouro: string,
     numero_rua: string,
     complemento?: string,
     cep: string
+
+    idEndereco: number
     
 }
+
