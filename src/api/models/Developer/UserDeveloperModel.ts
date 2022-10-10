@@ -45,9 +45,9 @@ export default class UserDeveloperModel {
 
   static async findByEmail(email: string) : Promise<Usuario | null> {
     return await prisma.usuario.findFirst({
-        where:{
-          email,
-        }})    
+      where: {
+        email,
+      }})    
     }
 
   static async relatePhone({
@@ -102,10 +102,10 @@ export default class UserDeveloperModel {
 
   }
 
-  static async createLogin(senha: string, id_usuario: number) : Promise<LoginUsuario> {
+  static async createLogin(password: string, id_usuario: number) : Promise<LoginUsuario> {
       return await prisma.loginUsuario.create({
         data: {
-          senha,
+          senha: password,
           idUsuario: id_usuario
         },
       });   
@@ -118,4 +118,16 @@ export default class UserDeveloperModel {
         }
       })
   }
+
+  static async updatePassword(id: number, password : string) : Promise<LoginUsuario> {
+    return await prisma.loginUsuario.update({
+      data:{
+        senha: password,
+      },
+      where: {
+        id: id
+      }
+    })
+  } 
+  
 }

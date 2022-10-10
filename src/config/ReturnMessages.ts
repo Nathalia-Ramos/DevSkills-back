@@ -11,6 +11,12 @@ export default {
         EmailError: "E-mail inválido!",
         PasswordError: "Senha inválida",
         ConfirmPassError: "As senhas não conferem.", 
+        NameNotAText: "Nome deve conter apenas letras.",
+
+        EmailSent: "Email enviado com as informações necessárias!",
+        NewPassword: "Uma nova senha foi enviada para o e-mail especificado.",
+
+        ErrorNewPass: "Ocorreu um erro ao redefinir a senha.",
 
         MissingFields: "Existem campos obrigatórios que não foram preenchidos.",
 

@@ -23,7 +23,13 @@ export default class UserDeveloperController {
 
    }
 
-   static async forgotPass(req: Request, res: Response) {
+   static async sendPassMail(req: Request, res: Response) {
     
-   }
+    const { email } = req.body
+    
+    const answer = await DeveloperService.sendMail(email)
+    
+    res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {message: answer.message})
+
+    }
 }
