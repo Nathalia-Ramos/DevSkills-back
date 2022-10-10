@@ -18,4 +18,14 @@ export default class UserCompanyController{
        return res.status(201).json(users)
     } 
 
+    static async sendPassMail(req: Request, res: Response) {
+    
+        const { email } = req.body
+        
+        const resposta = await CompanyService.sendMail(email)
+
+        return res.status(200).json({resposta })
+
+    }
+
 }

@@ -1,17 +1,14 @@
-import {Request, Response} from "express"
+
 import AddressData from "../../../interfaces/Company/Address" 
-import { Empresa, EmpresaTelefone, prisma } from "@prisma/client"
-import { EnderecoEmpresa } from "@prisma/client"
+import { Empresa } from "@prisma/client"
 import CityData from "../../../interfaces/Company/City"
-import { Estado } from "@prisma/client"
-import { Cidade } from "@prisma/client"
 import { LoginEmpresa } from "@prisma/client"
 import StateData from "../../../interfaces/Company/State"
 import { prismaClient } from "../../../database/prismaClient"
 import CompanyUser from "../../../interfaces/Company/CompanyUser";
 import CompanyPhoneData from "../../../interfaces/Company/CompanyPhone";
 import LoginData from "../../../interfaces/Login"
-import { equal } from "assert"
+
 
 export default class UserCompanyModel{
   
@@ -225,39 +222,36 @@ export default class UserCompanyModel{
       }
 
 
-    static async findIDLogin(id_empresa: number) : Promise<any | null> {
+    static async findIDLogin(id_empresa: number) : Promise<LoginEmpresa | null> {
 
-      try {
-        
-        const find = await prismaClient.loginEmpresa.findFirstOrThrow({
+        return await prismaClient.loginEmpresa.findFirst({
           where:{
-             empresa: {
-              id: id_empresa
-             }
+             idEmpresa: id_empresa
           }
         })
-        return find
-
-      } catch (error) {
-        
-      }
 
     }
 
-    static async findEmailCompany (email: string): Promise<any> {
-      try {
-        const findEmail = await prismaClient.empresa.findUnique({
+    static async findEmailCompany (email: string): Promise<Empresa | null> {
+      
+        return await prismaClient.empresa.findFirst({
           where: {
             email
           }
         })
             
-          return findEmail
-        
-      }catch (error) {
-        
-      }
-    
 }
+
+  static async updatePassword(id: number, senha : string) : Promise<LoginEmpresa> {
+      return await prismaClient.loginEmpresa.update({
+        data:{
+          senha: senha,
+        },
+        where: {
+          id: id
+        }
+      })
+    } 
+
 
 }

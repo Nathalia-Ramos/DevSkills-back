@@ -1,6 +1,9 @@
 import CompanyUser from "../../interfaces/Company/CompanyUser";
 import UserCompanyModel from "../../api/models/Company/UserCompanyModel";
 import bcrypt, { compare } from "bcrypt"
+import { prismaClient } from "../../database/prismaClient";
+import generator from "generate-password"
+import nodemailer from "nodemailer"
 
 
 export default class CompanyService {
@@ -11,7 +14,7 @@ export default class CompanyService {
         if (userExist == null) {
         if(user.nome_fantasia, user.cnpj, user.email, user.senha, user.confirmar_senha){
                 if (user.cnpj.length > 14 || user.cnpj.length < 14) return { error: "CNPJ inválido"}; {
-                    if(user.senha != user.confirmar_senha) return { error: "As senhas não combinam"};{
+                    if(user.senha != user.confirmar_senha) return { error: "As senhas não combinam"}; {
                         if(!user.senha?.match(/^(?=.*[A-Z])(?=.*[!#@$%&])(?=.*[0-9])(?=.*[a-z]).{8,15}$/)) return { error: "Senha inválida"};{
 
                             const State = {
@@ -118,4 +121,58 @@ export default class CompanyService {
        }
     }
 
+    static async sendMail(email: string) {
+
+        const userExist = await UserCompanyModel.findEmailCompany(email);
+    
+        if (userExist != null) {
+    
+          const loginUser = await UserCompanyModel.findIDLogin(userExist.id)
+    
+          if (loginUser) {
+            
+                  const newPassword = generator.generate({
+                    length: 10,
+                    numbers: true,
+                    symbols: true,
+                    uppercase: true,
+                    lowercase: true
+                  })
+                  
+                  const transporter = nodemailer.createTransport({
+                    host: "smtp.gmail.com",
+                    port: 465,
+                    secure: true,
+                    auth: {
+                      user: 'skillhunters.devskills@gmail.com',
+                      pass: 'sgxlqcracqcwqyut',
+                    }
+                  })
+            
+                  const info = await transporter.sendMail({
+                    from: "DevSkills <skillhunters.devskills@gmail.com>",
+                    to: userExist.email,
+                    subject: "Nova Senha",
+                    html: "Sua nova senha é: " + newPassword,
+                  })
+
+                  const hashPassword = await bcrypt.hash(newPassword, 10);
+
+                  try { 
+                      
+                      await UserCompanyModel.updatePassword(loginUser.id, hashPassword)
+                    
+                      return newPassword;
+
+                  } catch (error) {
+                      console.log(error)
+                  }
+              
+                }
+
+
+            
+        }
+
+    }
 }

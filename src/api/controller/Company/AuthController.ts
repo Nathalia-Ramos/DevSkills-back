@@ -11,23 +11,26 @@ export default class AuthController {
 
         const{login, senha} = req.body
 
-    
         const userExist = await UserCompanyModel.findEmailCompany(login)
-
+        console.log(userExist)
+        
         if(userExist != null) {
-            const CompanyLogin = await UserCompanyModel.findIDLogin(userExist.empresa)
-              if(CompanyLogin)
-                if(await bcrypt.compare(senha, CompanyLogin.senha)){
-                }
-                const data = {
-                    nome: userExist?.nome_fantasia,
-                    empresa: userExist.empresa,
-                    type: "COMPANY"
-                }
-                    const token = jwt.sign({id: userExist?.id}, 'secret', {expiresIn: '1d'})
-                    
-                    return res.json({data, token})
-                }
+            const CompanyLogin = await UserCompanyModel.findIDLogin(userExist.id)
+            console.log(CompanyLogin)
+            if (CompanyLogin != null) {
+                    if(await bcrypt.compare(senha, CompanyLogin.senha)){
+                        const data = {
+                            nome: userExist?.nome_fantasia,
+                            idEmpresa: userExist.id,
+                            type: "COMPANY"
+                        }
+                            const token = jwt.sign({id: userExist?.id}, 'secret', {expiresIn: '1d'})
+                            
+                            return res.json({data, token})
+                        }            
+                    }
+            }
+
   
     }
 }
