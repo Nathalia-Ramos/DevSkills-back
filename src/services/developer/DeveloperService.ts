@@ -158,6 +158,8 @@ export default class DeveloperService {
     if (userExist != null) {
       const developerLogin = await DeveloperModel.findLogin(userExist.id)
 
+      console.log(developerLogin)
+
       if (developerLogin) {
         if (await bcrypt.compare(senha, developerLogin?.senha)) {
           const token = Jwt.sign({id: userExist.id}, 'secret', {expiresIn: '1d'})
@@ -217,13 +219,15 @@ export default class DeveloperService {
         
               const info = await transporter.sendMail({
                 from: "DevSkills <skillhunters.devskills@gmail.com>",
-                to: 'leilarosapereira19@gmail.com',
+                to: userExist.email,
                 subject: "Nova Senha",
                 text: "Sua nova senha é: " + newPassword,
               })
+
+              const hashPassword = await bcrypt.hash(newPassword, 10);
               
               try {
-                await DeveloperModel.updatePassword(loginUser?.id, newPassword);
+                await DeveloperModel.updatePassword(loginUser?.id, hashPassword);
 
                   return {
                     message: message.NewPassword,

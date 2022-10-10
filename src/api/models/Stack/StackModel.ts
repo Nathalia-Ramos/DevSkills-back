@@ -10,27 +10,15 @@ export default class StackModel {
 
   static async execute({
     nome,
-  }: StackData): Promise<Stack | boolean> {
+  }: StackData): Promise<Stack> {
 
-    try {
-      const newStack = await prisma.stack.create({
+      return await prisma.stack.create({
         data: {
           nome,
+          
         },
       });
 
-      prisma.$disconnect;
-
-      return newStack;
-
-    } catch (error) {
-      console.error(error);
-
-      prisma.$disconnect;
-
-      return false;
-
-    }
   }
 
   static async showAll() {
