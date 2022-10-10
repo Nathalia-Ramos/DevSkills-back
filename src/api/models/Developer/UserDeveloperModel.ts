@@ -1,112 +1,133 @@
-import { PrismaClient, Usuario, LoginUsuario } from "@prisma/client";
+import { PrismaClient, Usuario, LoginUsuario, UsuarioHabilidade, UsuarioStack, UsuarioTelefone } from "@prisma/client";
 import bcrypt, { compare } from "bcrypt";
 import Jwt from "jsonwebtoken";
+import DeveloperData from "../../../interfaces/Developer";
+import PhoneData from "../../../interfaces/DeveloperPhone";
+import DeveloperStacks from "../../../interfaces/DeveloperStacks";
+import DeveloperSkills from "../../../interfaces/DeveloperSkills";
 
-const prisma = new PrismaClient()
-
-interface UserData {
-  nome: string,
-  email: string,
-  senha: string,
-  cpf: string,
-  data_nascimento: string,
-
-  id_genero: number,
-}
-
-interface LoginDeveloper {
-  login: string,
-  senha: string,
-  id_usuario: number,
-}
+const prisma = new PrismaClient();
 
 export default class UserDeveloperModel {
-
-  static async execute({
+  static async create({
     nome,
     email,
-    senha,
     cpf,
     data_nascimento,
     id_genero,
-  }: UserData): Promise<Usuario | boolean> {
-
-    try {
-      const newDeveloper = await prisma.usuario.create({
+  }: DeveloperData): Promise<Usuario> {
+      return await prisma.usuario.create({
         data: {
           nome,
           email,
           cpf,
-          data_nascimento: new Date(),
+          data_nascimento: new Date(data_nascimento),
           ativo: true,
           pontuacao_plataforma: 0,
           tag: "teste",
           genero: {
-            connect:{
+            connect: {
               id: id_genero,
-            }
+            },
           },
         },
       });
-
-      prisma.$disconnect;
-
-      return newDeveloper;
-
-    } catch (error) {
-      console.error(error);
-
-      prisma.$disconnect;
-
-      return false;
-    }
   }
 
+  static async findByCPF(cpf: string) : Promise<Usuario | null> {
+  
+      return await prisma.usuario.findUnique({
+        where:{
+          cpf,
+        }})
 
-  static async createLogin({
+  }
 
-    senha,
+  static async findByEmail(email: string) : Promise<Usuario | null> {
+    return await prisma.usuario.findFirst({
+      where: {
+        email,
+      }})    
+    }
+
+  static async relatePhone({
+    ddd,
+    numero,
+    id_tipo,
     id_usuario
-  }: LoginDeveloper): Promise<any | boolean> {
+  } : PhoneData) : Promise<UsuarioTelefone> {
 
-    try {
-      const newLogin = await prisma.loginUsuario.create({
+      return await prisma.usuarioTelefone.create({
         data: {
-     
-          senha,
-          idUsuario: id_usuario,
+          ddd,
+          numero,
+          tipoTelefone: {
+            connect: {
+              id: id_tipo
+            }
+          },
+          usuario:{
+            connect: {
+              id: id_usuario
+            }
+          }
         },
       });
-
-      prisma.$disconnect;
-
-      return newLogin;
-
-    } catch (error) {
-      console.error(error);
-
-      prisma.$disconnect;
-
-      return false;
+        
     }
+
+  static async relateStacks({
+    id_usuario,
+    id_stack
+  } : DeveloperStacks) : Promise<UsuarioStack> {
+      
+      return await prisma.usuarioStack.create({
+        data:{
+          idUsuario: id_usuario,
+          idStack: id_stack,
+        }});
+
   }
 
-  static async findLogin(login : string) {
+  static async relateSkills({
+    id_usuario,
+    id_habilidade,
+  }: DeveloperSkills) : Promise<UsuarioHabilidade> {
 
-    try {
-      const userLogin = await prisma.loginUsuario.findFirst({
-        where: {
-        //  login: login
+      return await prisma.usuarioHabilidade.create({
+        data:{
+          idUsuario: id_usuario,
+          idHabilidade: id_habilidade,
+        }});
+
+  }
+
+  static async createLogin(password: string, id_usuario: number) : Promise<LoginUsuario> {
+      return await prisma.loginUsuario.create({
+        data: {
+          senha: password,
+          idUsuario: id_usuario
+        },
+      });   
+  }
+
+  static async findLogin(id_usuario: number) : Promise<LoginUsuario | null> {
+      return await prisma.loginUsuario.findFirst({
+        where:{
+          idUsuario: id_usuario
         }
       })
-
-      return userLogin
-
-    } catch (error) {
-      console.log(error)
-    }
-
   }
 
-
+  static async updatePassword(id: number, password : string) : Promise<LoginUsuario> {
+    return await prisma.loginUsuario.update({
+      data:{
+        senha: password,
+      },
+      where: {
+        id: id
+      }
+    })
+  } 
+  
 }

@@ -1,51 +1,35 @@
-import UserDeveloperModel from "../../models/Developer/UserDeveloperModel";
-import DeveloperPhoneModel from "../../models/Phone/DeveloperPhoneModel"
-import CPFValidator from "../../../helpers/CPFValidator"
-import validateRegex from "../../../utils/RegexValidate";
-import message from "../../../config/ReturnMessages";
+import DeveloperService from "../../../services/developer/DeveloperService"
 import { Request, Response } from "express";
-import bcrypt from "bcrypt";
-import Jwt from "jsonwebtoken";
-
-interface UserData {
-    nome: string,
-    email: string,
-    senha: string,
-    cpf: string,
-    data_nascimento: string,
-
-    id_genero: number,
-
-    // ddd: string,
-    // numero: string,
-    // id_tipo_telefone: number,
-}
-
+import RegisterDeveloperData from "../../../interfaces/RegisterDeveloper";
+ 
 export default class UserDeveloperController {
-    static async create(req: Request, res: Response) {
+   static async create(req: Request, res: Response) {
+ 
+       let user : RegisterDeveloperData = req.body
+ 
+       const answer = await DeveloperService.create(user)
 
-        let user: UserData = req.body
+       res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {message: answer.message})
 
-        const password = user.senha
+   }
 
-        // uma maiuscula, uma minuscula, um especial, min 8 e max 15, com NUMEROS
-        if (validateRegex(password, '^(?=.*[A-Z])(?=.*[!#@$%&])(?=.*[0-9])(?=.*[a-z]).{8,15}$')) {
+   static async auth(req: Request, res: Response) {
 
-            user.senha = await bcrypt.hash(password, 10)
+    const { login, senha } = req.body
 
-            try {
-                const newUser = await UserDeveloperModel.execute(user);
+    const answer = await DeveloperService.auth(login, senha)
 
-                // const userPhone = await DeveloperPhoneModel.execute()
+    res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {message: answer.message, type: answer.userType, token: answer.token})
 
-                return res.status(200).json({ message: message.Success, data: newUser })
+   }
 
-            } catch (error) {
-                console.log(error)
-            }
+   static async sendPassMail(req: Request, res: Response) {
+    
+    const { email } = req.body
+    
+    const answer = await DeveloperService.sendMail(email)
+    
+    res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {message: answer.message})
 
-        } else {
-            return res.json({ message: message.PasswordError })
-        }
     }
 }

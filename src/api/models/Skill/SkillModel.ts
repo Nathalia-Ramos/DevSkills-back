@@ -1,20 +1,15 @@
 import { PrismaClient, Habilidade } from "@prisma/client";
+import SkillData from "../../../interfaces/Skill";
 
 const prisma = new PrismaClient()
 
-interface SkillData {
-    nome: string,
-    id_stack: number,
-    id_habilidade_tipo: number,
-}
-
 export default class SkillModel{
       
-    static async execute({
+    static async create({
         nome,
         id_stack,
         id_habilidade_tipo
-    }: SkillData) : Promise<Habilidade | boolean> {
+    }: SkillData) : Promise<Object> {
         
         try {
           const newStack = await prisma.habilidade.create({
@@ -40,11 +35,11 @@ export default class SkillModel{
           return newStack;
           
         } catch (error) {
-          console.error(error);
     
           prisma.$disconnect;
     
-          return false;
+          return { error: error };
+        
         }
       }
 
