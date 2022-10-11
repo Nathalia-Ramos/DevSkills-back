@@ -25,6 +25,9 @@ import AuthRoutes from "../routes/CompanyRoutes/AuthRoutes"
 
 
 app.use('/company', UserRoutes)
+import AdminRoutes from "../routes/AdminRoutes/UserAdminRoutes"
+
+app.use('/user', UserRoutes)
 app.use('/address', AddresRoutes)
 app.use('/forgot_pass', ForgetPassword)
 app.use('/reset', ResetPass)
@@ -35,6 +38,7 @@ app.use('/skill', SkillRoutes)
 app.use('/phone', PhoneRoutes)
 app.use('/find', UserCompanyController)
 app.use('/auth', AuthRoutes)
+app.use('/admin', AdminRoutes)
 
 
 app.listen(8080, () => {
