@@ -15,7 +15,7 @@ const login = req.body
 
         const findUser = await UserDeveloperModel.findLogin(login)
 
-        if(await bcrypt.compare(password, findUser.senha)) {
+      /*  if(await bcrypt.compare(password, findUser.senha)) {
             const data = {
                 nome: login.nome,
                 idUsuario: login.id,
@@ -25,6 +25,6 @@ const login = req.body
         const token = Jwt.sign({id: login.id}, 'secret', {expiresIn: '1d'})
 
         res.status(200).json({ data: data, token: token})
-        }
+        }*/
     }
 }

@@ -3,6 +3,6 @@ import UserCompanyController from "../../src/api/controller/Company/UserCompanyC
 
 const router = Router()
 
-router.post('/', UserCompanyController.sendPassMail)
+router.post('/', UserCompanyController.execute)
 
 export default router

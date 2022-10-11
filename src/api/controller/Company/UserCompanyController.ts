@@ -1,50 +1,31 @@
 import {Request, Response} from "express"
 import UserCompanyModel from "../../models/Company/UserCompanyModel"
-import { Empresa, EnderecoEmpresa } from "@prisma/client"
-import CompanyData from "../../../interfaces/Company"
-import { LoginEmpresa } from "@prisma/client"
-import { prismaClient } from "../../../database/prismaClient"
 import bcrypt, { compare } from "bcrypt";
+import CompanyData from "../../../interfaces/Company/Company"
+import CompanyService from "../../../services/CompanyService/CompanyServices";
 
-interface ICompanyRegister{
-    cnpj: number;
-    email: string;
-    nome_fantasia: string;
-    senha: string,
-    confirmarSenha: string;
-    idEndereco: number
-}
+
 
 export default class UserCompanyController{
 
     static async execute(req: Request, res: Response){
         
-        const {cnpj, email, nome_fantasia, idEndereco, senha, confirmar_senha} =  req.body
+       const user :  CompanyData = req.body
 
-        if(!cnpj || !email || !nome_fantasia|| !idEndereco || !senha ) 
-          res.status(500).json({message: "Existem campos obrigatórios que não foram preenchidos!"})
-            
-         //valida o tamanho do cnpj
-        if (cnpj.length > 14 || cnpj.length < 14) return res.status(400).json({message: "CNPJ inválido"})
+
+       const users = await CompanyService.createCompany(user)
+
+       return res.status(201).json(users)
+    } 
+
+    static async sendPassMail(req: Request, res: Response) {
+    
+        const { email } = req.body
         
-        if(!senha.match(/^(?=.*[A-Z])(?=.*[!#@$%&])(?=.*[0-9])(?=.*[a-z]).{8,15}$/))
-           return res.status(400).json({message: "Senha inválida!"})
+        const resposta = await CompanyService.sendMail(email)
 
-            try {
+        return res.status(200).json({resposta })
 
-                 const senhaHash = await bcrypt.hash(senha, 10)
-                  
-                  const newUser = await UserCompanyModel.execute({
-                     cnpj,
-                     email,
-                     idEndereco,
-                     nome_fantasia
-                  })
-
-                  return res.status(201).json({ message: "Empresa cadastrada com sucesso!", newUser});;
-      
-              } catch (error: any ) {
-                  return res.send("Não foi possivel inserir!!!")
-              }
     }
+
 }

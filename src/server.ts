@@ -19,6 +19,12 @@ import GenderRoutes from "../routes/CommonRoutes/GenderRoutes"
 import DeveloperRoutes from "../routes/DeveloperRoutes/UserDeveloperRoutes";
 import StackRoutes from "../routes/CommonRoutes/StacksRoutes"
 import SkillRoutes from "../routes/CommonRoutes/SkillsRoutes"
+import PhoneRoutes from "../routes/CompanyRoutes/PhoneCompanyRoutes"
+import UserCompanyController from "../routes/CompanyRoutes/find"
+import AuthRoutes from "../routes/CompanyRoutes/AuthRoutes"
+
+
+app.use('/company', UserRoutes)
 import AdminRoutes from "../routes/AdminRoutes/UserAdminRoutes"
 
 app.use('/user', UserRoutes)
@@ -29,6 +35,9 @@ app.use('/developer', DeveloperRoutes)
 app.use('/gender', GenderRoutes)
 app.use('/stack', StackRoutes)
 app.use('/skill', SkillRoutes)
+app.use('/phone', PhoneRoutes)
+app.use('/find', UserCompanyController)
+app.use('/auth', AuthRoutes)
 app.use('/admin', AdminRoutes)
 
 
