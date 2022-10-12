@@ -1,5 +1,5 @@
 import { PrismaClient, Habilidade } from "@prisma/client";
-import SkillData from "../../../interfaces/Skill";
+import SkillData from "../../../interfaces/Developer/Skill";
 
 const prisma = new PrismaClient()
 

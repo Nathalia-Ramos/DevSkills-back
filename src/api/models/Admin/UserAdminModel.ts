@@ -1,7 +1,7 @@
 import { PrismaClient, Administrador, LoginAdmin } from "@prisma/client";
 import bcrypt, { compare } from "bcrypt";
 import JWT from "jsonwebtoken";
-import AdminData from "../../../interfaces/Admin";
+import AdminData from "../../../interfaces/Admin/Admin";
 
 const prisma = new PrismaClient();
 

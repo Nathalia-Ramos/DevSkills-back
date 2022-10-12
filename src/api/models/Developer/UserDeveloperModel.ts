@@ -3,8 +3,8 @@ import bcrypt, { compare } from "bcrypt";
 import Jwt from "jsonwebtoken";
 import DeveloperData from "../../../interfaces/Developer";
 import PhoneData from "../../../interfaces/DeveloperPhone";
-import DeveloperStacks from "../../../interfaces/DeveloperStacks";
-import DeveloperSkills from "../../../interfaces/DeveloperSkills";
+import DeveloperStacks from "../../../interfaces/Developer/DeveloperStacks";
+import DeveloperSkills from "../../../interfaces/Developer/DeveloperSkills";
 
 const prisma = new PrismaClient();
 

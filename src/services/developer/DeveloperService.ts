@@ -1,5 +1,4 @@
-import RegisterDeveloperData from "../../interfaces/RegisterDeveloper";
-import DeveloperPhoneData from "../../interfaces/DeveloperPhone";
+import RegisterDeveloperData from "../../interfaces/Developer/RegisterDeveloper";
 import DeveloperModel from "../../api/models/Developer/UserDeveloperModel";
 import DeveloperPhoneModel from "../../api/models/Phone/DeveloperPhoneModel";
 import bcrypt from "bcrypt";

@@ -7,7 +7,7 @@ import StateData from "../../../interfaces/Company/State"
 import { prismaClient } from "../../../database/prismaClient"
 import CompanyUser from "../../../interfaces/Company/CompanyUser";
 import CompanyPhoneData from "../../../interfaces/Company/CompanyPhone";
-import LoginData from "../../../interfaces/Login"
+import LoginData from "../../../interfaces/Company/Login"
 
 
 export default class UserCompanyModel{

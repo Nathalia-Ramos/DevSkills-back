@@ -2,7 +2,7 @@ import bcrypt, { compare } from "bcrypt";
 import JWT from "jsonwebtoken";
 import message from "../../config/ReturnMessages";
 import AdminModel from "../../api/models/Admin/UserAdminModel";
-import AdminData from "../../interfaces/Admin";
+import AdminData from "../../interfaces/Admin/Admin";
 import validateRegex from "../../utils/RegexValidate";
 
 export default class AdminService {

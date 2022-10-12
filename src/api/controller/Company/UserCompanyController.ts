@@ -2,7 +2,7 @@ import {Request, Response} from "express"
 import UserCompanyModel from "../../models/Company/UserCompanyModel"
 import bcrypt, { compare } from "bcrypt";
 import CompanyData from "../../../interfaces/Company/Company"
-import CompanyService from "../../../services/CompanyService/CompanyServices";
+import CompanyService from "../../../services/Company/CompanyServices";
 
 
 

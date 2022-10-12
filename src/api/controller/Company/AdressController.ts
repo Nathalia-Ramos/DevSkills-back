@@ -4,7 +4,7 @@ import { EnderecoEmpresa } from "@prisma/client"
 import { prismaClient } from "../../../database/prismaClient"
 import AddressModel from "../../models/Company/AddressModel"
 import  CompanyData from "../../../interfaces/Company/Company"
-import CompanyService from "../../../services/CompanyService/CompanyServices"
+import CompanyService from "../../../services/Company/CompanyServices"
 
 
 export default class AddressController { 
