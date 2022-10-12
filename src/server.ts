@@ -2,6 +2,8 @@ import express from 'express';
 
 import dotenv from "dotenv";
 
+import cors from "cors";
+
 dotenv.config()
 
 //inicializando app
@@ -10,6 +12,7 @@ const app = express();
 //habilitando json
 app.use(express.json());
 
+app.use(cors())
 
 import UserRoutes from "../routes/CompanyRoutes/UserCompanyRoutes"
 import AddresRoutes from "../routes/CompanyRoutes/AddressRoutes" 
@@ -41,7 +44,7 @@ app.use('/auth', AuthRoutes)
 app.use('/admin', AdminRoutes)
 
 
-app.listen(8080, () => {
+app.listen(8081, () => {
     console.log("Server running")
 })
 

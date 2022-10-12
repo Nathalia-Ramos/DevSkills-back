@@ -6,7 +6,7 @@ export default class ShowSkillsController{
     static async select(req: Request, res: Response){
         try {
             const skillsList = await SkillModel.showAll()
-            return res.status(200).json({message: "Listagem de Skills", dados: skillsList})
+            return res.status(200).json({message: "Listagem de Skills", data: skillsList})
         } catch (error) {
             console.log(error)
             return res.send({message: message.Conflict})

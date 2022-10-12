@@ -1,8 +1,8 @@
 import { PrismaClient, Usuario, LoginUsuario, UsuarioHabilidade, UsuarioStack, UsuarioTelefone } from "@prisma/client";
 import bcrypt, { compare } from "bcrypt";
 import Jwt from "jsonwebtoken";
-import DeveloperData from "../../../interfaces/Developer";
-import PhoneData from "../../../interfaces/DeveloperPhone";
+import DeveloperData from "../../../interfaces/Developer/Developer";
+import PhoneData from "../../../interfaces/Developer/DeveloperPhone";
 import DeveloperStacks from "../../../interfaces/DeveloperStacks";
 import DeveloperSkills from "../../../interfaces/DeveloperSkills";
 
