@@ -73,7 +73,7 @@ export default class DeveloperService {
                       });
                     } catch (error) {
                       return {
-                        error: message.Conflict,
+                        error: "Deu problema nas stacks",
                         statusCode: 401,
                       }
                     }
@@ -84,7 +84,7 @@ export default class DeveloperService {
                       });
                     } catch (error) {
                       return {
-                        error: message.Conflict,
+                        error: "Deu problema nas habilidades",
                         statusCode: 401,
                       }
                     }
@@ -93,7 +93,7 @@ export default class DeveloperService {
                       await DeveloperModel.createLogin(hashPassword, developerID)
                     } catch (error) {
                       return {
-                        error: message.Conflict,
+                        error: "Deu problema no login",
                         statusCode: 401,
                       }
                     }
