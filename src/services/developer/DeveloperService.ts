@@ -6,7 +6,6 @@ import bcrypt from "bcrypt";
 import Jwt from "jsonwebtoken";
 import validateRegex from "../../utils/RegexValidate";
 import message from "../../config/ReturnMessages";
-import UserDeveloperModel from "../../api/models/Developer/UserDeveloperModel";
 import { compare } from "bcrypt";
 import nodemailer from "nodemailer";
 import generator from "generate-password";
@@ -14,7 +13,7 @@ import generator from "generate-password";
 export default class DeveloperService {
   static async create(userInfo: RegisterDeveloperData) {
     
-    const userExist = await DeveloperModel.findByCPF(userInfo.cpf);
+    const userExist = await DeveloperModel.findBy('cpf', userInfo.cpf);
 
     // caso usuario nao exista no sistema
     if (userExist == null) {
@@ -74,7 +73,7 @@ export default class DeveloperService {
                       });
                     } catch (error) {
                       return {
-                        error: "Deu problema nas stacks",
+                        error: message.RelateError + "Stacks",
                         statusCode: 401,
                       }
                     }
@@ -85,7 +84,7 @@ export default class DeveloperService {
                       });
                     } catch (error) {
                       return {
-                        error: "Deu problema nas habilidades",
+                        error: message.RelateError + "Habilidades",
                         statusCode: 401,
                       }
                     }
@@ -94,7 +93,7 @@ export default class DeveloperService {
                       await DeveloperModel.createLogin(hashPassword, developerID)
                     } catch (error) {
                       return {
-                        error: "Deu problema no login",
+                        error: message.RelateError + "Login",
                         statusCode: 401,
                       }
                     }
@@ -154,12 +153,12 @@ export default class DeveloperService {
 }
   static async auth(login: string, senha: string) {
 
-    const userExist = await DeveloperModel.findByEmail(login);
+    const userExist = await DeveloperModel.findBy('email', login);
 
     if (userExist != null) {
       const developerLogin = await DeveloperModel.findLogin(userExist.id)
 
-      console.log(developerLogin)
+      // console.log(developerLogin)
 
       if (developerLogin) {
         if (await bcrypt.compare(senha, developerLogin?.senha)) {
@@ -192,7 +191,7 @@ export default class DeveloperService {
 }
   static async sendMail(email: string) {
 
-    const userExist = await DeveloperModel.findByEmail(email);
+    const userExist = await DeveloperModel.findBy('email', email);
 
     if (userExist != null) {
 

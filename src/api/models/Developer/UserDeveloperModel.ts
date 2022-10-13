@@ -36,21 +36,17 @@ export default class UserDeveloperModel {
       });
   }
 
-  static async findByCPF(cpf: string) : Promise<Usuario | null> {
+  static async findBy(name:string, value: string) : Promise<Usuario | null> {
   
-      return await prisma.usuario.findUnique({
+      const nathaloia = await prisma.usuario.findFirst({
         where:{
-          cpf,
+         [name]: value,
         }})
 
-  }
+        console.log(nathaloia)
+        return nathaloia
 
-  static async findByEmail(email: string) : Promise<Usuario | null> {
-    return await prisma.usuario.findFirst({
-      where: {
-        email,
-      }})    
-    }
+  }
 
   static async relatePhone({
     ddd,
