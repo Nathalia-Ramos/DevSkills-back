@@ -15,6 +15,7 @@ export default class UserDeveloperModel {
     cpf,
     data_nascimento,
     id_genero,
+    permissao_email,
   }: DeveloperData): Promise<Usuario> {
       return await prisma.usuario.create({
         data: {
@@ -25,6 +26,7 @@ export default class UserDeveloperModel {
           ativo: true,
           pontuacao_plataforma: 0,
           tag: "teste",
+          permissa_email: permissao_email,
           genero: {
             connect: {
               id: id_genero,

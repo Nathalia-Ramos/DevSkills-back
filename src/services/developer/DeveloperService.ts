@@ -38,6 +38,7 @@ export default class DeveloperService {
                     email: userInfo.email,
                     cpf: userInfo.cpf,
                     data_nascimento: userInfo.data_nascimento,
+                    permissao_email: userInfo.permissao_email,
                     id_genero: userInfo.id_genero,
                   };
           
