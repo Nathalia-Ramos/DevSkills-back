@@ -21,8 +21,6 @@ export default class CompanyService {
                                 nome_estado : user.estado
                             }
 
-                            console.log(State)
-
                             const StateCompany = await UserCompanyModel.createState(State)
 
                             const StateID = StateCompany.id
@@ -32,12 +30,12 @@ export default class CompanyService {
                                    nome_cidade: user.nome_cidade,
                                    id_estado: StateID
                             }
-                            console.log(CityCreate)
                      
 
                             try {
                                     
                                 const newCity = await UserCompanyModel.createCity(CityCreate)
+                               
                                 const CityId = newCity.id
                                 
                                 const CompanyAdress = {
@@ -48,7 +46,8 @@ export default class CompanyService {
                                     cep: user.cep,
                                     id_cidade: CityId,
                                 }
-                                console.log(CompanyAdress)
+                               
+                                
                                 
                                 try {
                                   const Address =  await UserCompanyModel.createAdress(CompanyAdress)
@@ -65,14 +64,16 @@ export default class CompanyService {
                             }
 
                             
-                            console.log(CompanyUser)
+                        
+                            
                             
                             try {
                                const newCompany = await UserCompanyModel.create(CompanyUser)
                                 
                                const companyID = newCompany.id
 
-                                console.log(newCompany)
+                         
+                               
 
                                 
                                 const CompanyPhone = {

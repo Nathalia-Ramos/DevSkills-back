@@ -4,9 +4,9 @@ import RegisterDeveloperData from "../../../interfaces/Developer/RegisterDevelop
  
 export default class UserDeveloperController {
    static async create(req: Request, res: Response) {
- 
+       
        let user : RegisterDeveloperData = req.body
- 
+
        const answer = await DeveloperService.create(user)
 
        res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {message: answer.message})
