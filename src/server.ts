@@ -22,12 +22,12 @@ import SkillRoutes from "../routes/CommonRoutes/SkillsRoutes"
 import PhoneRoutes from "../routes/CompanyRoutes/PhoneCompanyRoutes"
 import UserCompanyController from "../routes/CompanyRoutes/find"
 import AuthRoutes from "../routes/CompanyRoutes/AuthRoutes"
-
+import AdminRoutes from "../routes/AdminRoutes/UserAdminRoutes"
+import Test from "../routes/Test/TestRouter"
 
 app.use('/company', UserRoutes)
-import AdminRoutes from "../routes/AdminRoutes/UserAdminRoutes"
-
 app.use('/user', UserRoutes)
+app.use('/test', Test)
 app.use('/address', AddresRoutes)
 app.use('/forgot_pass', ForgetPassword)
 app.use('/reset', ResetPass)

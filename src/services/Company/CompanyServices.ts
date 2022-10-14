@@ -52,7 +52,7 @@ export default class CompanyService {
                                 try {
                                   const Address =  await UserCompanyModel.createAdress(CompanyAdress)
 
-                                 const AddressID = Address.id
+                                  const AddressID = Address.id
 
 
                             const CompanyUser = {
@@ -62,20 +62,12 @@ export default class CompanyService {
                                 email: user.email,
                                 idEndereco: AddressID
                             }
-
-                            
-                        
-                            
                             
                             try {
                                const newCompany = await UserCompanyModel.create(CompanyUser)
                                 
                                const companyID = newCompany.id
 
-                         
-                               
-
-                                
                                 const CompanyPhone = {
                                     ddd: user.ddd,
                                     numero_telefone: user.numero_telefone,
