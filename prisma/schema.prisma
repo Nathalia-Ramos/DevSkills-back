@@ -23,7 +23,7 @@ model Usuario {
   biografia            String?  @db.Text
   link_github          String?  @db.Text
   link_portfolio       String?  @db.Text
-  permissa_email       Boolean  @db.TinyInt
+  permissao_email       Boolean  @db.TinyInt
 
   //Relacionamento com a tabela Endereco_Usuario
   EnderecoUsuario            EnderecoUsuario[]
