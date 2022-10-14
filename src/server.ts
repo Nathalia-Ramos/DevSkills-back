@@ -44,7 +44,7 @@ app.use('/auth', AuthRoutes)
 app.use('/admin', AdminRoutes)
 
 
-app.listen(8081, () => {
+app.listen(8080, () => {
     console.log("Server running")
 })
 

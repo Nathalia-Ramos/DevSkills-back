@@ -16,6 +16,9 @@ export default {
         EmailSent: "Email enviado com as informações necessárias!",
         NewPassword: "Uma nova senha foi enviada para o e-mail especificado.",
 
+        saveProgress: "Progresso salvo com sucesso.",
+        emptyBody: "Não é possível realizar a requisição com dados vazios.",
+
         ErrorNewPass: "Ocorreu um erro ao redefinir a senha.",
 
         MissingFields: "Existem campos obrigatórios que não foram preenchidos.",
