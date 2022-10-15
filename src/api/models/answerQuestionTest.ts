@@ -1,25 +1,9 @@
-import { PrismaClient, UsuarioProva, RespostaQuestaoProva, RespostaAlternativaProva, Usuario, QuestaoProvaTipo, QuestaoProva } from "@prisma/client";
+import { PrismaClient, RespostaQuestaoProva, RespostaAlternativaProva, QuestaoProvaTipo, QuestaoProva } from "@prisma/client";
 import { userAnswer, userTest } from "../../interfaces/AnswerTest";
 
 const prisma = new PrismaClient();
 
-export default class AnswerTestModel {
-    static async createUserTest({
-        id_usuario,
-        id_prova_andamento,
-        finalizada,
-        data_entrega
-    } : userTest) : Promise<UsuarioProva> {
-        return await prisma.usuarioProva.create({
-            data:{
-                idUsuario: id_usuario,
-                idProvaAndamento: id_prova_andamento,
-                finalizada,
-                data_entrega
-            }
-        })
-    }
-
+export default class answerQuestionTest {
     static async relateChoiceAnswer(
         id_prova: number,
         id_alternativa: number) : Promise<RespostaAlternativaProva> {
