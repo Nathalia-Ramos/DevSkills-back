@@ -1,11 +1,11 @@
 import RegisterDeveloperData from "../../interfaces/Developer/RegisterDeveloper";
-import DeveloperModel from "../../api/models/Developer/UserDeveloperModel";
-import DeveloperPhoneModel from "../../api/models/Phone/DeveloperPhoneModel";
+import DeveloperModel from "../../../api/models/Developer/UserDeveloperModel";
+import DeveloperPhoneModel from "../../../api/models/Phone/DeveloperPhoneModel";
 import bcrypt from "bcrypt";
 import Jwt from "jsonwebtoken";
 import validateRegex from "../../utils/RegexValidate";
-import message from "../../config/ReturnMessages";
-import UserDeveloperModel from "../../api/models/Developer/UserDeveloperModel";
+import message from "../../../config/ReturnMessages";
+import UserDeveloperModel from "../../../api/models/Developer/UserDeveloperModel";
 import { compare } from "bcrypt";
 import nodemailer from "nodemailer";
 import generator from "generate-password";

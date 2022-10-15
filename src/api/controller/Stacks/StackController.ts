@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import StackModel from "../../models/Stack/StackModel";
 import message from "../../../config/ReturnMessages";
-import validateRegex from "../../../utils/RegexValidate";
+import validateRegex from "../../utils/RegexValidate";
 
 export default class StackController{
     static async execute(req: Request, res: Response){

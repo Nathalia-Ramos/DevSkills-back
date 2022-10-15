@@ -1,6 +1,6 @@
-import DeveloperService from "../../../services/developer/DeveloperService"
+import DeveloperService from "../../services/developer/DeveloperService"
 import { Request, Response } from "express";
-import RegisterDeveloperData from "../../../interfaces/Developer/RegisterDeveloper";
+import RegisterDeveloperData from "../../interfaces/Developer/RegisterDeveloper";
  
 export default class UserDeveloperController {
    static async create(req: Request, res: Response) {

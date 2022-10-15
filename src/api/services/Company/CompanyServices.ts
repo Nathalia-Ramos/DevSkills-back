@@ -1,7 +1,7 @@
 import CompanyUser from "../../interfaces/Company/CompanyUser";
-import UserCompanyModel from "../../api/models/Company/UserCompanyModel";
+import UserCompanyModel from "../../models/Company/UserCompanyModel";
 import bcrypt, { compare } from "bcrypt"
-import { prismaClient } from "../../database/prismaClient";
+import { prismaClient } from "../../../database/prismaClient";
 import generator from "generate-password"
 import nodemailer from "nodemailer"
 

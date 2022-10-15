@@ -1,7 +1,7 @@
 import {Request, Response} from "express"
+import Test from "../../interfaces/Test/Tests"
 import TestModel from "../../models/Test/TestModel"
-import Test from "../../../interfaces/Test/Test"
-import TestService from "../../../services/Test/TestService"
+import TestService from "../../services/Test/TestService"
 
 
 export default class TestController {
@@ -10,6 +10,8 @@ export default class TestController {
         const teste : Test = req.body
 
         const tests = await TestService.create(teste)
+       console.log(tests)
+       console.log(teste)
 
         return res.status(201).json(tests)
     }

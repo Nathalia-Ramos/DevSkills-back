@@ -1,6 +1,6 @@
 import {Request, Response} from "express"
-import CompanyData from "../../../interfaces/Company/Company"
-import CompanyService from "../../../services/Company/CompanyServices"
+import CompanyData from "../../interfaces/Company/Company"
+import CompanyService from "../../services/Company/CompanyServices"
 
 
 export default class CityController {

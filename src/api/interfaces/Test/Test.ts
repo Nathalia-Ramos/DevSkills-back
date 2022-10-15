@@ -1,6 +1,6 @@
-import Question from "./Questio";
+import Question from "../../interfaces/Question/Question";
 
-export default interface Test{
+/*export default interface Test{
     //id é apenas um teste
     id: number,
     titulo: string,
@@ -13,13 +13,13 @@ export default interface Test{
     data_fim: string,
     duracao: string,
     
-    id_tipo: number,
+    idProvaTipo: number,
     ids_habilidades: number[],
     ids_stacks: number[],
     
     questoes: Question[],
     
-}
+}*/
 
 
 

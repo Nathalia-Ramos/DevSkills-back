@@ -1,9 +1,9 @@
 import {Request, Response} from "express"
 
 import { EmpresaTelefone } from "@prisma/client"
-import CompanyData from "../../../interfaces/Company/Company"
+import CompanyData from "../../interfaces/Company/Company"
 import { prismaClient } from "../../../database/prismaClient"
-import CompanyPhone from "../../../interfaces/Company/CompanyPhone"
+import CompanyPhone from "../../interfaces/Company/CompanyPhone"
 
 
 export default class PhoneCompanyModel {

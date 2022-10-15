@@ -3,8 +3,8 @@ import {NextFunction, Request, Response} from "express"
 import { EnderecoEmpresa } from "@prisma/client"
 import { prismaClient } from "../../../database/prismaClient"
 import AddressModel from "../../models/Company/AddressModel"
-import  CompanyData from "../../../interfaces/Company/Company"
-import CompanyService from "../../../services/Company/CompanyServices"
+import  CompanyData from "../../interfaces/Company/Company"
+import CompanyService from "../../services/Company/CompanyServices"
 
 
 export default class AddressController { 

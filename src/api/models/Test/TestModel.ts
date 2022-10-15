@@ -1,24 +1,27 @@
 //import TestData from "../../../interfaces/Test/Test";
 import { prismaClient } from "../../../database/prismaClient"
 import { Prova } from "@prisma/client";
-import Test from "../../../interfaces/Test/Tests";
+import Test from "../../interfaces/Test/Tests";
 
 export default class TestModel {
     static async create({
         titulo,
         descricao,
         link_repositorio,
-        id_tipo
+        id_tipo,
+   
     }: Test): Promise<Prova | boolean> {
         
         try {
             const newTest = await prismaClient.prova.create({
                 data: {
+                    
                     titulo,
                     descricao,
+                    idProvaTipo: id_tipo,
                     link_repositorio,
-                    ativo: true,
-                    idProvaTipo: id_tipo
+                    ativo: true
+              
                 }
             })
              

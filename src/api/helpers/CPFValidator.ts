@@ -1,5 +1,5 @@
-import ArrayMultiplier from "../utils/arrayMultiplier";
-import TotalSum from "../utils/totalSum";
+import ArrayMultiplier from "../../api/utils/arrayMultiplier";
+import TotalSum from "../../api/utils/totalSum";
 
 const Sum = TotalSum
 const Multiplier = ArrayMultiplier

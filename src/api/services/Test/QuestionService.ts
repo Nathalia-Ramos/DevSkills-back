@@ -1,7 +1,7 @@
 import TestService from "./TestService";
-import Question from "../../interfaces/Test/Questio";
-import QuestionTypeModel from "../../api/models/TypeQuestions/QuestionsTypeModel";
-import QuestionModel from "../../api/models/Questions/QuestionsModel";
+import Question from "../../interfaces/Question/Question";
+import QuestionTypeModel from "../../models/TypeQuestions/QuestionsTypeModel";
+import QuestionModel from "../../models/Questions/QuestionsModel";
 
 export default class QuestionService {
     static async createQuestion (question: Question){
@@ -27,16 +27,18 @@ export default class QuestionService {
                         const newQuestion = {   
                             id_tipo: question.id_tipo,
                             enunciado: question.enunciado,
-                            foto :  question.foto,
+                            foto :  question.img_url,
                             tipo: question.tipo
                             
                         }
 
-                        const QuestionExist = await QuestionTypeModel.create(question) 
-                        const QuestionID = newQuestion.id_tipo
+                        const QuestionExist = await QuestionTypeModel.create(newQuestion) 
+                      //  const QuestionID = newQuestion.id
                         
                         if(question.id_tipo == 1){
-                            const newTest = await QuestionModel.createTestQuestion(newQuestion)
+                            if(QuestionExist){
+                                const newTest = await QuestionModel.createTestQuestion(newQuestion)
+                            }
                         }
     }
 

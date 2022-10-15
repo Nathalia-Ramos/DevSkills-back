@@ -1,10 +1,10 @@
 import { PrismaClient, Usuario, LoginUsuario, UsuarioHabilidade, UsuarioStack, UsuarioTelefone } from "@prisma/client";
 import bcrypt, { compare } from "bcrypt";
 import Jwt from "jsonwebtoken";
-import DeveloperData from "../../../interfaces/Developer/Developer" ;
-import PhoneData from "../../../interfaces/Developer/DeveloperPhone";
-import DeveloperStacks from "../../../interfaces/Developer/DeveloperStacks";
-import DeveloperSkills from "../../../interfaces/Developer/DeveloperSkills";
+import DeveloperData from "../../interfaces/Developer/Developer" ;
+import PhoneData from "../../interfaces/Developer/DeveloperPhone";
+import DeveloperStacks from "../../interfaces/Developer/DeveloperStacks";
+import DeveloperSkills from "../../interfaces/Developer/DeveloperSkills";
 
 const prisma = new PrismaClient();
 
