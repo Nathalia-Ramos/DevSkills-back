@@ -1,4 +1,4 @@
-import { PrismaClient, RespostaQuestaoProva, RespostaAlternativaProva, QuestaoProvaTipo, QuestaoProva } from "@prisma/client";
+import { PrismaClient, RespostaQuestaoProva, RespostaAlternativaProva, QuestaoProvaTipo, QuestaoProva, AlternativaProva } from "@prisma/client";
 import { userAnswer, userTest } from "../../interfaces/AnswerTest";
 
 const prisma = new PrismaClient();
@@ -39,30 +39,31 @@ export default class answerQuestionTest {
 
     static async findType(
         id_questao: number
-    ) : Promise<QuestaoProva | null> {
-        return await prisma.questaoProva.findFirst({
-            where:{
-                id: id_questao
-            },
-            include:{
-                questaoProvaTipo:{
-                    select:{
-                        tipo: true,
-                        id: true
+    ) : Promise<QuestaoProvaTipo | null> {
+        return await prisma.questaoProvaTipo.findFirst({
+                where:{
+                    questaoProva:{
+                        every:{
+                            id: id_questao
+                        }
                     }
+                },
+                select:{
+                    tipo: true,
+                    id:true
                 }
-            }
-            // select:{
-            //     enunciado: true,
-            //     id: true,
-            //     foto: true,
-            //     idQuestaoProvaTipo: true,
-            //     questaoProvaTipo:{
-            //         select:{
-            //             tipo: true,
-            //         }
-            //     }
-            // }
-        })
+            })
     }
+
+    static async findChoice(
+        id_alternativa: number,
+        id_questao: number) : Promise<AlternativaProva | null> { 
+            return await prisma.alternativaProva.findFirst({
+                where:{
+                    idQuestaoProva: id_questao,
+                    id: id_alternativa
+                }
+            })
+        }
+
 }

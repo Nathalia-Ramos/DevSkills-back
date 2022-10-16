@@ -15,9 +15,4 @@ interface userAnswer {
     resposta?: string
 }
 
-interface textAnswer {
-    id_questao: number,
-    resposta: string
-}
-
-export { userAnswer, userTest, textAnswer }
+export { userAnswer, userTest }
