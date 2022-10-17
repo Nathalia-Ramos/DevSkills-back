@@ -26,7 +26,7 @@ export default class UserDeveloperModel {
           ativo: true,
           pontuacao_plataforma: 0,
           tag: "teste",
-          permissa_email: permissao_email,
+          permissao_email,
           genero: {
             connect: {
               id: id_genero,
