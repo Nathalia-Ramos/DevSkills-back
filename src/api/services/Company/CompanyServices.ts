@@ -75,7 +75,7 @@ export default class CompanyService {
                                     
                                 };
                                 
-                                console.log(CompanyPhone)
+                          //      console.log(CompanyPhone)
                                 await UserCompanyModel.createPhone(CompanyPhone)
 
                                 const hashPassword = await bcrypt.hash(user.senha, 10);
@@ -91,7 +91,7 @@ export default class CompanyService {
                             
                                 
                 
-                                return {newCompany, Address, CityCreate, State, CompanyPhone}
+                                return "Registro inserido com sucesso"
 
                             } catch (error: any) {
                                 console.error(error)

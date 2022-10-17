@@ -15,15 +15,14 @@ export default class TestModel {
         try {
             const newTest = await prismaClient.prova.create({
                 data: {
-                    
                     titulo,
                     descricao,
                     idProvaTipo: id_tipo,
                     link_repositorio,
                     ativo: true
-              
                 }
             })
+            //console.log("dss")
              
             prismaClient.$disconnect;
     

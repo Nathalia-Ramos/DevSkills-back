@@ -11,6 +11,8 @@ export default class AuthController {
 
         const{login, senha} = req.body
 
+      //  console.log(req.body)
+
         const userExist = await UserCompanyModel.findEmailCompany(login)
         console.log(userExist)
         
