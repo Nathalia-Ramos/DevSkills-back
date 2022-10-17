@@ -13,7 +13,7 @@ export default class QuestionModel{
                 data: {
                     enunciado,
                     foto: img_url,
-                    idQuestaoProvaTipo: id_tipo
+                    idQuestaoProvaTipo: id_tipo
                 }
             })
 

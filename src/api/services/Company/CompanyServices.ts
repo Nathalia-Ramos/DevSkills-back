@@ -54,14 +54,12 @@ export default class CompanyService {
 
                                   const AddressID = Address.id
 
-
-                            const CompanyUser = {
-                            
-                                nome_fantasia : user.nome_fantasia,
-                                cnpj: user.cnpj,
-                                email: user.email,
-                                idEndereco: AddressID
-                            }
+                                    const CompanyUser = {
+                                        nome_fantasia : user.nome_fantasia,
+                                        cnpj: user.cnpj,
+                                        email: user.email,
+                                        idEndereco: AddressID
+                                    }
                             
                             try {
                                const newCompany = await UserCompanyModel.create(CompanyUser)
@@ -75,7 +73,7 @@ export default class CompanyService {
                                     
                                 };
                                 
-                          //      console.log(CompanyPhone)
+                        
                                 await UserCompanyModel.createPhone(CompanyPhone)
 
                                 const hashPassword = await bcrypt.hash(user.senha, 10);

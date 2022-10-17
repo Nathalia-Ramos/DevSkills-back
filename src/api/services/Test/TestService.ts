@@ -10,15 +10,14 @@ export default class TestService {
     static async create (test:  Test){
 
         const testExist = await TestModel.findTest(test.id)
-      // console.log(testExist)
         if(testExist != null) {
-            
             if(test.titulo, test.descricao, test.id_tipo, test.link_repositorio){
                 if(test.titulo.length <= 50 ){
-                    if(test.id_tipo === 4){
-                        const questionExist = await QuestionModel.findQuestion(test.id)
-                        const questionId = questionExist?.id
-                            if(questionId){
+                    if(test.id_tipo === 1){
+                    
+                            //PRATICA
+
+                            /*if(questionId){
                                 const createTest ={
                                     titulo: test.titulo,
                                     descricao: test.descricao,
@@ -30,21 +29,30 @@ export default class TestService {
                                 await TestModel.create(createTest)
                             }else{
                                 return "Errorrrrr"
-                            }
-                    }
-                    if(test.id_tipo === 3) {
-                        //popular tblprovas
-                        const createTest ={
-                            titulo: test.titulo,
-                            descricao: test.descricao,
-                            link_repositorio: test.link_repositorio,
-                            id_tipo: test.id_tipo,
-                            tipo_criador: test.tipo_criador,
-                            id: test.id
+                            }*/
+
                         }
-                        await TestModel.create(createTest)
+                        if(test.id_tipo === 2) {
+                            //popular tblprovas TEORICA
+                            
+                            const questionExist = await QuestionModel.findQuestion(test.id)
+                            const questionId = questionExist?.id
+                            
+                            if(questionExist === null) {                            
+                                const createTest = {
+                                    titulo: test.titulo,
+                                    descricao: test.descricao,
+                                    link_repositorio: test.link_repositorio,
+                                    id_tipo: test.id_tipo,
+                                    tipo_criador: test.tipo_criador,
+                                    id: test.id
+                                }
+                            await TestModel.create(createTest)
+                        }else{
+                            console.log("errrrroooor")
+                            return ReturnMessages.Conflict
+                        }
                     }
-                    console.log("AAAAAAA")
                     return ReturnMessages.Success
                 }
             }
