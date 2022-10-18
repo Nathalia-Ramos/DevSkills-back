@@ -6,14 +6,12 @@ export default interface CompanyData {
     nome_fantasia:string,
     senha?: string,
     confirmar_senha?: string,
-    idEndereco?: any
+
 
     ddd?: string,
     numero_telefone?: string,
-    idEmpresa?:number
-
+  
     cidade?: string,
-    idEstado?: number
     bairro?: string,
     logradouro?: string,
     numero_rua?: string,
