@@ -11,7 +11,7 @@ interface userTest {
 interface userAnswer {
     id_questao: number,
 
-    id_alternativa?: number,
+    id_alternativa?: number | number[],
     resposta?: string
 }
 

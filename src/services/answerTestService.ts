@@ -11,7 +11,7 @@ export default class AnswerTestService {
             
             if (testAnswer.id_prova_andamento, testAnswer.id_usuario, typeof testAnswer.finalizada === 'boolean') {
 
-                if(typeof testAnswer.id_prova_andamento === 'number' && typeof testAnswer.id_usuario === 'number') {
+                if(typeof testAnswer.id_prova_andamento === 'number' || typeof testAnswer.id_prova_andamento === 'object' && typeof testAnswer.id_usuario === 'number') {
 
                     // verificar se user existe tb
                     if(await AnswerTestModel.findBy('id', testAnswer.id_prova_andamento)) {
@@ -78,6 +78,8 @@ export default class AnswerTestService {
                                         }
                                     }})
 
+                                console.log(choiceAnswers)
+
                                 try {
         
                                     const provaUser = await AnswerTestModel.createUserTest(testData);
@@ -103,11 +105,15 @@ export default class AnswerTestService {
             
                                     if (choiceAnswers.length > 0) {
                                         choiceAnswers.forEach(answer => {
-                                            if (answer.id_alternativa) {
+                                            if (typeof answer.id_alternativa === 'number') {
                                                 answerQuestionTest.relateChoiceAnswer(
                                                     provaUser.id,
                                                     answer.id_alternativa
                                                 )
+                                            } else if(typeof answer.id_alternativa == 'object') {
+                                                answer.id_alternativa.forEach(choiceId => {
+                                                    answerQuestionTest.relateChoiceAnswer(provaUser.id, choiceId)
+                                                });
                                             }});
                                     } else {
                                         return {
