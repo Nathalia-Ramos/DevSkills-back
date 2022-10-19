@@ -1,14 +1,16 @@
 import { prismaClient } from "../../../database/prismaClient"
 import { QuestaoProva } from "@prisma/client"
-import Question from "../../interfaces/Question/Question"
+import {Question }  from "../../interfaces/Test/Tests";
 
 export default class QuestionModel{
     static async createTestQuestion({
+        id,
         enunciado,
         img_url,
         id_tipo
     }: Question ) : Promise<QuestaoProva | boolean> {
         try {
+          
             const newQuestion = await prismaClient.questaoProva.create({
                 data: {
                     enunciado,

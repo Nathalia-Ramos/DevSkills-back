@@ -1,14 +1,17 @@
 //import TestData from "../../../interfaces/Test/Test";
 import { prismaClient } from "../../../database/prismaClient"
 import { Prova } from "@prisma/client";
-import Test from "../../interfaces/Test/Tests";
+import Test from "../../interfaces/Test/Test";
+import Question from "../../interfaces/Question/Question";
+import { QuestaoProva } from "@prisma/client";
+
 
 export default class TestModel {
     static async create({
         titulo,
         descricao,
         link_repositorio,
-        id_tipo,
+        idProvaTipo
    
     }: Test): Promise<Prova | boolean> {
         
@@ -17,12 +20,11 @@ export default class TestModel {
                 data: {
                     titulo,
                     descricao,
-                    idProvaTipo: id_tipo,
+                    idProvaTipo,
                     link_repositorio,
                     ativo: true
                 }
             })
-            //console.log("dss")
              
             prismaClient.$disconnect;
     
@@ -42,5 +44,30 @@ export default class TestModel {
                 id
             }
         })
+    }
+    static async createTestQuestion({
+        enunciado,
+        img_url,
+        id_tipo
+    }: Question ) : Promise<QuestaoProva | boolean> {
+        try {
+            const newQuestion = await prismaClient.questaoProva.create({
+                data: {
+                    enunciado,
+                    foto: img_url,
+                    idQuestaoProvaTipo: id_tipo
+                }
+            })
+
+            prismaClient.$disconnect
+
+            return newQuestion
+            
+        } catch (error) {
+            
+            prismaClient.$disconnect
+
+            return false
+        }
     }
 }

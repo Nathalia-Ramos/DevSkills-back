@@ -30,7 +30,6 @@ export default class CompanyService {
                                    nome_cidade: user.nome_cidade,
                                    id_estado: StateID
                             }
-                     
 
                             try {
                                     
