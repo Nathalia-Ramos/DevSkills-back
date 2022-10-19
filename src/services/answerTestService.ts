@@ -180,4 +180,10 @@ export default class AnswerTestService {
     }
 
     }
+
+    static async findTest(id_prova: number) {
+        const prova = await AnswerTestModel.findTest(id_prova)
+
+        return prova
+    }
 }

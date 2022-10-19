@@ -27,4 +27,29 @@ export default class AnswerTestModel {
           }})
   
     }
+
+    static async findTest(id_prova: number) {
+        return await prisma.provaAndamento.findFirst({
+            where:{
+                id: id_prova
+            },
+            include:{
+                prova: {
+                    include:{
+                        provasTodasQuestoes: {
+                            include:{
+                                questaoProva: {
+                                    include:{
+                                        alternativaProva: true,
+                                        questaoProvaTipo: true
+                                    },
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        )
+    }
 }
