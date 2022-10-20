@@ -31,16 +31,19 @@ export default class TestService {
 
                         }
                         if(test.id_prova_tipo === 4) {        
-                    
-                            const createTest = {
-                                id: test.id,
-                                titulo: test.titulo,
-                                descricao: test.descricao,
-                                link_repositorio: test.link_repositorio,
-                                idProvaTipo : test.id_prova_tipo,
-                                tipo_criador: test.tipo_criador
-                            }
-   
+                            //verificando se existe alguma questao
+                            const questionExist = await QuestionModel.findQuestion(test.id)
+                            const questionId = questionExist?.id
+                            
+                            if(questionExist === null) {    
+                                console.log(questionExist)
+                                const createTest = {
+                                    titulo: test.titulo,
+                                    descricao: test.descricao,
+                                    link_repositorio: test.link_repositorio,
+                                    id_tipo: test.id_prova_tipo,
+                                    id: test.id
+                                }
                             await TestModel.create(createTest)
                   
                     }else{

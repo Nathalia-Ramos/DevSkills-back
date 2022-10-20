@@ -11,7 +11,7 @@ export default class TestModel {
         titulo,
         descricao,
         link_repositorio,
-        idProvaTipo
+        id_tipo
    
     }: Test): Promise<Prova | boolean> {
         
@@ -20,7 +20,7 @@ export default class TestModel {
                 data: {
                     titulo,
                     descricao,
-                    idProvaTipo,
+                    idProvaTipo: id_tipo,
                     link_repositorio,
                     ativo: true
                 }

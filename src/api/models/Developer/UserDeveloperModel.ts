@@ -25,7 +25,7 @@ export default class UserDeveloperModel {
           data_nascimento: new Date(data_nascimento),
           ativo: true,
           pontuacao_plataforma: 0,
-          //permissao_email,
+          permissao_email,
           tag: "teste",
           genero: {
             connect: {
