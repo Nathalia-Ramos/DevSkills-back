@@ -1,8 +1,8 @@
 //import TestData from "../../../interfaces/Test/Test";
 import { prismaClient } from "../../../database/prismaClient"
-import { Prova } from "@prisma/client";
+import { prisma, Prova, ProvaHabilidade, ProvaStack } from "@prisma/client";
 import { QuestaoProva } from "@prisma/client";
-import { Question } from "../../interfaces/Test/Tests";
+import { Question, TestData } from "../../interfaces/Test/Tests";
 import Test from "../../interfaces/Test/Test";
 
 export default class TestModel {
@@ -12,10 +12,9 @@ export default class TestModel {
         link_repositorio,
         id_tipo
    
-    }: Test): Promise<Prova | boolean> {
+    }: Test): Promise<Prova> {
         
-        try {
-            const newTest = await prismaClient.prova.create({
+        return await prismaClient.prova.create({
                 data: {
                     titulo,
                     descricao,
@@ -24,18 +23,7 @@ export default class TestModel {
                     ativo: true
                 }
             })
-             
-            prismaClient.$disconnect;
-    
-            return newTest
-
-        }catch (error) {
-           console.error(error);
-    
-           prismaClient.$disconnect;
-    
-           return false;
-        }
+          
     } 
     static async findTest(id: number) : Promise<Prova | null>{
         return await prismaClient.prova.findFirst({
@@ -69,4 +57,28 @@ export default class TestModel {
             return false
         }
     }
+    static async relateSkills(
+        id_prova: number,
+        ids_habilidades: number,
+      ) : Promise<ProvaHabilidade> {
+    
+          return await prismaClient.provaHabilidade.create({
+            data:{
+             idProva: id_prova,
+             idHabilidade: ids_habilidades
+            }});
+    
+      }
+      static async relateStack(
+        id_prova: number,
+        ids_stacks: number,
+      ): Promise <ProvaStack> {
+          return await prismaClient.provaStack.create({
+              data: {
+                  idProva: id_prova,
+                  idProvaStack: ids_stacks
+              }
+          })
+      }
+    
 }
