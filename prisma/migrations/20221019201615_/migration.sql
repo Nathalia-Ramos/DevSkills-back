@@ -1,8 +1,9 @@
 /*
   Warnings:
 
-  - You are about to alter the column `data_solicitacao` on the `tbldenuncia` table. The data in that column could be lost. The data in that column will be cast from `DateTime(0)` to `DateTime`.
-  - You are about to alter the column `data_solucao` on the `tbldenuncia` table. The data in that column could be lost. The data in that column will be cast from `DateTime(0)` to `DateTime`.
+  - You are about to alter the column `data_solicitacao` on the `tblDenuncia` table. The data in that column could be lost. The data in that column will be cast from `DateTime(0)` to `DateTime`.
+  - You are about to alter the column `data_solucao` on the `tblDenuncia` table. The data in that column could be lost. The data in that column will be cast from `DateTime(0)` to `DateTime`.
+  - You are about to drop the column `id_questao` on the `tblalternativa_prova` table. All the data in the column will be lost.
   - You are about to alter the column `condicao` on the `tblemblema` table. The data in that column could be lost. The data in that column will be cast from `Decimal(10,0)` to `Decimal`.
   - You are about to alter the column `data_pagamento` on the `tblpagamento` table. The data in that column could be lost. The data in that column will be cast from `DateTime(0)` to `DateTime`.
   - You are about to alter the column `juros` on the `tblpagamento` table. The data in that column could be lost. The data in that column will be cast from `Decimal(10,0)` to `Decimal`.
@@ -13,9 +14,15 @@
   - You are about to alter the column `data_entrega` on the `tblusuario_prova` table. The data in that column could be lost. The data in that column will be cast from `DateTime(0)` to `DateTime`.
 
 */
+-- DropForeignKey
+ALTER TABLE `tblalternativa_prova` DROP FOREIGN KEY `tblalternativa_prova_id_questao_fkey`;
+
 -- AlterTable
-ALTER TABLE `tbldenuncia` MODIFY `data_solicitacao` DATETIME NOT NULL,
+ALTER TABLE `tblDenuncia` MODIFY `data_solicitacao` DATETIME NOT NULL,
     MODIFY `data_solucao` DATETIME NULL;
+
+-- AlterTable
+ALTER TABLE `tblalternativa_prova` DROP COLUMN `id_questao`;
 
 -- AlterTable
 ALTER TABLE `tblemblema` MODIFY `condicao` DECIMAL NOT NULL;

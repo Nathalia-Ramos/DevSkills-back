@@ -995,7 +995,7 @@ model QuestaoProva {
 
   //relacionamentos
   respostaQuestaoProva     RespostaQuestaoProva[]
-  alternativaProva         AlternativaProva[]
+  
   respostaAlternativaProva RespostaAlternativaProva[]
   provasTodasQuestoes      ProvasTodasQuestoes[]
 
@@ -1013,8 +1013,6 @@ model AlternativaProva {
 
   respostaAlternativaProva RespostaAlternativaProva[]
 
-  questaoProva   QuestaoProva @relation(fields: [idQuestaoProva], references: [id])
-  idQuestaoProva Int          @map("id_questao") @db.Int
 
   @@map("tblalternativa_prova")
 }

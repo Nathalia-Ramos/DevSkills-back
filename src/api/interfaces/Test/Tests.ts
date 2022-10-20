@@ -1,5 +1,6 @@
  
 interface TestData {
+    
     id: number,
     titulo: string,
     id_criador: number,
@@ -30,8 +31,8 @@ interface TestData {
  //opcoes que a empresa cadastrou : tblalternativa_prova
  interface Option {
     texto: string,
-    correto: boolean
-    id_questao: number
+    correta: boolean
+ 
  }
   
 export  {TestData, Question, Option} 

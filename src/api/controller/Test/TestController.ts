@@ -14,7 +14,7 @@ export default class TestController {
         
         const tests = await TestService.create(teste)
     //   console.log(tests)
-    //   console.log(teste)
+    // console.log(teste)
 
         return res.status(201).json(tests)
     }

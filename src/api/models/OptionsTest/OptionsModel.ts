@@ -5,15 +5,13 @@ import {Option}  from "../../interfaces/Test/Tests";
 
 export default class OptionsModel {
     static async createOptions ({
-        texto,
-        id_questao
+        texto
     } : Option) : Promise <AlternativaProva | boolean>{
         try {
             const newOption = await prismaClient.alternativaProva.create({
                 data: {
-                    opcao: texto,
-                    correta: true,
-                    idQuestaoProva: id_questao
+                  opcao: texto,
+                  correta: true
                 }
             })
 

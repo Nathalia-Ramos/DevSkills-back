@@ -45,9 +45,7 @@ export default class CompanyService {
                                     cep: user.cep,
                                     id_cidade: CityId,
                                 }
-                               
-                                
-                                
+                             
                                 try {
                                   const Address =  await UserCompanyModel.createAdress(CompanyAdress)
 
@@ -59,7 +57,7 @@ export default class CompanyService {
                                         email: user.email,
                                         idEndereco: AddressID
                                     }
-                            
+                         
                             try {
                                const newCompany = await UserCompanyModel.create(CompanyUser)
                                 
