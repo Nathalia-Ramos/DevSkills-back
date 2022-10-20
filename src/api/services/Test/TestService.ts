@@ -7,62 +7,58 @@ import QuestionService from "./QuestionService";
 export default class TestService {
     static async create (test:  TestData ){
 
-        const testExist = await TestModel.findTest(test.id)
-        if(testExist != null) {
-            if(test.titulo, test.descricao, test.link_repositorio){
-                if(test.titulo.length <= 50 ){
-                    if(test.id_prova_tipo === 1){
-                    
-                            //PRATICA
+        // const testExist = await TestModel.findTest(test.id)
 
-                            /*if(questionId){
-                                const createTest ={
-                                    titulo: test.titulo,
-                                    descricao: test.descricao,
-                                    link_repositorio: test.link_repositorio,
-                                    id_tipo: test.id_tipo,
-                                    tipo_criador: test.tipo_criador,
-                                    id: test.id
-                                }
-                                await TestModel.create(createTest)
-                            }else{
-                                return "Errorrrrr"
-                            }*/
-
-                        }
-                        if(test.id_prova_tipo === 4) {        
-                            //verificando se existe alguma questao
-                            const questionExist = await QuestionModel.findQuestion(test.id)
-                            const questionId = questionExist?.id
+        if(test.titulo, test.descricao, test.link_repositorio){
+                    if(test.titulo.length <= 50 ){
+                        if(test.id_tipo === 1){
                             
-                            if(questionExist === null) {    
-                                console.log(questionExist)
+                    if(test.id_tipo) {        
+                            //verificando se existe alguma questao
+        
+                            // console.log(test.id)
+                            // const questionExist = await QuestionModel.findQuestion(test.id)
+                            // const questionId = questionExist?.id
+
+                            // console.log(questionId)
+
                                 const createTest = {
                                     titulo: test.titulo,
                                     descricao: test.descricao,
                                     link_repositorio: test.link_repositorio,
-                                    id_tipo: test.id_prova_tipo,
-                                    id: test.id
+                                    id_tipo: test.id_tipo,
+                                    id_criador: test.id_criador               
                                 }
-                            await TestModel.create(createTest)
-                  
+                    
+                            const prova = await TestModel.create(createTest)
+                            console.log(prova)
+                
                     }else{
                         return ReturnMessages.Conflict
                     }
+
+                    const questions = test.questoes
+                    // console.log(questions)
+                    
                     try {
-                         test.questoes.forEach( Question => {
-                          QuestionModel.createTestQuestion(Question)
-                        })
-                        console.log(test.questoes)
-                    } catch (error: any) {
+                        if(questions) {
+                            questions.forEach(a => {
+                                console.log("ta entradno aqui")
+                                return QuestionService.createQuestion(a)
+                            })
+                           }
+                           console.log(questions)
+                        //console.log(question)
+                        } catch (error: any) {
                         console.error(error)
                     }
+
                     return test.questoes
                    
-                }
+                // }
+                 }
             }
         }
-    }
+   }   
+
 }   
-
-

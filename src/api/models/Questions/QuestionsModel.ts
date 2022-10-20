@@ -1,34 +1,36 @@
 import { prismaClient } from "../../../database/prismaClient"
-import { QuestaoProva } from "@prisma/client"
-import {Question }  from "../../interfaces/Test/Tests";
+import { QuestaoProva, AlternativaProva } from "@prisma/client"
+import {Question, Option }  from "../../interfaces/Test/Tests";
 
 export default class QuestionModel{
     static async createTestQuestion({
-        id,
         enunciado,
         img_url,
         id_tipo
-    }: Question ) : Promise<QuestaoProva | boolean> {
-        try {
-          
-            const newQuestion = await prismaClient.questaoProva.create({
+    }: Question ) : Promise<QuestaoProva> {
+        return await prismaClient.questaoProva.create({
                 data: {
                     enunciado,
                     foto: img_url,
                     idQuestaoProvaTipo: id_tipo
                 }
             })
+    }
 
-            prismaClient.$disconnect
+    static async createTestOption(
+        correta: boolean,
+        texto: string,
+        id_questao: number
+    ) : Promise<AlternativaProva> {
+    
+            return await prismaClient.alternativaProva.create({
+                data: {
+                    correta,
+                    opcao: texto,
+                    idQuestaoProva: id_questao
+                }
+            })
 
-            return newQuestion
-            
-        } catch (error) {
-            
-            prismaClient.$disconnect
-
-            return false
-        }
     }
 
     static async findQuestion (id:number): Promise <QuestaoProva | null>{

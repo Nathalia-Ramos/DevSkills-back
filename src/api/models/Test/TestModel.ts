@@ -1,10 +1,9 @@
 //import TestData from "../../../interfaces/Test/Test";
 import { prismaClient } from "../../../database/prismaClient"
 import { Prova } from "@prisma/client";
-import Test from "../../interfaces/Test/Test";
-import Question from "../../interfaces/Question/Question";
 import { QuestaoProva } from "@prisma/client";
-
+import { Question } from "../../interfaces/Test/Tests";
+import Test from "../../interfaces/Test/Test";
 
 export default class TestModel {
     static async create({

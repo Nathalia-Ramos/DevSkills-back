@@ -1,7 +1,5 @@
  
 interface TestData {
-    
-    id: number,
     titulo: string,
     id_criador: number,
     tipo_criador: "ADMIN"| "EMPRESA",
@@ -12,15 +10,14 @@ interface TestData {
     data_fim: string,
     duracao: string,
   
-    id_prova_tipo: number,    
-    id_tipo_prova: "TEORICA" | "PRATICA"
+    id_tipo: number,    
+    tipo_prova: "TEORICA" | "PRATICA"
     ids_habilidades: number[],
     ids_stacks: number[],
   
     questoes: Question[],
  }
  interface Question {
-    id: number,
     enunciado: string,
     img_url?: string,
   
@@ -32,7 +29,6 @@ interface TestData {
  interface Option {
     texto: string,
     correta: boolean
- 
  }
   
-export  {TestData, Question, Option} 
+export {TestData, Question, Option} 

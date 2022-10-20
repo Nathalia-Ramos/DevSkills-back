@@ -24,6 +24,7 @@ model Usuario {
   biografia            String?  @db.Text
   link_github          String?  @db.Text
   link_portfolio       String?  @db.Text
+  permissao_email        Boolean  @db.TinyInt
 
   //Relacionamento com a tabela Endereco_Usuario
   EnderecoUsuario            EnderecoUsuario[]
@@ -996,7 +997,7 @@ model QuestaoProva {
   //relacionamentos
   respostaQuestaoProva     RespostaQuestaoProva[]
   
-  respostaAlternativaProva RespostaAlternativaProva[]
+  alternativaProva         AlternativaProva[]
   provasTodasQuestoes      ProvasTodasQuestoes[]
 
   questaoProvaTipo   QuestaoProvaTipo @relation(fields: [idQuestaoProvaTipo], references: [id])
@@ -1013,6 +1014,8 @@ model AlternativaProva {
 
   respostaAlternativaProva RespostaAlternativaProva[]
 
+  questaoProva   QuestaoProva @relation(fields: [idQuestaoProva], references: [id])
+  idQuestaoProva Int          @map("id_questao") @db.Int
 
   @@map("tblalternativa_prova")
 }
@@ -1025,9 +1028,6 @@ model RespostaAlternativaProva {
 
   alternativaProva   AlternativaProva @relation(fields: [idAlternativaProva], references: [id])
   idAlternativaProva Int              @map("id_alternativa") @db.Int
-
-  questaoProva   QuestaoProva @relation(fields: [idQuestaoProva], references: [id])
-  idQuestaoProva Int          @map("id_questao") @db.Int
 
   @@map("tblresposta_alternativa_prova")
 }

@@ -13,8 +13,8 @@ export default class TestController {
         const teste : TestData = req.body
         
         const tests = await TestService.create(teste)
-    //   console.log(tests)
-    // console.log(teste)
+        // console.log(tests)
+        // console.log(teste)
 
         return res.status(201).json(tests)
     }
