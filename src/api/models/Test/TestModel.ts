@@ -1,6 +1,6 @@
 //import TestData from "../../../interfaces/Test/Test";
 import { prismaClient } from "../../../database/prismaClient"
-import { Administrador, AdministradorProvas, Empresa, prisma, Prova, ProvaAndamento, ProvaHabilidade, ProvaStack, ProvasTodasQuestoes } from "@prisma/client";
+import { Administrador, AdministradorProvas, Empresa, prisma, Prova, ProvaAndamento, ProvaHabilidade, ProvaStack, ProvasTodasQuestoes, ProvaTipo, QuestaoProvaTipo } from "@prisma/client";
 import { QuestaoProva } from "@prisma/client";
 import { Question, TestData } from "../../interfaces/Test/Tests";
 import Test from "../../interfaces/Test/Test";
@@ -113,9 +113,9 @@ export default class TestModel {
         })
     }
     static async TestProgress(
-        data_inicio: Date,
+        data_inicio: string,
         data_fim: Date,
-        duracao: Date,
+        duracao: string,
         id_empresa: number,
         id_prova: number
     ): Promise <ProvaAndamento> {
@@ -123,7 +123,7 @@ export default class TestModel {
             data:{
                 data_fim: new Date(data_fim),
                 data_inicio: new Date(data_inicio),
-                duracao: new Date(duracao),
+                duracao,
                 idEmpresa: id_empresa,
                 idProva: id_prova
             }
@@ -140,6 +140,23 @@ export default class TestModel {
             }
         })
     }
-   
+    static async FindTypeQuestion (
+        id_tipo: number
+    ): Promise <QuestaoProvaTipo | null> {
+        return await prismaClient.questaoProvaTipo.findFirst({
+            where: {
+                id: id_tipo
+            }
+        })
+    }
+    static async FindTestType (
+        tipo: string
+    ): Promise <ProvaTipo | null> {
+        return await prismaClient.provaTipo.findFirst({
+            where: {
+                tipo: tipo 
+            }
+        })
+    }
     
 }   

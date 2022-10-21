@@ -16,7 +16,6 @@ export default class QuestionModel{
                 }
             })
     }
-
     static async createTestOption(
         correta: boolean,
         texto: string,
@@ -32,7 +31,6 @@ export default class QuestionModel{
             })
 
     }
-
     static async findQuestion (id:number): Promise <QuestaoProva | null>{
         return await prismaClient.questaoProva.findFirst({
             where: {

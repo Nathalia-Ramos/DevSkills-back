@@ -1,57 +1,31 @@
 import TestModel from "../../models/Test/TestModel";
 import {TestData, Question ,Option}  from "../../interfaces/Test/Tests";
 import ReturnMessages from "../../../config/ReturnMessages"
-import QuestionModel from "../../models/Questions/QuestionsModel";
 import QuestionService from "./QuestionService";
-import UserCompanyModel from "../../models/Company/UserCompanyModel";
 
 export default class TestService {
     static async create (test:  TestData ){
-
-        // const testExist = await TestModel.findTest(test.id)
-        
         if(test.titulo, test.descricao, test.link_repositorio){
             if(test.titulo.length <= 50 ){
-                        if(test.id_tipo === 3){
-                            
-                    if(test.id_tipo) {        
+
+                const testType = await TestModel.FindTestType(test.tipo_prova)
+
+                if(test.tipo_prova == "TEORICA" || test.tipo_prova == "PRATICA"){      
+                          if(testType) {        
                                 const createTest = {
                                     titulo: test.titulo,
                                     descricao: test.descricao,
                                     link_repositorio: test.link_repositorio,
-                                    id_tipo: test.id_tipo,
+                                    id_tipo: testType.id,
                                     id_criador: test.id_criador               
                                 }
                     
                             const prova = await TestModel.create(createTest)
                             const provaID = prova.id
 
-                            const createTestProgress = {
-                                data_inicio: test.data_inicio,
-                                data_fim: test.data_fim,
-                                duracao: test.duracao,
-                                id_prova: provaID,
-                                id_criador: test.id_criador
-                            }
+                            const data_fim = new Date(test.data_fim)
 
-                            //procurando provas e questoes pra popular tbltodas_questoes
-                           /* try {
-                                const ques = TestModel.findQuestion(test.questoes)
-                                
-                            } catch (error) {
-                                
-                            }*/
-
-                            //procurando empresa
-                         try {
-                            const company = await TestModel.FindCompany(test.id_criador) 
-
-                            if(test.id_criador === company){
-                                await TestModel.TestProgress(test.data_inicio,test.data_fim,test.duracao, test.id_criador, provaID)
-                            }
-                         } catch (error) {
-                            console.log(error)
-                         }
+                            data_fim.setDate(data_fim.getDate() + 1)   
 
                          //procurando admin
                          try {
@@ -62,17 +36,16 @@ export default class TestService {
                          } catch (error) {
                             
                          }
-                         
+                       //verificando se é empresa ou admin para poder popular tabelas relacioanadas  
                          switch (test.tipo_criador){
                             case "EMPRESA":
-                                TestModel.TestProgress(test.data_inicio,test.data_fim,test.duracao, test.id_criador, provaID)
+                                TestModel.TestProgress(test.data_inicio, data_fim, test.duracao, test.id_criador, provaID)
                                 break;
                             case "ADMIN":
                                 TestModel.TestAdmin(test.id_criador, provaID)
                             default:
                                 break;
                          }
-                          console.log(test.duracao)
                             try {
                                 test.ids_habilidades.forEach(async (value)=>{
                                     await TestModel.relateSkills(prova.id, value)
@@ -90,29 +63,26 @@ export default class TestService {
                                 
                             }
 
-                
-                    }else{
-                        return ReturnMessages.Conflict
+                            const questions = test.questoes
+                        
+                            try {
+                                if(questions.length > 1 && test.tipo_prova === "TEORICA" )  {
+                                    questions.forEach(Questions => {
+                                        return QuestionService.createQuestion(Questions, provaID)
+                                    })
+                                }else if (questions.length <= 1 && test.tipo_prova === "PRATICA"){
+                                    QuestionService.createQuestion(questions[0], provaID)
+                                }
+                                   console.log(questions)
+                            } catch (error: any) {
+                                console.error(error)
+                            }
+                            return ReturnMessages.Success
+                        }else{
+                            return ReturnMessages.Conflict
+                        }
                     }
-
-                    const questions = test.questoes
-          
-                    try {
-                        if(questions) {
-                            questions.forEach(Questions => {
-                                return QuestionService.createQuestion(Questions)
-                            })
-                           }
-                           console.log(questions)
-                        } catch (error: any) {
-                        console.error(error)
-                    }
-
-                    return ReturnMessages.Success
-                   
-                 }
             }
         }
    }   
-
 }   
