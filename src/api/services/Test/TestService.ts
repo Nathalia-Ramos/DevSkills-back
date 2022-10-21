@@ -34,6 +34,7 @@ export default class TestService {
                                 id_criador: test.id_criador
                             }
 
+                            //procurando empresa
                          try {
                             const company = await TestModel.FindCompany(test.id_criador) 
 
@@ -43,11 +44,23 @@ export default class TestService {
                          } catch (error) {
                             console.log(error)
                          }
+
+                         //procurando admin
+                         try {
+                            const admin = await TestModel.FindAdmin(test.id_criador)
+                            if(test.id_criador == admin){
+                                await TestModel.TestAdmin(test.id_criador, provaID)
+                            }
+                         } catch (error) {
+                            
+                         }
                          
-                         switch (test.tipo_criador ){
+                         switch (test.tipo_criador){
                             case "EMPRESA":
                                 TestModel.TestProgress(  test.data_inicio,test.data_fim,test.duracao, test.id_criador, provaID)
                                 break;
+                            case "ADMIN":
+                                TestModel.TestAdmin(test.id_criador, provaID)
                          
                             default:
                                 break;

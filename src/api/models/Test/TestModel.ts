@@ -1,6 +1,6 @@
 //import TestData from "../../../interfaces/Test/Test";
 import { prismaClient } from "../../../database/prismaClient"
-import { Empresa, prisma, Prova, ProvaAndamento, ProvaHabilidade, ProvaStack, ProvasTodasQuestoes } from "@prisma/client";
+import { Administrador, AdministradorProvas, Empresa, prisma, Prova, ProvaAndamento, ProvaHabilidade, ProvaStack, ProvasTodasQuestoes } from "@prisma/client";
 import { QuestaoProva } from "@prisma/client";
 import { Question, TestData } from "../../interfaces/Test/Tests";
 import Test from "../../interfaces/Test/Test";
@@ -34,6 +34,13 @@ export default class TestModel {
     }
     static async FindCompany(id: number) : Promise<any>{
         return await prismaClient.empresa.findFirst({
+            where: {
+                id: Number(id)
+            }
+        })
+    }
+    static async FindAdmin(id: number): Promise<any> {
+        return await prismaClient.administrador.findFirst({
             where: {
                 id: Number(id)
             }
@@ -111,6 +118,17 @@ export default class TestModel {
                 data_inicio: new Date(data_inicio),
                 duracao: new Date(duracao),
                 idEmpresa: id_empresa,
+                idProva: id_prova
+            }
+        })
+    }
+    static async TestAdmin(
+        id_admin: number,
+        id_prova: number
+    ): Promise <AdministradorProvas>{
+        return await prismaClient.administradorProvas.create({
+            data: {
+                idAdministrador: id_admin,
                 idProva: id_prova
             }
         })
