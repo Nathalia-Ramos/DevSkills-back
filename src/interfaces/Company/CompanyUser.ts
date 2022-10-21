@@ -10,10 +10,8 @@ export default interface CompanyData {
 
     ddd?: string,
     numero_telefone?: string,
-    idEmpresa?:number
 
     cidade?: string,
-    idEstado?: number
     bairro?: string,
     logradouro?: string,
     numero_rua?: string,

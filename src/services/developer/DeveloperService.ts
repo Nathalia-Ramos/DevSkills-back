@@ -39,6 +39,7 @@ export default class DeveloperService {
                     cpf: userInfo.cpf,
                     data_nascimento: userInfo.data_nascimento,
                     id_genero: userInfo.id_genero,
+                    permissao_email: userInfo.permissao_email,
                   };
           
                   // realização do cadastro
