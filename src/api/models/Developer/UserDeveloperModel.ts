@@ -38,13 +38,10 @@ export default class UserDeveloperModel {
 
   static async findBy(name:string, value: string) : Promise<Usuario | null> {
   
-      const nathaloia = await prisma.usuario.findFirst({
+      return await prisma.usuario.findFirst({
         where:{
          [name]: value,
         }})
-
-        console.log(nathaloia)
-        return nathaloia
 
   }
 
