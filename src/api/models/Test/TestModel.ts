@@ -32,6 +32,13 @@ export default class TestModel {
             }
         })
     }
+    static async findQuestion (id: number) : Promise<QuestaoProva | null>{
+        return await prismaClient.questaoProva.findFirst({
+            where: {
+                id
+            }
+        })
+    }
     static async FindCompany(id: number) : Promise<any>{
         return await prismaClient.empresa.findFirst({
             where: {
@@ -133,5 +140,6 @@ export default class TestModel {
             }
         })
     }
+   
     
 }   

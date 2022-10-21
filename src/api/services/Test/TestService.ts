@@ -34,6 +34,14 @@ export default class TestService {
                                 id_criador: test.id_criador
                             }
 
+                            //procurando provas e questoes pra popular tbltodas_questoes
+                           /* try {
+                                const ques = TestModel.findQuestion(test.questoes)
+                                
+                            } catch (error) {
+                                
+                            }*/
+
                             //procurando empresa
                          try {
                             const company = await TestModel.FindCompany(test.id_criador) 
@@ -57,15 +65,14 @@ export default class TestService {
                          
                          switch (test.tipo_criador){
                             case "EMPRESA":
-                                TestModel.TestProgress(  test.data_inicio,test.data_fim,test.duracao, test.id_criador, provaID)
+                                TestModel.TestProgress(test.data_inicio,test.data_fim,test.duracao, test.id_criador, provaID)
                                 break;
                             case "ADMIN":
                                 TestModel.TestAdmin(test.id_criador, provaID)
-                         
                             default:
                                 break;
                          }
-                          console.log(test.tipo_criador)
+                          console.log(test.duracao)
                             try {
                                 test.ids_habilidades.forEach(async (value)=>{
                                     await TestModel.relateSkills(prova.id, value)

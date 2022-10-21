@@ -2,7 +2,6 @@ import QuestionModel from "../../models/Questions/QuestionsModel";
 import {TestData ,Option}  from "../../interfaces/Test/Tests";
 import { Question } from "../../interfaces/Test/Tests";
 import ReturnMessages from "../../../config/ReturnMessages";
-import TestModel from "../../models/Test/TestModel";
 
 
 export default class QuestionService {
