@@ -6,9 +6,9 @@ interface TestData {
     descricao: string,
     link_repositorio?: string,
   
-    data_inicio: string,
-    data_fim: string,
-    duracao: string,
+    data_inicio: Date;
+    data_fim: Date,
+    duracao: Date,
   
     id_tipo: number,    
     tipo_prova: "TEORICA" | "PRATICA"

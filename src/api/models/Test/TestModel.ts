@@ -1,6 +1,6 @@
 //import TestData from "../../../interfaces/Test/Test";
 import { prismaClient } from "../../../database/prismaClient"
-import { prisma, Prova, ProvaHabilidade, ProvaStack } from "@prisma/client";
+import { Empresa, prisma, Prova, ProvaAndamento, ProvaHabilidade, ProvaStack, ProvasTodasQuestoes } from "@prisma/client";
 import { QuestaoProva } from "@prisma/client";
 import { Question, TestData } from "../../interfaces/Test/Tests";
 import Test from "../../interfaces/Test/Test";
@@ -29,6 +29,13 @@ export default class TestModel {
         return await prismaClient.prova.findFirst({
             where: {
                 id
+            }
+        })
+    }
+    static async FindCompany(id: number) : Promise<any>{
+        return await prismaClient.empresa.findFirst({
+            where: {
+                id: Number(id)
             }
         })
     }
@@ -68,8 +75,8 @@ export default class TestModel {
              idHabilidade: ids_habilidades
             }});
     
-      }
-      static async relateStack(
+    }
+    static async relateStack(
         id_prova: number,
         ids_stacks: number,
       ): Promise <ProvaStack> {
@@ -79,6 +86,34 @@ export default class TestModel {
                   idProvaStack: ids_stacks
               }
           })
-      }
+    }
+    static async relateTestQuestion (
+        id_prova: number,
+        id_questao_prova: number
+    ): Promise <ProvasTodasQuestoes>{
+        return await prismaClient.provasTodasQuestoes.create({
+            data: {
+                idProva: id_prova,
+                idQuestaoProva: id_questao_prova
+            }
+        })
+    }
+    static async TestProgress(
+        data_inicio: Date,
+        data_fim: Date,
+        duracao: Date,
+        id_empresa: number,
+        id_prova: number
+    ): Promise <ProvaAndamento> {
+        return await prismaClient.provaAndamento.create({
+            data:{
+                data_fim: new Date(data_fim),
+                data_inicio: new Date(data_inicio),
+                duracao: new Date(duracao),
+                idEmpresa: id_empresa,
+                idProva: id_prova
+            }
+        })
+    }
     
-}
+}   

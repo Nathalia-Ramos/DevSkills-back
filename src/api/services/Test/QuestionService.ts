@@ -2,6 +2,7 @@ import QuestionModel from "../../models/Questions/QuestionsModel";
 import {TestData ,Option}  from "../../interfaces/Test/Tests";
 import { Question } from "../../interfaces/Test/Tests";
 import ReturnMessages from "../../../config/ReturnMessages";
+import TestModel from "../../models/Test/TestModel";
 
 
 export default class QuestionService {
@@ -9,8 +10,6 @@ export default class QuestionService {
    
         if(question.enunciado, question.id_tipo, question.img_url){
             
-                if(question.id_tipo === 1) {
-
                     const createQuestion = {
                   
                         enunciado: question.enunciado,
@@ -19,21 +18,22 @@ export default class QuestionService {
                     }
 
                     const questao = await QuestionModel.createTestQuestion(createQuestion)
+                    const questaoID = questao.id
 
+                    if(question.id_tipo != 3 ){
+                      try {
+                            question.alternativas?.forEach(async Option => {
+                                await QuestionModel.createTestOption(Option.correta, Option.texto, questao.id)
+                        })
+        
+                        } catch (error: any) {
+                            console.error(error)
+                        }    
+                    }  else{
+                        return ReturnMessages.Success
 
-                    // coloca um if aqui pra so cadastrar alternativa qnd o tipo for multipla/unica escolha
-                    // no else coloca um retorno de questao cadastrada com suecsso
-
-                    try {
-                        question.alternativas?.forEach(async Option => {
-                            await QuestionModel.createTestOption(Option.correta, Option.texto, questao.id)
-                       })
-    
-                   } catch (error: any) {
-                       console.error(error)
-                   }
-                }
-            
+                    }
+           
             return ReturnMessages.Success
         }
     }
