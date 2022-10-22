@@ -15,7 +15,8 @@ export default class UserCompanyController{
 
        const users = await CompanyService.createCompany(user)
 
-       return res.status(201).json(users)
+       return res.status(201).json({message: "Usuário criado com sucesso!"})
+      
     } 
 
     static async sendPassMail(req: Request, res: Response) {

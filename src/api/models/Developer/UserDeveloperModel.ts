@@ -27,6 +27,7 @@ export default class UserDeveloperModel {
           pontuacao_plataforma: 0,
           permissao_email,
           tag: "teste",
+          permissao_email,
           genero: {
             connect: {
               id: id_genero,
@@ -38,13 +39,10 @@ export default class UserDeveloperModel {
 
   static async findBy(name:string, value: string) : Promise<Usuario | null> {
   
-      const nathaloia = await prisma.usuario.findFirst({
+      return await prisma.usuario.findFirst({
         where:{
          [name]: value,
         }})
-
-        console.log(nathaloia)
-        return nathaloia
 
   }
 
