@@ -17,6 +17,7 @@ export default {
         NewPassword: "Uma nova senha foi enviada para o e-mail especificado.",
 
         ErrorNewPass: "Ocorreu um erro ao redefinir a senha.",
+        RelateError: "Ocorreu um erro ao relacionar a tabela de ", // preenchimento na service
 
         MissingFields: "Existem campos obrigatórios que não foram preenchidos.",
 

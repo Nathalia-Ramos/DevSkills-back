@@ -6,7 +6,7 @@ export default class StackController{
     static async select(req: Request, res: Response){
         try {
             const stacksList = await StackModel.showAll()
-            return res.status(200).json({message: "Listagem de Stacks", dados: stacksList})
+            return res.status(200).json({message: "Listagem de Stacks", data: stacksList})
         } catch (error) {
             console.log(error)
             return res.send({message: message.Conflict})

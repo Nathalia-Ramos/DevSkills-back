@@ -1,10 +1,10 @@
 import { PrismaClient, Usuario, LoginUsuario, UsuarioHabilidade, UsuarioStack, UsuarioTelefone } from "@prisma/client";
 import bcrypt, { compare } from "bcrypt";
 import Jwt from "jsonwebtoken";
-import DeveloperData from "../../interfaces/Developer/Developer" ;
-import PhoneData from "../../interfaces/Developer/DeveloperPhone";
-import DeveloperStacks from "../../interfaces/Developer/DeveloperStacks";
-import DeveloperSkills from "../../interfaces/Developer/DeveloperSkills";
+import DeveloperData from "../../../interfaces/Developer/Developer";
+import PhoneData from "../../../interfaces/Developer/DeveloperPhone";
+import DeveloperStacks from "../../../interfaces/DeveloperStacks";
+import DeveloperSkills from "../../../interfaces/DeveloperSkills";
 
 const prisma = new PrismaClient();
 
@@ -15,7 +15,7 @@ export default class UserDeveloperModel {
     cpf,
     data_nascimento,
     id_genero,
-    permissao_email
+    permissao_email,
   }: DeveloperData): Promise<Usuario> {
       return await prisma.usuario.create({
         data: {
@@ -36,21 +36,17 @@ export default class UserDeveloperModel {
       });
   }
 
-  static async findByCPF(cpf: string) : Promise<Usuario | null> {
+  static async findBy(name:string, value: string) : Promise<Usuario | null> {
   
-      return await prisma.usuario.findUnique({
+      const nathaloia = await prisma.usuario.findFirst({
         where:{
-          cpf,
+         [name]: value,
         }})
 
-  }
+        console.log(nathaloia)
+        return nathaloia
 
-  static async findByEmail(email: string) : Promise<Usuario | null> {
-    return await prisma.usuario.findFirst({
-      where: {
-        email,
-      }})    
-    }
+  }
 
   static async relatePhone({
     ddd,
