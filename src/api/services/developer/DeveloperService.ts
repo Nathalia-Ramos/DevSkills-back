@@ -15,6 +15,8 @@ export default class DeveloperService {
     
     const userExist = await DeveloperModel.findBy('cpf', userInfo.cpf);
 
+    
+
     // caso usuario nao exista no sistema
     if (userExist == null) {
       

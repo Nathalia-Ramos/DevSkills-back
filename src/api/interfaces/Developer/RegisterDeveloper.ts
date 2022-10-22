@@ -5,6 +5,7 @@ export default interface DeveloperData {
     senha: string,
     confirmar_senha: string,
     data_nascimento: string, // ANO/MES/DIA
+    permissao_email: boolean,
 
     ddd: string,
     numero: string,

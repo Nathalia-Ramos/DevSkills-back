@@ -1,13 +1,13 @@
 
-import AddressData from "../../../interfaces/Company/Address" 
+import AddressData from "../../interfaces/Company/Address" 
 import { Empresa } from "@prisma/client"
-import CityData from "../../../interfaces/Company/City"
+import CityData from "../../interfaces/Company/City"
 import { LoginEmpresa } from "@prisma/client"
-import StateData from "../../../interfaces/Company/State"
+import StateData from "../../interfaces/Company/State"
 import { prismaClient } from "../../../database/prismaClient"
-import CompanyUser from "../../../interfaces/Company/CompanyUser";
-import CompanyPhoneData from "../../../interfaces/Company/CompanyPhone";
-import LoginData from "../../../interfaces/Login"
+import CompanyUser from "../../interfaces/Company/CompanyUser";
+import CompanyPhoneData from "../../interfaces/Company/CompanyPhone";
+import LoginData from "../../interfaces/Company/Login"
 
 
 export default class UserCompanyModel{

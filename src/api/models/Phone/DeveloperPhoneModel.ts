@@ -1,5 +1,5 @@
 import { PrismaClient, UsuarioTelefone } from "@prisma/client";
-import PhoneData from "../../../interfaces/DeveloperPhone";
+import PhoneData from "../../interfaces/Developer/DeveloperPhone" ;
 
 const prisma = new PrismaClient()
 

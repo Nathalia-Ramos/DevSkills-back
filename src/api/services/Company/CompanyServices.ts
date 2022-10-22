@@ -1,7 +1,7 @@
 import CompanyUser from "../../interfaces/Company/CompanyUser";
-import UserCompanyModel from "../../api/models/Company/UserCompanyModel";
+import UserCompanyModel from "../../models/Company/UserCompanyModel";
 import bcrypt, { compare } from "bcrypt"
-import { prismaClient } from "../../database/prismaClient";
+import { prismaClient } from "../../../database/prismaClient";
 import generator from "generate-password"
 import nodemailer from "nodemailer"
 
@@ -21,8 +21,6 @@ export default class CompanyService {
                                 nome_estado : user.estado
                             }
 
-                            console.log(State)
-
                             const StateCompany = await UserCompanyModel.createState(State)
 
                             const StateID = StateCompany.id
@@ -32,12 +30,11 @@ export default class CompanyService {
                                    nome_cidade: user.nome_cidade,
                                    id_estado: StateID
                             }
-                            console.log(CityCreate)
-                     
 
                             try {
                                     
                                 const newCity = await UserCompanyModel.createCity(CityCreate)
+                               
                                 const CityId = newCity.id
                                 
                                 const CompanyAdress = {
@@ -48,33 +45,24 @@ export default class CompanyService {
                                     cep: user.cep,
                                     id_cidade: CityId,
                                 }
-                                console.log(CompanyAdress)
-                                
+                             
                                 try {
                                   const Address =  await UserCompanyModel.createAdress(CompanyAdress)
 
-                                 const AddressID = Address.id
+                                  const AddressID = Address.id
 
-
-                            const CompanyUser = {
-                            
-                                nome_fantasia : user.nome_fantasia,
-                                cnpj: user.cnpj,
-                                email: user.email,
-                                idEndereco: AddressID
-                            }
-
-                            
-                            console.log(CompanyUser)
-                            
+                                    const CompanyUser = {
+                                        nome_fantasia : user.nome_fantasia,
+                                        cnpj: user.cnpj,
+                                        email: user.email,
+                                        idEndereco: AddressID
+                                    }
+                         
                             try {
                                const newCompany = await UserCompanyModel.create(CompanyUser)
                                 
                                const companyID = newCompany.id
 
-                                console.log(newCompany)
-
-                                
                                 const CompanyPhone = {
                                     ddd: user.ddd,
                                     numero_telefone: user.numero_telefone,
@@ -82,7 +70,7 @@ export default class CompanyService {
                                     
                                 };
                                 
-                                console.log(CompanyPhone)
+                        
                                 await UserCompanyModel.createPhone(CompanyPhone)
 
                                 const hashPassword = await bcrypt.hash(user.senha, 10);
@@ -98,7 +86,7 @@ export default class CompanyService {
                             
                                 
                 
-                                return {newCompany, Address, CityCreate, State, CompanyPhone}
+                                return "Registro inserido com sucesso"
 
                             } catch (error: any) {
                                 console.error(error)

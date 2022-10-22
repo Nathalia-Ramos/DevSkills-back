@@ -497,7 +497,7 @@ model ProvaAndamento {
 
   data_inicio DateTime  @db.DateTime()
   data_fim    DateTime  @db.DateTime()
-  duracao     DateTime? @db.Time()
+  duracao     String?    @db.VarChar(8)
 
   empresa   Empresa @relation(fields: [idEmpresa], references: [id])
   idEmpresa Int     @map("id_empresa") @db.Int
@@ -1024,7 +1024,6 @@ model RespostaAlternativaProva {
 
   alternativaProva   AlternativaProva @relation(fields: [idAlternativaProva], references: [id])
   idAlternativaProva Int              @map("id_alternativa") @db.Int
-
 
   @@map("tblresposta_alternativa_prova")
 }

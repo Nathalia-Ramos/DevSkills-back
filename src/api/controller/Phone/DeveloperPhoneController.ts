@@ -1,5 +1,5 @@
 import DeveloperPhoneModel from "../../models/Phone/DeveloperPhoneModel";
-import validateRegex from "../../../utils/RegexValidate";
+import validateRegex from "../../utils/RegexValidate";
 import message from "../../../config/ReturnMessages";
 import { Request, Response } from "express";
 

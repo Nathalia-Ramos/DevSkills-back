@@ -1,12 +1,12 @@
-import DeveloperService from "../../../services/developer/DeveloperService"
+import DeveloperService from "../../services/developer/DeveloperService"
 import { Request, Response } from "express";
-import RegisterDeveloperData from "../../../interfaces/RegisterDeveloper";
+import RegisterDeveloperData from "../../interfaces/Developer/RegisterDeveloper";
  
 export default class UserDeveloperController {
    static async create(req: Request, res: Response) {
- 
+       
        let user : RegisterDeveloperData = req.body
- 
+
        const answer = await DeveloperService.create(user)
 
        res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {message: answer.message})

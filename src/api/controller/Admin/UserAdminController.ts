@@ -1,6 +1,6 @@
-import AdminService from "../../../services/Admin/AdminService"
+import AdminService from "../../services/Admin/AdminService"
 import { Request, Response } from "express";
-import AdminData from "../../../interfaces/Admin";
+import AdminData from "../../interfaces/Admin/Admin";
  
 export default class UserAdminController {
     static async create(req: Request, res: Response) {
