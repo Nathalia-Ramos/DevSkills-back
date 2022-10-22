@@ -26,7 +26,7 @@ export default class UserDeveloperModel {
           ativo: true,
           pontuacao_plataforma: 0,
           tag: "teste",
-          permissao_email,
+          permissao_email: permissao_email,
           genero: {
             connect: {
               id: id_genero,
@@ -36,21 +36,14 @@ export default class UserDeveloperModel {
       });
   }
 
-  static async findByCPF(cpf: string) : Promise<Usuario | null> {
+  static async findBy(name:string, value: string) : Promise<Usuario | null> {
   
-      return await prisma.usuario.findUnique({
+      return await prisma.usuario.findFirst({
         where:{
-          cpf,
+         [name]: value,
         }})
 
   }
-
-  static async findByEmail(email: string) : Promise<Usuario | null> {
-    return await prisma.usuario.findFirst({
-      where: {
-        email,
-      }})    
-    }
 
   static async relatePhone({
     ddd,

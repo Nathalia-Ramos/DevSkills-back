@@ -20,6 +20,7 @@ export default {
         emptyBody: "Não é possível realizar a requisição com dados vazios.",
 
         ErrorNewPass: "Ocorreu um erro ao redefinir a senha.",
+        RelateError: "Ocorreu um erro ao relacionar a tabela de ", // preenchimento na service
 
         MissingFields: "Existem campos obrigatórios que não foram preenchidos.",
 

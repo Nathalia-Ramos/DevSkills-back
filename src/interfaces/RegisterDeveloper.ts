@@ -13,6 +13,7 @@ export default interface DeveloperData {
     permissao_email: boolean,
 
     id_genero: number,
+    permissao_email: boolean,
 
     ids_stacks: Array<number>,
     ids_habilidades: Array<number>
