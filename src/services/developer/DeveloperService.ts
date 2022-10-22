@@ -39,7 +39,6 @@ export default class DeveloperService {
                     data_nascimento: userInfo.data_nascimento,
                     permissao_email: userInfo.permissao_email,
                     id_genero: userInfo.id_genero,
-                    permissao_email: userInfo.permissao_email,
                   };
           
                   // realização do cadastro
