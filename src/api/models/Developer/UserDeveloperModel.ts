@@ -1,10 +1,10 @@
 import { PrismaClient, Usuario, LoginUsuario, UsuarioHabilidade, UsuarioStack, UsuarioTelefone } from "@prisma/client";
 import bcrypt, { compare } from "bcrypt";
 import Jwt from "jsonwebtoken";
-import DeveloperData from "../../../interfaces/Developer/Developer";
-import PhoneData from "../../../interfaces/Developer/DeveloperPhone";
-import DeveloperStacks from "../../../interfaces/DeveloperStacks";
-import DeveloperSkills from "../../../interfaces/DeveloperSkills";
+import DeveloperData from "../../interfaces/Developer/Developer";
+import PhoneData from "../../interfaces/Developer/DeveloperPhone";
+import DeveloperStacks from "../../interfaces/Developer/DeveloperStacks";
+import DeveloperSkills from "../../interfaces/Developer/DeveloperSkills";
 
 const prisma = new PrismaClient();
 
@@ -27,7 +27,6 @@ export default class UserDeveloperModel {
           pontuacao_plataforma: 0,
           permissao_email,
           tag: "teste",
-          permissao_email,
           genero: {
             connect: {
               id: id_genero,

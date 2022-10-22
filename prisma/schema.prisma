@@ -969,7 +969,6 @@ model RespostaQuestaoProva {
 
   questaoProva   QuestaoProva @relation(fields: [idQuestaoProva], references: [id])
   idQuestaoProva Int          @map("id_questao_prova")
-
  
 
   @@map("tblresposta_questao_prova")

@@ -1,11 +1,11 @@
-import RegisterDeveloperData from "../../interfaces/RegisterDeveloper";
+import RegisterDeveloperData from "../../interfaces/Developer/RegisterDeveloper";
 import DeveloperPhoneData from "../../interfaces/Developer/DeveloperPhone";
-import DeveloperModel from "../../api/models/Developer/UserDeveloperModel";
-import DeveloperPhoneModel from "../../api/models/Phone/DeveloperPhoneModel";
+import DeveloperModel from "../../models/Developer/UserDeveloperModel";
+import DeveloperPhoneModel from "../../models/Phone/DeveloperPhoneModel";
 import bcrypt from "bcrypt";
 import Jwt from "jsonwebtoken";
 import validateRegex from "../../utils/RegexValidate";
-import message from "../../config/ReturnMessages";
+import message from "../../../config/ReturnMessages";
 import { compare } from "bcrypt";
 import nodemailer from "nodemailer";
 import generator from "generate-password";
@@ -14,8 +14,6 @@ export default class DeveloperService {
   static async create(userInfo: RegisterDeveloperData) {
     
     const userExist = await DeveloperModel.findBy('cpf', userInfo.cpf);
-
-    
 
     // caso usuario nao exista no sistema
     if (userExist == null) {

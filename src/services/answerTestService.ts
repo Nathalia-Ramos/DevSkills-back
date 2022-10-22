@@ -3,7 +3,7 @@ import AnswerTestModel from "../api/models/AnswerTestModel";
 import answerQuestionTest from "../api/models/answerQuestionTest";
 import UserDeveloperModel from "../api/models/Developer/UserDeveloperModel";
 import message from "../config/ReturnMessages"
-import validateRegex from "../utils/RegexValidate";
+import validateRegex from "../api/utils/RegexValidate";
 
 export default class AnswerTestService {
     static async create(testAnswer : userTest) {
