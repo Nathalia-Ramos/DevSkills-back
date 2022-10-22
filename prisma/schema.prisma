@@ -967,6 +967,9 @@ model RespostaQuestaoProva {
   usuarioProva   UsuarioProva @relation(fields: [idUsuarioProva], references: [id])
   idUsuarioProva Int          @map("id_prova_usuario")
 
+  questaoProva   QuestaoProva @relation(fields: [idQuestaoProva], references: [id])
+  idQuestaoProva Int          @map("id_questao_prova")
+
  
 
   @@map("tblresposta_questao_prova")
@@ -995,6 +998,7 @@ model QuestaoProva {
   //relacionamentos
   alternativaProva         AlternativaProva[]
   provasTodasQuestoes      ProvasTodasQuestoes[]
+  respostaQuestaoProva     RespostaQuestaoProva[]
 
   questaoProvaTipo   QuestaoProvaTipo @relation(fields: [idQuestaoProvaTipo], references: [id])
   idQuestaoProvaTipo Int              @map("id_tipo") @db.Int
