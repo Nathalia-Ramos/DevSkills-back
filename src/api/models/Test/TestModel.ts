@@ -4,6 +4,7 @@ import { Administrador, AdministradorProvas, Empresa, prisma, Prova, ProvaAndame
 import { QuestaoProva } from "@prisma/client";
 import { Question, TestData } from "../../interfaces/Test/Tests";
 import Test from "../../interfaces/Test/Test";
+import TestProgress from "../../interfaces/Test/TestProgress";
 
 export default class TestModel {
     static async create({
@@ -112,13 +113,13 @@ export default class TestModel {
             }
         })
     }
-    static async TestProgress(
-        data_inicio: string,
-        data_fim: Date,
-        duracao: string,
-        id_empresa: number,
-        id_prova: number
-    ): Promise <ProvaAndamento> {
+    static async TestProgress({
+        data_inicio,
+        data_fim,
+        duracao,
+        id_empresa,
+        id_prova
+    } : TestProgress): Promise <ProvaAndamento> {
         return await prismaClient.provaAndamento.create({
             data:{
                 data_fim: new Date(data_fim),
@@ -155,6 +156,16 @@ export default class TestModel {
         return await prismaClient.provaTipo.findFirst({
             where: {
                 tipo: tipo 
+            }
+        })
+    }
+
+    static async findAdminTest(
+        id_prova: number
+    ) : Promise<AdministradorProvas | null> {
+        return await prismaClient.administradorProvas.findFirst({
+            where:{
+                idProva: id_prova
             }
         })
     }
