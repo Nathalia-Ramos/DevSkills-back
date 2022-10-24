@@ -66,7 +66,7 @@ export default class TestService {
                             const questions = test.questoes
                         
                             try {
-                                if(questions.length > 1 && test.tipo_prova === "TEORICA" )  {
+                                if(questions.length >= 1 && test.tipo_prova === "TEORICA" )  {
                                     questions.forEach(Questions => {
                                         return QuestionService.createQuestion(Questions, provaID)
                                     })
