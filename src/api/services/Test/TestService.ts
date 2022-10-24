@@ -64,6 +64,8 @@ export default class TestService {
                             }
 
                             const questions = test.questoes
+
+                            console.log(provaID)
                         
                             try {
                                 if(questions.length >= 1 && test.tipo_prova === "TEORICA" )  {

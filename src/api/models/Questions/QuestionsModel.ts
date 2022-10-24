@@ -12,7 +12,7 @@ export default class QuestionModel{
                 data: {
                     enunciado,
                     foto: img_url,
-                    idQuestaoProvaTipo: id_tipo
+                    idQuestaoProvaTipo: id_tipo
                 }
             })
     }
@@ -26,7 +26,11 @@ export default class QuestionModel{
                 data: {
                     correta,
                     opcao: texto,
-                    idQuestaoProva: id_questao
+                    questaoProva:{
+                        connect:{
+                            id: id_questao
+                        }
+                    }
                 }
             })
 

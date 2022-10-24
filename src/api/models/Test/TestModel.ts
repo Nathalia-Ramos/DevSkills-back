@@ -101,6 +101,7 @@ export default class TestModel {
               }
           })
     }
+    
     static async relateTestQuestion (
         id_prova: number,
         id_questao_prova: number
@@ -112,6 +113,7 @@ export default class TestModel {
             }
         })
     }
+
     static async TestProgress(
         data_inicio: string,
         data_fim: Date,
