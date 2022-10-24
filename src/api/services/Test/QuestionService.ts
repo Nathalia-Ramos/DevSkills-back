@@ -7,17 +7,19 @@ import TestModel from "../../models/Test/TestModel";
 export default class QuestionService {
     static async createQuestion (question: Question, id_prova: number){
 
-        if(question.enunciado, question.id_tipo, question.img_url){
-            
-                    const createQuestion = {
-                        enunciado: question.enunciado,
-                        id_tipo: question.id_tipo,
-                        img_url : question.img_url,
-                    }
+        if(question.enunciado, question.id_tipo, !question.img_url){
+          
+                const createQuestion = {
+                    enunciado: question.enunciado,
+                    id_tipo: question.id_tipo,
+                      
+                }
 
                     const questao = await QuestionModel.createTestQuestion(createQuestion)
                     const findTypeQuestion = await TestModel.FindTypeQuestion(question.id_tipo)
                     const questaoID = questao.id
+
+                    console.log(findTypeQuestion)
 
                     if (findTypeQuestion) {
                 
