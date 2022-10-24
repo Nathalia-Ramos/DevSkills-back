@@ -218,7 +218,7 @@ export default class DeveloperService {
               })
         
               const info = await transporter.sendMail({
-                from: "DevSkills <skillhunters.devskills@gmail.com>",
+                from: "DevSkills <devskillsorg@gmail.com>",
                 to: userExist.email,
                 subject: "Nova Senha",
                 text: "Sua nova senha é: " + newPassword,
