@@ -212,8 +212,8 @@ export default class DeveloperService {
                 port: 465,
                 secure: true,
                 auth: {
-                  user: 'skillhunters.devskills@gmail.com',
-                  pass: 'sgxlqcracqcwqyut',
+                  user: 'devskillsorg@gmail.com',
+                  pass: 'krplzgtrhdwgfain',
                 }
               })
         
