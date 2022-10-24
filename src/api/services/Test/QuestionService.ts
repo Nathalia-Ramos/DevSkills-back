@@ -3,7 +3,6 @@ import { Question } from "../../interfaces/Test/Tests";
 import ReturnMessages from "../../../config/ReturnMessages";
 import TestModel from "../../models/Test/TestModel";
 
-
 export default class QuestionService {
     static async createQuestion (question: Question, id_prova: number){
 

@@ -5,7 +5,7 @@ import SkillTypeController from "../../src/api/controller/Skills/SkillTypeContro
 
 const router = Router()
 
-router.post('/', SkillController.execute)
+router.post('/', SkillController.create)
 router.post('/type', SkillTypeController.execute)
 router.get('/', ShowSkillController.select)
 

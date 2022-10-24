@@ -18,20 +18,20 @@ import UserRoutes from "../routes/CompanyRoutes/UserCompanyRoutes"
 import AddresRoutes from "../routes/CompanyRoutes/AddressRoutes" 
 import ForgetPassword from "../routes/CompanyRoutes/ForgotPassword"
 import ResetPass  from "../routes/CompanyRoutes/ResetPassword"
-import GenderRoutes from "../routes/CommonRoutes/GenderRoutes"
+import GenderRoutes from "../routes/GenderRoutes/GenderRoutes"
 import DeveloperRoutes from "../routes/DeveloperRoutes/UserDeveloperRoutes";
-import StackRoutes from "../routes/CommonRoutes/StacksRoutes"
-import SkillRoutes from "../routes/CommonRoutes/SkillsRoutes"
-import PhoneRoutes from "../routes/CompanyRoutes/PhoneCompanyRoutes"
+import StackRoutes from "../routes/StackRoutes/StacksRoutes"
+import SkillRoutes from "../routes/SkillRoutes/SkillsRoutes"
+import PhoneRoutes from "../routes/PhoneRoutes/PhoneRoutes"
 import UserCompanyController from "../routes/CompanyRoutes/find"
 import AuthRoutes from "../routes/CompanyRoutes/AuthRoutes"
 import AdminRoutes from "../routes/AdminRoutes/UserAdminRoutes"
-import Test from "../routes/Test/TestRouter"
+import TestRoutes from "../routes/TestRoutes/TestRouter"
 ///import QuestionRoutes from "../routes/Question/QuestionRoutes"
 
 app.use('/company', UserRoutes)
 app.use('/user', UserRoutes)
-app.use('/test', Test)
+app.use('/test', TestRoutes)
 app.use('/address', AddresRoutes)
 app.use('/forgot_pass', ForgetPassword)
 app.use('/reset', ResetPass)
@@ -45,8 +45,6 @@ app.use('/auth', AuthRoutes)
 app.use('/admin', AdminRoutes)
 //app.use('/question', QuestionRoutes)
 
-
-app.listen(4041, () => {
+app.listen(8080, () => {
     console.log("Server running")
 })
-

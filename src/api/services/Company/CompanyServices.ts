@@ -1,30 +1,25 @@
 import CompanyUser from "../../interfaces/Company/CompanyUser";
 import UserCompanyModel from "../../models/Company/UserCompanyModel";
 import bcrypt, { compare } from "bcrypt"
-import { prismaClient } from "../../../database/prismaClient";
 import generator from "generate-password"
 import nodemailer from "nodemailer"
-
+import ReturnMessages from "../../../config/ReturnMessages";
 
 export default class CompanyService {
-    static async createCompany (user: CompanyUser ){
+    static async createCompany(
+        user: CompanyUser){
     
-        const userExist = await UserCompanyModel.findCompanyCnpj(user.cnpj)
+        const userExist = await UserCompanyModel.findByCNPJ(user.cnpj)
 
         if (userExist == null) {
         if(user.nome_fantasia, user.cnpj, user.email, user.senha, user.confirmar_senha){
-                if (user.cnpj.length > 14 || user.cnpj.length < 14) return { error: "CNPJ inválido"}; {
-                    if(user.senha != user.confirmar_senha) return { error: "As senhas não combinam"}; {
-                        if(!user.senha?.match(/^(?=.*[A-Z])(?=.*[!#@$%&])(?=.*[0-9])(?=.*[a-z]).{8,15}$/)) return { error: "Senha inválida"};{
+                if (user.cnpj.length > 14 || user.cnpj.length < 14) return { error: ReturnMessages.CNPJError}; {
+                    if(user.senha != user.confirmar_senha) return { error: ReturnMessages.ConfirmPassError}; {
+                        if(!user.senha?.match(/^(?=.*[A-Z])(?=.*[!#@$%&])(?=.*[0-9])(?=.*[a-z]).{8,15}$/)) return { error: ReturnMessages.PasswordError};{
 
-                            const State = {
-                                nome_estado : user.estado
-                            }
-
-                            const StateCompany = await UserCompanyModel.createState(State)
+                            const StateCompany = await UserCompanyModel.createState(user.estado)
 
                             const StateID = StateCompany.id
-
                             
                             const CityCreate = {
                                    nome_cidade: user.nome_cidade,
@@ -47,7 +42,7 @@ export default class CompanyService {
                                 }
                              
                                 try {
-                                  const Address =  await UserCompanyModel.createAdress(CompanyAdress)
+                                  const Address = await UserCompanyModel.createAdress(CompanyAdress)
 
                                   const AddressID = Address.id
 
@@ -59,7 +54,7 @@ export default class CompanyService {
                                     }
                          
                             try {
-                               const newCompany = await UserCompanyModel.create(CompanyUser)
+                               const newCompany = await UserCompanyModel.createCompany(CompanyUser)
                                 
                                const companyID = newCompany.id
 
@@ -69,24 +64,19 @@ export default class CompanyService {
                                     id_empresa: companyID
                                     
                                 };
-                                
                         
-                                await UserCompanyModel.createPhone(CompanyPhone)
+                                await UserCompanyModel.relatePhone(CompanyPhone)
 
                                 const hashPassword = await bcrypt.hash(user.senha, 10);
                                 
                                 const createLogin = {
-
                                     senha: hashPassword,
                                     id_empresa: companyID
-
                                 }
 
-                                await UserCompanyModel.Login(createLogin)
+                                await UserCompanyModel.relateLogin(createLogin)
                             
-                                
-                
-                                return "Registro inserido com sucesso"
+                                return ReturnMessages.UserCreated
 
                             } catch (error: any) {
                                 console.error(error)
@@ -95,8 +85,6 @@ export default class CompanyService {
                            } catch (error: any) {
                             console.error(error)
                            }
-                                
-                               
                                 
                           } catch (error) {
                                     console.error(error)                                
@@ -111,11 +99,11 @@ export default class CompanyService {
 
     static async sendMail(email: string) {
 
-        const userExist = await UserCompanyModel.findEmailCompany(email);
+        const userExist = await UserCompanyModel.findByEmail(email);
     
         if (userExist != null) {
     
-          const loginUser = await UserCompanyModel.findIDLogin(userExist.id)
+          const loginUser = await UserCompanyModel.findLoginByID(userExist.id)
     
           if (loginUser) {
             

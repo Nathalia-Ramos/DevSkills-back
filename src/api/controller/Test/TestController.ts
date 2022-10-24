@@ -1,10 +1,7 @@
 import {Request, Response} from "express"
-import ReturnMessages from "../../../config/ReturnMessages"
 import TestProgress from "../../interfaces/Test/TestProgress"
-import {TestData} from "../../interfaces/Test/Tests"
-import TestModel from "../../models/Test/TestModel"
+import { TestData } from "../../interfaces/Test/Tests"
 import TestService from "../../services/Test/TestService"
-
 
 export default class TestController {
 

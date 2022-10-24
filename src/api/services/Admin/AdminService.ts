@@ -1,6 +1,6 @@
 import bcrypt, { compare } from "bcrypt";
 import JWT from "jsonwebtoken";
-import message from "../../../config/ReturnMessages";
+import ReturnMessages from "../../../config/ReturnMessages";
 import AdminModel from "../../../api/models/Admin/UserAdminModel";
 import AdminData from "../../interfaces/Admin/Admin";
 import validateRegex from "../../utils/RegexValidate";
@@ -27,13 +27,13 @@ export default class AdminService {
                       await AdminModel.createLogin(hashPassword, adminID)
                     } catch (error) {
                       return {
-                        error: message.Conflict,
+                        error: ReturnMessages.Conflict,
                         statusCode: 401,
                       }
                     }
                     
                     return {
-                      message: message.UserCreated,
+                      message: ReturnMessages.UserCreated,
                       statusCode: 201,
                     };
     
@@ -45,19 +45,19 @@ export default class AdminService {
                   }
                 } else {
                   return {
-                    error: message.PasswordError,
+                    error: ReturnMessages.PasswordError,
                     statusCode: 400,
                   };
                 }
             } else {
               return {
-                error: message.MissingFields,
+                error: ReturnMessages.MissingFields,
                 statusCode: 401,
               }
             }
         } else {
           return {
-            error: message.UserAlreadyExist,
+            error: ReturnMessages.UserAlreadyExist,
             statusCode: 401,
           }
       }
@@ -75,26 +75,26 @@ export default class AdminService {
                 const token = JWT.sign({id: adminExist.id}, 'secret', {expiresIn: '1d'})
                 
                 return {
-                  message: message.UserAuthorized,
+                  message: ReturnMessages.UserAuthorized,
                   token: token,
                   userType: "ADMIN",
                   statusCode: 200,
                 }
               } else {
                 return {
-                  message: message.PasswordError,
+                  message: ReturnMessages.PasswordError,
                   statusCode: 401,
                 }
               }
             } else {
               return {
-                error: message.UserNotFound,
+                error: ReturnMessages.UserNotFound,
                 statusCode: 401,
               }
             } 
         } else {
           return {
-            error: message.UserNotFound,
+            error: ReturnMessages.UserNotFound,
             statusCode: 404,
           }
         }

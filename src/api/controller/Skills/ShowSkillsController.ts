@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import SkillModel from "../../models/Skill/SkillModel";
-import message from "../../../config/ReturnMessages";
+import ReturnMessages from "../../../config/ReturnMessages";
 
 export default class ShowSkillsController{
     static async select(req: Request, res: Response){
@@ -9,7 +9,7 @@ export default class ShowSkillsController{
             return res.status(200).json({message: "Listagem de Skills", data: skillsList})
         } catch (error) {
             console.log(error)
-            return res.send({message: message.Conflict})
+            return res.send({message: ReturnMessages.Conflict})
         }
        
     }

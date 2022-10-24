@@ -113,7 +113,7 @@ export default class TestService {
                             await TestModel.TestProgress(testInfo)
 
                             return {
-                                message: "Prova criada com sucesso",
+                                message: ReturnMessages.TestCreated,
                                 statusCode: 200
                             }
 
@@ -126,7 +126,7 @@ export default class TestService {
 
                     } else {
                         return {
-                            error: "Prova não foi criada por um ADMIN",
+                            error: ReturnMessages.TestAdminConflict,
                             statusCode: 400
                         }
                     }
@@ -146,7 +146,7 @@ export default class TestService {
             }
         } else {
             return {
-                error: "Body vazio",
+                error: ReturnMessages.EmptyBody,
                 statusCode: 400
             }
         }

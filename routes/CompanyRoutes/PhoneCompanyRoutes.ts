@@ -1,9 +1,9 @@
-import { Router } from "express";
+// import { Router } from "express";
 
-import PhoneCompanyController from "../../src/api/controller/Company/PhoneCompanyController";
+// import PhoneCompanyController from "../../src/api/controller/Company/PhoneCompanyController";
 
-const router = Router()
+// const router = Router()
 
-router.post('/', PhoneCompanyController.phone)
+// router.post('/types', PhoneCompanyController.phone)
 
-export default router
+// export default router

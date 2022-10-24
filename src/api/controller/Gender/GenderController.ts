@@ -1,25 +1,14 @@
-import {Request, Response} from "express";
+import { Request, Response } from "express";
 import GenderModel from "../../models/Gender/GenderModel";
-import message from "../../../config/ReturnMessages";
-import validateRegex from "../../utils/RegexValidate";
+import ReturnMessages from "../../../config/ReturnMessages";
 
 export default class GenderController{
-    static async execute(req: Request, res: Response){
-        
-        const { nome } = req.body;
+    static async showAll(req: Request, res: Response){
 
-        if (validateRegex(nome, '^[a-zA-Z ]*$')) {
-            try {
-                const newGender = await GenderModel.execute({nome})
-                return res.status(200).json({ message: message.Success, dados: newGender })
-            } catch (error) {
-                console.log(error)
-                return res.send({ message: message.Conflict })
-            }
-        } else {
-            return res.send({ message: message.Conflict })
-        }
-       
+        const genderList = await GenderModel.showAll()
+
+        return res.status(200).json(
+            {message: ReturnMessages.SuccessfulRequest, data: genderList})
+    
     }
-
 }

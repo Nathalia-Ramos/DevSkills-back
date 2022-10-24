@@ -13,11 +13,11 @@ export default class AuthController {
 
       //  console.log(req.body)
 
-        const userExist = await UserCompanyModel.findEmailCompany(login)
+        const userExist = await UserCompanyModel.findByEmail(login)
         console.log(userExist)
         
         if(userExist != null) {
-            const CompanyLogin = await UserCompanyModel.findIDLogin(userExist.id)
+            const CompanyLogin = await UserCompanyModel.findLoginByID(userExist.id)
             console.log(CompanyLogin)
             if (CompanyLogin != null) {
                     if(await bcrypt.compare(senha, CompanyLogin.senha)){

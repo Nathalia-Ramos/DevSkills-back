@@ -12,8 +12,7 @@ export default interface DeveloperData {
     id_tipo_telefone: number,
 
     id_genero: number,
-    permissao_email: boolean,
 
-    ids_stacks: Array<number>,
-    ids_habilidades: Array<number>
+    ids_stacks: number[] | null,
+    ids_habilidades: number[] | null,
 }
