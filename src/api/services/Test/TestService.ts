@@ -8,7 +8,7 @@ export default class TestService {
         if(test.titulo, test.descricao, test.link_repositorio){
             if(test.titulo.length <= 50 ){
 
-                const testType = await TestModel.FindTestType(test.tipo_prova)
+                const testType = await TestModel.findTestType(test.tipo_prova)
 
                 if(test.tipo_prova == "TEORICA" || test.tipo_prova == "PRATICA"){      
                           if(testType) {        
@@ -20,7 +20,7 @@ export default class TestService {
                                     id_criador: test.id_criador               
                                 }
                     
-                            const prova = await TestModel.create(createTest)
+                            const prova = await TestModel.createTest(createTest)
                             const provaID = prova.id
 
                             const data_fim = new Date(test.data_fim)
@@ -29,9 +29,9 @@ export default class TestService {
 
                          //procurando admin
                          try {
-                            const admin = await TestModel.FindAdmin(test.id_criador)
+                            const admin = await TestModel.findAdmin(test.id_criador)
                             if(test.id_criador == admin){
-                                await TestModel.TestAdmin(test.id_criador, provaID)
+                                await TestModel.testAdmin(test.id_criador, provaID)
                             }
                          } catch (error) {
                             
@@ -39,10 +39,10 @@ export default class TestService {
                        //verificando se é empresa ou admin para poder popular tabelas relacioanadas  
                          switch (test.tipo_criador){
                             case "EMPRESA":
-                                TestModel.TestProgress(test.data_inicio, data_fim, test.duracao, test.id_criador, provaID)
+                                TestModel.testProgress(test.data_inicio, data_fim, test.duracao, test.id_criador, provaID)
                                 break;
                             case "ADMIN":
-                                TestModel.TestAdmin(test.id_criador, provaID)
+                                TestModel.testAdmin(test.id_criador, provaID)
                             default:
                                 break;
                          }
@@ -74,6 +74,11 @@ export default class TestService {
                                     })
                                 }else if (questions.length <= 1 && test.tipo_prova === "PRATICA"){
                                     QuestionService.createQuestion(questions[0], provaID)
+                                }else{
+                                   return {
+                                       error: "Prova prática só pode conter uma questão",
+                                       statusCode: 400
+                                   } 
                                 }
                                    console.log(questions)
                             } catch (error: any) {

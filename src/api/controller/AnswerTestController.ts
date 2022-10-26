@@ -10,7 +10,7 @@ export default class AnswerTestController {
         const answer = await TestService.create(data)
 
         res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {message: answer.message})
-
+        
     }
 
     static async findTest(req: Request, res: Response) {

@@ -6,7 +6,7 @@ import { Question, TestData } from "../../interfaces/Test/Tests";
 import Test from "../../interfaces/Test/Test";
 
 export default class TestModel {
-    static async create({
+    static async createTest({
         titulo,
         descricao,
         link_repositorio,
@@ -39,14 +39,14 @@ export default class TestModel {
             }
         })
     }
-    static async FindCompany(id: number) : Promise<any>{
+    static async findCompany(id: number) : Promise<any>{
         return await prismaClient.empresa.findFirst({
             where: {
                 id: Number(id)
             }
         })
     }
-    static async FindAdmin(id: number): Promise<any> {
+    static async findAdmin(id: number): Promise<any> {
         return await prismaClient.administrador.findFirst({
             where: {
                 id: Number(id)
@@ -101,7 +101,6 @@ export default class TestModel {
               }
           })
     }
-    
     static async relateTestQuestion (
         id_prova: number,
         id_questao_prova: number
@@ -113,8 +112,7 @@ export default class TestModel {
             }
         })
     }
-
-    static async TestProgress(
+    static async testProgress(
         data_inicio: string,
         data_fim: Date,
         duracao: string,
@@ -131,7 +129,7 @@ export default class TestModel {
             }
         })
     }
-    static async TestAdmin(
+    static async testAdmin(
         id_admin: number,
         id_prova: number
     ): Promise <AdministradorProvas>{
@@ -142,7 +140,7 @@ export default class TestModel {
             }
         })
     }
-    static async FindTypeQuestion (
+    static async findTypeQuestion (
         id_tipo: number
     ): Promise <QuestaoProvaTipo | null> {
         return await prismaClient.questaoProvaTipo.findFirst({
@@ -151,7 +149,7 @@ export default class TestModel {
             }
         })
     }
-    static async FindTestType (
+    static async findTestType (
         tipo: string
     ): Promise <ProvaTipo | null> {
         return await prismaClient.provaTipo.findFirst({
