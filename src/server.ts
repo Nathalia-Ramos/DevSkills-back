@@ -27,7 +27,7 @@ import UserCompanyController from "../routes/CompanyRoutes/find"
 import AuthRoutes from "../routes/CompanyRoutes/AuthRoutes"
 import AdminRoutes from "../routes/AdminRoutes/UserAdminRoutes"
 import Test from "../routes/Test/TestRouter"
-///import QuestionRoutes from "../routes/Question/QuestionRoutes"
+import userSearch from "../routes/Test/TestRouter"
 
 app.use('/company', UserRoutes)
 app.use('/user', UserRoutes)
@@ -43,8 +43,7 @@ app.use('/phone', PhoneRoutes)
 app.use('/find', UserCompanyController)
 app.use('/auth', AuthRoutes)
 app.use('/admin', AdminRoutes)
-//app.use('/question', QuestionRoutes)
-
+app.use('/userSearch', userSearch)
 
 app.listen(4041, () => {
     console.log("Server running")

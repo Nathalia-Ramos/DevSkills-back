@@ -16,7 +16,9 @@ export default class TestController {
     static async search(req: Request, res: Response) {
 
         const pesquisa = req.body
+        console.log(pesquisa)
 
-        
+        const teste = await TestService.search(pesquisa)   
+
     }
 }

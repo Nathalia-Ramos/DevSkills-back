@@ -158,12 +158,12 @@ export default class TestModel {
             }
         })
     }
-    static async userSearch(provaAndamento: boolean): Promise<any> {
-        return await prismaClient.provaAndamento.findMany({
-            include:{
-                empresa: {
-                    select:{
-                        provaAndamento
+    static async userSearch( empresa: any): Promise<ProvaAndamento | any> {
+        return await prismaClient.empresa.findMany({
+            where: {
+                provaAndamento: {
+                    every: {
+                        empresa
                     }
                 }
             }

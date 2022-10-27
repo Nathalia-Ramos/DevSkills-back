@@ -92,4 +92,15 @@ export default class TestService {
             }
         }
    }   
+   static async search(user: number) {
+       const testExist = await TestModel.userSearch(user)
+       
+             // console.log(testExist)
+
+    if(testExist){
+        const user = await TestModel.userSearch(testExist.idProvaTipo)
+    }else{
+        return "errorrrrrrrrrrrrrr"
+    }
+   }
 }   
