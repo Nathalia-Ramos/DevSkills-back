@@ -9,11 +9,14 @@ export default class TestController {
 
     static async execute(req: Request, res: Response){
         
-        const teste : TestData = req.body
+        const test : TestData = req.body
         
-        const tests = await TestService.create(teste)
+        const tests = await TestService.create(test)
+    }
+    static async search(req: Request, res: Response) {
+
+        const pesquisa = req.body
 
         
-
     }
 }

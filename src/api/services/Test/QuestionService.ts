@@ -13,9 +13,9 @@ export default class QuestionService {
                    id_tipo: question.id_tipo,
                    img_url: question.img_url
                    }
- 
+                   console.log(createQuestion)
                    const questao = await QuestionModel.createTestQuestion(createQuestion)
-                   const findTypeQuestion = await TestModel.FindTypeQuestion(question.id_tipo)
+                   const findTypeQuestion = await TestModel.findTypeQuestion(question.id_tipo)
                    const questaoID = questao.id
 
                    try {
@@ -26,7 +26,7 @@ export default class QuestionService {
  
                    if (findTypeQuestion) {
               
-                       if(findTypeQuestion.tipo === "MULTIPLA ESCOLHA" || findTypeQuestion.tipo === "UNICA ESCOLHA" ){
+                       if(findTypeQuestion.tipo === "MULTIPLA_ESCOLHA" || findTypeQuestion.tipo === "UNICA_ESCOLHA" ){
                            try {
                                question.alternativas?.forEach(async Option => {
                                    await QuestionModel.createTestOption(Option.correta, Option.texto, questao.id)

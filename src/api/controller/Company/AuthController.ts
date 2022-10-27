@@ -7,11 +7,7 @@ import jwt from "jsonwebtoken"
 export default class AuthController {
     static async authetication(req: Request, res: Response){
 
-      
-
         const{login, senha} = req.body
-
-      //  console.log(req.body)
 
         const userExist = await UserCompanyModel.findEmailCompany(login)
         console.log(userExist)
