@@ -75,16 +75,11 @@ export default class TestService {
                                     })
                                 }else if (questions.length <= 1 && test.tipo_prova === "PRATICA"){
                                     QuestionService.createQuestion(questions[0], provaID)
-<<<<<<< Updated upstream
                                 }else{
                                    return {
                                        error: "Prova prática só pode conter uma questão",
                                        statusCode: 400
                                    } 
-=======
-                                } else {
-                                   
->>>>>>> Stashed changes
                                 }
                                    console.log(questions)
                             } catch (error: any) {
