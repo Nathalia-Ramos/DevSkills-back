@@ -10,6 +10,7 @@ export default class TestController {
     static async execute(req: Request, res: Response){
         
         const teste : TestData = req.body
+        console.log(teste)
         
         const tests = await TestService.create(teste)
 

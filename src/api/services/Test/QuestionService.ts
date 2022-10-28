@@ -26,7 +26,10 @@ export default class QuestionService {
  
                    if (findTypeQuestion) {
               
-                       if(findTypeQuestion.tipo === "MULTIPLA ESCOLHA" || findTypeQuestion.tipo === "UNICA ESCOLHA" ){
+                       if(findTypeQuestion.tipo === "MULTIPLA_ESCOLHA" || findTypeQuestion.tipo === "UNICA_ESCOLHA" ){
+
+                        console.log(question.alternativas)
+
                            try {
                                question.alternativas?.forEach(async Option => {
                                    await QuestionModel.createTestOption(Option.correta, Option.texto, questao.id)

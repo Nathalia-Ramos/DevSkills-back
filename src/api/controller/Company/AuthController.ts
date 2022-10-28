@@ -24,7 +24,7 @@ export default class AuthController {
                         const data = {
                             nome: userExist?.nome_fantasia,
                             idEmpresa: userExist.id,
-                            type: "COMPANY"
+                            type: "EMPRESA"
                         }
                             const token = jwt.sign({id: userExist?.id}, 'secret', {expiresIn: '1d'})
                             

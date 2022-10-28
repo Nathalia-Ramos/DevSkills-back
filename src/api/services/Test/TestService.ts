@@ -5,7 +5,7 @@ import QuestionService from "./QuestionService";
 
 export default class TestService {
     static async create (test:  TestData ){
-        if(test.titulo, test.descricao, test.link_repositorio){
+        if(test.titulo, test.descricao, test.tipo_prova){
             if(test.titulo.length <= 50 ){
 
                 const testType = await TestModel.findTestType(test.tipo_prova)
@@ -66,6 +66,7 @@ export default class TestService {
                             const questions = test.questoes
 
                             console.log(provaID)
+                            console.log(prova)
                         
                             try {
                                 if(questions.length >= 1 && test.tipo_prova === "TEORICA" )  {
@@ -74,11 +75,16 @@ export default class TestService {
                                     })
                                 }else if (questions.length <= 1 && test.tipo_prova === "PRATICA"){
                                     QuestionService.createQuestion(questions[0], provaID)
+<<<<<<< Updated upstream
                                 }else{
                                    return {
                                        error: "Prova prática só pode conter uma questão",
                                        statusCode: 400
                                    } 
+=======
+                                } else {
+                                   
+>>>>>>> Stashed changes
                                 }
                                    console.log(questions)
                             } catch (error: any) {

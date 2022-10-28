@@ -37,19 +37,41 @@ export default class AnswerTestModel {
                 prova: {
                     include:{
                         provasTodasQuestoes: {
-                            include:{
+                            select:{
                                 questaoProva: {
-                                    include:{
-                                        alternativaProva: true,
-                                        questaoProvaTipo: true
-                                    },
-                                    }
+                                    select: {
+                                        alternativaProva: {
+                                            select:{
+                                                id: true,
+                                                opcao: true
+                                            }
+                                        },
+                                        id: true,
+                                        enunciado: true,
+                                        foto: true,
+                                        questaoProvaTipo:{
+                                            select:{
+                                                tipo: true,
+                                                id: true
+                                            }
+                                        }
+                                    // }
+                                    // include:{
+                                    //     alternativaProva: {
+                                    //         select: {
+                                    //             opcao: true,
+                                    //             idQuestaoProva: true
+                                    //         }
+                                    //     },
+                                    //     questaoProvaTipo: true
+                                    // },
+                                    // }
                                 }
                             }
                         }
                     }
                 }
+                }
             }
-        )
-    }
-}
+         } )
+}}

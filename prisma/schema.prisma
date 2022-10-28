@@ -804,7 +804,7 @@ model Denuncia {
   denunciaTodosMotivos DenunciaTodosMotivos[]
   fotosDenuncia        FotosDenuncia[]
 
-  @@map("tblDenuncia")
+  @@map("tbldenuncia")
 }
 
 model FotosDenuncia {
@@ -815,7 +815,7 @@ model FotosDenuncia {
   denuncia   Denuncia @relation(fields: [idDenuncia], references: [id])
   idDenuncia Int      @map("id_denuncia") @db.Int
 
-  @@map("tblfotos")
+  @@map("tblfotos_denuncia")
 }
 
 model DenunciaTodosMotivos {
