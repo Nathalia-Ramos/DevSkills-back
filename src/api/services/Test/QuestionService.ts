@@ -15,7 +15,7 @@ export default class QuestionService {
                    }
  
                    const questao = await QuestionModel.createTestQuestion(createQuestion)
-                   const findTypeQuestion = await TestModel.FindTypeQuestion(question.id_tipo)
+                   const findTypeQuestion = await TestModel.findTypeQuestion(question.id_tipo)
                    const questaoID = questao.id
 
                    try {
