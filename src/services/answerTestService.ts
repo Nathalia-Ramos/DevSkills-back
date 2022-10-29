@@ -11,145 +11,166 @@ export default class AnswerTestService {
             
             if (testAnswer.id_prova_andamento, testAnswer.id_usuario, typeof testAnswer.finalizada === 'boolean') {
 
-                if(typeof testAnswer.id_prova_andamento === 'number' || typeof testAnswer.id_prova_andamento === 'object' && typeof testAnswer.id_usuario === 'number') {
+                if(typeof testAnswer.id_prova_andamento === 'number' && typeof testAnswer.id_usuario === 'number') {
 
-                    // verificar se user existe tb
-                    if(await AnswerTestModel.findBy('id', testAnswer.id_prova_andamento)) {
+                    const testExist = await AnswerTestModel.findBy('id', testAnswer.id_prova_andamento)
 
-                        const testData = {
-                            id_usuario: testAnswer.id_usuario,
-                            id_prova_andamento: testAnswer.id_prova_andamento,
-                            finalizada: testAnswer.finalizada,
-                            data_entrega: testAnswer.data_entrega,
-                        }
-                        
-                        if (testAnswer.respostas) {    
+                    if (testExist) {
+
+                        const userExist = await UserDeveloperModel.findBy('id', testAnswer.id_usuario)
+
+                        if (userExist) {
+
+                            const testData = {
+                                id_usuario: testAnswer.id_usuario,
+                                id_prova_andamento: testAnswer.id_prova_andamento,
+                                finalizada: testAnswer.finalizada,
+                                data_entrega: testAnswer.data_entrega,
+                            }
+                            
+                            if (testAnswer.respostas) {    
+                    
+                                const userAnswers  = testAnswer.respostas
                 
-                            const userAnswers  = testAnswer.respostas
+                                if (userAnswers.length > 0) {
+    
+                                    const testUser = await AnswerTestModel.createUserTest(testData);
+    
+                                    for (let i = 0; i < userAnswers.length; i++) {
+
+                                        if (userAnswers[i].id_questao) {
+
+
+                                            const question = await answerQuestionTest.findQuestion(userAnswers[i].id_questao)
+    
+                                            if(question) {
+                                                const questionType = await answerQuestionTest.findQuestionType(question.idQuestaoProvaTipo)
+        
+                                                if(questionType?.tipo == "DISSERTATIVA") {
+                                                    
+                                                    if (typeof userAnswers[i].resposta === 'string') {
             
-                            if (userAnswers.length > 0) {
-
-                                const textAnswers = userAnswers.filter(
-                                    async (answer) => {
-                                        if ( typeof answer.resposta === 'string' ) {
-
-                                            const question = await answerQuestionTest.findType(answer.id_questao)
-                                            
-                                            if (question?.tipo == "Dissertativa") {
-                                                return answer
+                                                        const textAnswer = userAnswers[i]
+                            
+                                                        if (textAnswer.resposta) {
+                                                            await answerQuestionTest.relateTextAnswer(
+                                                                testUser.id,
+                                                                textAnswer.id_questao,
+                                                                textAnswer.resposta
+                                                            )
+                                                            console.log(textAnswer.id_questao + " cadastrada.")
+                                                        } else {
+                                                            return {
+                                                                error: "Resposta não pode estar vazia.",
+                                                                statusCode: 400
+                                                            }
+                                                        }
+        
+                                                    } else {
+                                                        return {
+                                                            error: "Campo resposta deve ser do tipo String",
+                                                            statusCode: 400
+                                                        }
+                                                    }
+        
+                                                } else if (questionType?.tipo == "MULTIPLA_ESCOLHA" || questionType?.tipo == "UNICA_ESCOLHA") {
+        
+                                                    const choiceAnswers = userAnswers[i]
+        
+                                                    if(choiceAnswers.id_alternativa) {
+                                                        if(typeof choiceAnswers.id_alternativa === 'number') {
+        
+                                                            const optionExist = await answerQuestionTest.findChoice(choiceAnswers.id_alternativa, choiceAnswers.id_questao)
+        
+                                                            if (optionExist) {
+        
+                                                                await answerQuestionTest.relateChoiceAnswer(
+                                                                    testUser.id,
+                                                                    choiceAnswers.id_alternativa
+                                                                )
+        
+                                                                console.log(choiceAnswers.id_questao + " cadastrada.")
+        
+                                                            } else {
+                                                                return {
+                                                                    error: "Não foram encontradas alternativas com esse ID: " + choiceAnswers.id_alternativa,
+                                                                    statusCode: 404
+                                                                }
+                                                            }
+        
+                                                        } else if (Array.isArray(choiceAnswers.id_alternativa)) {
+                                                            
+                                                            const optionsUser = choiceAnswers.id_alternativa
+                                                            
+                                                            optionsUser.forEach(async (optionID)=>{
+                                                                await answerQuestionTest.relateChoiceAnswer(testUser.id, optionID)
+                                                                console.log("alternativas cadastradas : " + optionID)
+                                                            })
+                                                            
+                                                        } else {
+                                                            return {
+                                                                error: "Alternativa deve ser um número ou array de números.",
+                                                                statusCode: 400
+                                                            }
+                                                        }
+                                                        } else {
+                                                            return {
+                                                                error: "ID Alternativa não informado.",
+                                                                statusCode: 400
+                                                            }
+                                                        }
+        
+                                                    } else {
+                                                        return {
+                                                            error: "Ocorreu um erro ao procurar o tipo de questão do id questão: " + userAnswers[i].id_questao,
+                                                            statusCode: 500
+                                                        }
+                                                    }
+        
                                             } else {
                                                 return {
-                                                    error: "ID da questão e seu conteúdo estão divergentes.",
-                                                    statusCode: 401
+                                                    error: "Não foram encontradas questões com esse ID: " + userAnswers[i].id_questao,
+                                                    statusCode: 404
                                                 }
                                             }
-                                            
-                                    } else {
-                                        return {
-                                            error: "Resposta deve ser um campo de texto.",
-                                            statusCode: 400
-                                        }
-                                    }})
-                                
-                                const choiceAnswers = userAnswers.filter(
-                                    async (answer) => { if (typeof answer.id_alternativa === 'number') {
-                                        
-                                        const question = await answerQuestionTest.findType(answer.id_questao)
-                                        
-                                        if (question?.tipo == "Múltipla Escolha" || question?.tipo == "Única Escolha") {
-                                            if(await answerQuestionTest.findChoice(answer.id_alternativa, answer.id_questao)) {
-                                                return answer
-                                            } else {
-                                                return {
-                                                    error: "Não foi possível encontrar o ID da Alternativa especificada.",
-                                                    statusCode: 401
-                                                }
-                                            }
+
                                         } else {
                                             return {
-                                                error: "ID da questão e seu conteúdo estão divergentes.",
-                                                statusCode: 401
+                                                error: "ID Questão não informado.",
+                                                statusCode: 400
                                             }
-                                        }                                     
-                                    } else {
-                                        return {
-                                            error: "ID deve ser um número.",
-                                            statusCode: 400
                                         }
-                                    }})
-
-                                console.log(choiceAnswers)
-
-                                try {
-        
-                                    const provaUser = await AnswerTestModel.createUserTest(testData);
-                                    // console.log(provaUser)
-            
-                                    if (textAnswers.length > 0) {
-
-                                        textAnswers.forEach(answer => {
-                                            if (answer.resposta) {
-                                                answerQuestionTest.relateTextAnswer(
-                                                    provaUser.id,
-                                                    answer.id_questao,
-                                                    answer.resposta
-                                                )
-                                            }});
-
-                                    } else {
-                                        return {
-                                            message: "Não foram encontradas respostas dissertativas",
-                                            statusCode: 404
-                                        }
+    
                                     }
             
-                                    if (choiceAnswers.length > 0) {
-                                        choiceAnswers.forEach(answer => {
-                                            if (typeof answer.id_alternativa === 'number') {
-                                                answerQuestionTest.relateChoiceAnswer(
-                                                    provaUser.id,
-                                                    answer.id_alternativa
-                                                )
-                                            } else if(typeof answer.id_alternativa == 'object') {
-                                                answer.id_alternativa.forEach(choiceId => {
-                                                    answerQuestionTest.relateChoiceAnswer(provaUser.id, choiceId)
-                                                });
-                                            }});
-                                    } else {
-                                        return {
-                                            message: "Não foram encontradas respostas de escolha",
-                                            statusCode: 404
-                                        }
-                                    }
-                                    
-                                } catch (error) {
                                     return {
-                                        error: error,
-                                        statusCode: 401,
+                                        message: "Respostas cadastradas com sucesso!",
+                                        statusCode: 200
+                                    }
+                
+                                } else {
+                                    return {
+                                        error: "Objeto de respostas está vazio.",
+                                        statusCode: 400
                                     }
                                 }
-        
+                            } else {
+    
+                                await AnswerTestModel.createUserTest(testData);
+                                
                                 return {
-                                    message: "Respostas cadastradas com sucesso!",
-                                    statusCode: 200
+                                    message: "Prova salva com sucesso.",
+                                    statusCode: 200,
                                 }
             
-                            } else {
-                                return {
-                                    error: "Objeto de respostas está vazio.",
-                                    statusCode: 401
-                                }
-                            }
-                        } else {
+                            }   
 
-                            await AnswerTestModel.createUserTest(testData);
-                            
+                        } else {
                             return {
-                                message: "Prova salva com sucesso.",
-                                statusCode: 200,
+                                error: "Não foi encontrado um usuário com o ID especificado.",
+                                statusCode: 404
                             }
-        
-                        }                        
+                        }
 
                     } else {
                         return {
@@ -160,15 +181,15 @@ export default class AnswerTestService {
 
                 } else {
                     return {
-                        error: "Os tipos de dados não correspondem aos esperados.",
-                        statusCode: 401
+                        error: "Os tipos de dados dos IDs devem ser número.",
+                        statusCode: 400
                     }
                 }
 
         } else {
             return {
                 error: message.MissingFields,
-                statusCode: 401
+                statusCode: 400
             }
         }
     

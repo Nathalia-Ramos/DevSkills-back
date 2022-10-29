@@ -928,6 +928,7 @@ model UsuarioProva {
   id Int @id @unique @default(autoincrement()) @db.Int
 
   finalizada   Boolean   @db.TinyInt
+  data_inicio  DateTime  @db.DateTime()
   data_entrega DateTime? @db.DateTime()
   pontuacao    Int?      @db.Int
 

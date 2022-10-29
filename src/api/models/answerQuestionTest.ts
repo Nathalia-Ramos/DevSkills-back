@@ -37,20 +37,25 @@ export default class answerQuestionTest {
         })
     }
 
-    static async findType(
+    static async findQuestion(
         id_questao: number
+    ) : Promise<QuestaoProva | null> {
+        return await prisma.questaoProva.findFirst({
+                where:{
+                    id: id_questao
+                },
+                include:{
+                    questaoProvaTipo: true
+                }
+            })
+    }
+
+    static async findQuestionType(
+        id_tipo: number
     ) : Promise<QuestaoProvaTipo | null> {
         return await prisma.questaoProvaTipo.findFirst({
                 where:{
-                    questaoProva:{
-                        every:{
-                            id: id_questao
-                        }
-                    }
-                },
-                select:{
-                    tipo: true,
-                    id:true
+                    id: id_tipo
                 }
             })
     }
