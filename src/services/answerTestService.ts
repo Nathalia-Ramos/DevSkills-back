@@ -34,41 +34,50 @@ export default class AnswerTestService {
                 
                                 if (userAnswers.length > 0) {
     
-                                    const testUser = await AnswerTestModel.createUserTest(testData);
-    
                                     for (let i = 0; i < userAnswers.length; i++) {
 
                                         if (userAnswers[i].id_questao) {
 
-
                                             const question = await answerQuestionTest.findQuestion(userAnswers[i].id_questao)
     
                                             if(question) {
+                                                    
+                                                const testUser = await AnswerTestModel.createUserTest(testData);   
+                                                
                                                 const questionType = await answerQuestionTest.findQuestionType(question.idQuestaoProvaTipo)
         
                                                 if(questionType?.tipo == "DISSERTATIVA") {
-                                                    
-                                                    if (typeof userAnswers[i].resposta === 'string') {
+
+                                                    if(userAnswers[i].resposta) {
+
+                                                        if (typeof userAnswers[i].resposta === 'string') {
             
-                                                        const textAnswer = userAnswers[i]
-                            
-                                                        if (textAnswer.resposta) {
-                                                            await answerQuestionTest.relateTextAnswer(
-                                                                testUser.id,
-                                                                textAnswer.id_questao,
-                                                                textAnswer.resposta
-                                                            )
-                                                            console.log(textAnswer.id_questao + " cadastrada.")
+                                                            const textAnswer = userAnswers[i]
+                                
+                                                            if (textAnswer.resposta) {
+                                                                await answerQuestionTest.relateTextAnswer(
+                                                                    testUser.id,
+                                                                    textAnswer.id_questao,
+                                                                    textAnswer.resposta
+                                                                )
+                                                                console.log(textAnswer.id_questao + " cadastrada.")
+                                                            } else {
+                                                                return {
+                                                                    error: "Resposta não pode estar vazia.",
+                                                                    statusCode: 400
+                                                                }
+                                                            }
+            
                                                         } else {
                                                             return {
-                                                                error: "Resposta não pode estar vazia.",
+                                                                error: "Campo resposta deve ser do tipo String",
                                                                 statusCode: 400
                                                             }
                                                         }
-        
+
                                                     } else {
                                                         return {
-                                                            error: "Campo resposta deve ser do tipo String",
+                                                            error: "Resposta não informada.",
                                                             statusCode: 400
                                                         }
                                                     }
@@ -126,6 +135,8 @@ export default class AnswerTestService {
                                                             statusCode: 500
                                                         }
                                                     }
+
+                                                
         
                                             } else {
                                                 return {
@@ -140,7 +151,6 @@ export default class AnswerTestService {
                                                 statusCode: 400
                                             }
                                         }
-    
                                     }
             
                                     return {
