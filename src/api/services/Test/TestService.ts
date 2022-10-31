@@ -3,6 +3,7 @@ import {TestData, Question ,Option}  from "../../interfaces/Test/Tests";
 import TestProgress from "../../interfaces/Test/TestProgress";
 import ReturnMessages from "../../../config/ReturnMessages"
 import QuestionService from "./QuestionService";
+import validateRegex from "../../utils/RegexValidate";
 
 export default class TestService {
     static async create (test:  TestData){
@@ -97,46 +98,66 @@ export default class TestService {
    }
    
    static async relateTemplate(testInfo: TestProgress){
+    
         if(testInfo) {
             if(testInfo.id_empresa, testInfo.id_prova, testInfo.data_fim, testInfo.data_inicio) {
 
-                const companyExist = await TestModel.FindCompany(testInfo.id_empresa)
-                const testExist = await TestModel.findTest(testInfo.id_prova)
+                // if (validateRegex(testInfo.data_inicio, '([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))')) {
 
-                if (companyExist != null && testExist != null) {
-
-                    const isTemplate = await TestModel.findAdminTest(testInfo.id_prova)
-
-                    if(isTemplate) {
-
-                        try {
-                            await TestModel.TestProgress(testInfo)
-
-                            return {
-                                message: "Prova criada com sucesso",
-                                statusCode: 200
+                    const companyExist = await TestModel.FindCompany(testInfo.id_empresa)
+                
+                    if (companyExist) {
+                        
+                        const testExist = await TestModel.findTest(testInfo.id_prova)
+                        
+                        if(testExist) {
+    
+                            const isTemplate = await TestModel.findAdminTest(testInfo.id_prova)
+    
+                            if(isTemplate) {
+        
+                                try {
+                                    await TestModel.TestProgress(testInfo)
+        
+                                    return {
+                                        message: "Prova criada com sucesso",
+                                        statusCode: 200
+                                    }
+        
+                                } catch (error) {
+                                    return {
+                                        error: error,
+                                        statusCode: 400
+                                    }
+                                }
+        
+                            } else {
+                                return {
+                                    error: "Prova não foi criada por um ADMIN",
+                                    statusCode: 400
+                                }
                             }
-
-                        } catch (error) {
+    
+                        } else{
                             return {
-                                error: error,
-                                statusCode: 400
+                                error: "Prova com o ID especificado não encontrada.",
+                                statusCode: 404
                             }
                         }
-
+    
                     } else {
                         return {
-                            error: "Prova não foi criada por um ADMIN",
+                            error: ReturnMessages.UserNotFound,
                             statusCode: 400
                         }
                     }
 
-                } else {
-                    return {
-                        error: ReturnMessages.UserNotFound,
-                        statusCode: 400
-                    }
-                }
+                // } else {
+                //     return {
+                //         error: "Data de inicio deve seguir o padrão ANO/MÊS/DIA. (AAAA/MM/DD)",
+                //         statusCode: 400
+                //     }
+                // }
 
             } else {
                 return {
