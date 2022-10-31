@@ -4,7 +4,7 @@ import answerQuestionTest from "../api/models/answerQuestionTest";
 import UserDeveloperModel from "../api/models/Developer/UserDeveloperModel";
 import message from "../config/ReturnMessages"
 import validateRegex from "../api/utils/RegexValidate";
-import isNotEmpty from "../api/utils/isNotEmpty";
+// import isNotEmpty from "../api/utils/isNotEmpty";
 import isNumber from "../api/utils/isNumber";
 import isString from "../api/utils/isString";
 
