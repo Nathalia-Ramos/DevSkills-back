@@ -2,6 +2,8 @@ import TestModel from "../../models/Test/TestModel";
 import {TestData, Question ,Option}  from "../../interfaces/Test/Tests";
 import ReturnMessages from "../../../config/ReturnMessages"
 import QuestionService from "./QuestionService";
+import filter from "../../interfaces/Test/AdminFilter";
+import isEmpty from "../../utils/isEmpty";
 
 export default class TestService {
     static async create (test:  TestData ){
@@ -92,5 +94,52 @@ export default class TestService {
                     }
             }
         }
-   }   
+   }
+
+   static async findAdminTests(reqFilters: filter) {
+
+    const userFilters = reqFilters
+
+    if(userFilters.tipo) {
+        if(typeof userFilters.tipo != 'string') {
+            return {
+                error: "Campo tipo deve ser string.",
+                statusCode: 400
+            }
+        }
+    }
+
+    if(userFilters.ids_habilidades) {
+        if(typeof userFilters.ids_habilidades != 'number' && !Array.isArray(userFilters.ids_habilidades)) {
+            return {
+                error: "Campo ids_habilidades deve ser um número ou um array de números.",
+                statusCode: 400
+            }
+        }
+    }
+
+    if(userFilters.ids_stacks) {
+        if(typeof userFilters.ids_stacks != 'number' && !Array.isArray(userFilters.ids_stacks)) {
+            return {
+                error: "Campo ids_stacks deve ser um número ou um array de números.",
+                statusCode: 400
+            }
+        }
+    }
+
+    const adminTests = await TestModel.findAdminTests(userFilters)
+
+    if (isEmpty(adminTests)) {
+        return {
+            data: adminTests,
+            statusCode: 200
+        }
+    } else {
+        return {
+            error: "Não foram encontradas provas com as características especificadas.",
+            statusCode: 404
+        }
+    }
+
+   }
 }   

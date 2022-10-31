@@ -1,5 +1,6 @@
 import {Request, Response} from "express"
 import ReturnMessages from "../../../config/ReturnMessages"
+import filter from "../../interfaces/Test/AdminFilter"
 import {TestData} from "../../interfaces/Test/Tests"
 import TestModel from "../../models/Test/TestModel"
 import TestService from "../../services/Test/TestService"
@@ -14,7 +15,16 @@ export default class TestController {
         
         const tests = await TestService.create(teste)
 
-        
+    }
+
+    static async findAdminTests(req: Request, res: Response) {
+
+        const data : filter = req.body
+        console.log(data)
+
+        const answer = await TestService.findAdminTests(data)
+
+        return res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data })
 
     }
 }

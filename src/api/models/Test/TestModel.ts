@@ -4,6 +4,7 @@ import { Administrador, AdministradorProvas, Empresa, prisma, Prova, ProvaAndame
 import { QuestaoProva } from "@prisma/client";
 import { Question, TestData } from "../../interfaces/Test/Tests";
 import Test from "../../interfaces/Test/Test";
+import filter from "../../interfaces/Test/AdminFilter";
 
 export default class TestModel {
     static async createTest({
@@ -158,5 +159,70 @@ export default class TestModel {
             }
         })
     }
-    
+    static async findAdminTests({
+        tipo,
+        ids_stacks,
+        ids_habilidades
+    } : filter) {
+        return await prismaClient.administradorProvas.findMany({
+            where:{
+                provas:{
+                    provaTipo:{
+                        tipo:{
+                            equals: tipo
+                        }
+                    },
+                    provaHabilidade:{
+                        some: {
+                            idHabilidade:{
+                                in: ids_habilidades
+                            }
+                        }
+                    },
+                    provaStack:{
+                        some: {
+                            idProvaStack:{
+                                in: ids_stacks
+                            }
+                        }
+                    }
+                }
+            },
+            select:{
+                provas:{
+                    select:{
+                        id: true,
+                        titulo: true,
+                        descricao: true,
+                        provaTipo:{
+                            select:{
+                                tipo: true
+                            }
+                        },
+                        provaHabilidade:{
+                            select:{
+                                habilidade:{
+                                    select:{
+                                        id: true,
+                                        nome: true,
+                                        icone: true,
+                                    }
+                                }
+                            }
+                        },
+                        provaStack:{
+                            select:{
+                                stack:{
+                                    select:{
+                                        id: true,
+                                        nome: true,
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        })
+    }
 }   

@@ -1,4 +1,4 @@
-const isEmpty = (array: [any]) => {
+const isEmpty = (array: Array<any>) => {
     return array.length > 0
 }
 
