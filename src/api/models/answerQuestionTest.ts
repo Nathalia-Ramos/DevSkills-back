@@ -50,7 +50,7 @@ export default class answerQuestionTest {
             })
     }
 
-    static async findQuestionType(
+    static async findQuestionTypeByID(
         id_tipo: number
     ) : Promise<QuestaoProvaTipo | null> {
         return await prisma.questaoProvaTipo.findFirst({
@@ -58,6 +58,19 @@ export default class answerQuestionTest {
                     id: id_tipo
                 }
             })
+    }
+
+    static async findQuestionTypeByQuestion(
+        id_questao: number) : Promise<QuestaoProvaTipo | null> {
+        return await prisma.questaoProvaTipo.findFirst({
+            where:{
+                questaoProva:{
+                    some:{
+                        id: id_questao
+                    }
+                }
+            }
+        })
     }
 
     static async findChoice(

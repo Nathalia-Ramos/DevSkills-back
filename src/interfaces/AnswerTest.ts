@@ -4,6 +4,7 @@ interface userTest {
     
     finalizada: boolean,
     data_entrega?: string,
+    data_inicio?: string,
     
     respostas?: userAnswer[]
 }
