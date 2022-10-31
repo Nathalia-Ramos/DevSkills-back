@@ -19,6 +19,7 @@ export default class AnswerTestModel {
             }
         })
     }
+    
     static async findBy(key: string, value: any) : Promise<ProvaAndamento | null> {
   
        return await prisma.provaAndamento.findFirst({
@@ -74,4 +75,25 @@ export default class AnswerTestModel {
                 }
             }
          } )
-}}
+    }
+
+    static async findAllQuestions(
+        id_prova: number) {
+            return await prisma.provasTodasQuestoes.findMany({
+                where:{
+                    idProva: id_prova
+                }
+            })
+        }
+
+    static async findUserTest(
+        id_usuario: number,
+        id_prova: number) {
+            return await prisma.usuarioProva.findFirst({
+                where:{
+                    idProvaAndamento: id_prova,
+                    idUsuario: id_usuario
+                }
+            })
+        } 
+}
