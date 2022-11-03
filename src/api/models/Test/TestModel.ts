@@ -159,33 +159,39 @@ export default class TestModel {
             }
         })
     }
-    static async findAdminTests({
+
+    static async findAdminTests() : Promise<AdministradorProvas[]> {
+        return await prismaClient.administradorProvas.findMany()
+    } 
+
+    static async filterAdminTests({
         tipo,
         ids_stacks,
-        ids_habilidades
+        ids_habilidades,
+        pagina,
     } : filter) {
         return await prismaClient.administradorProvas.findMany({
             where:{
                 provas:{
-                    provaTipo:{
-                        tipo:{
-                            equals: tipo
-                        }
-                    },
-                    provaHabilidade:{
-                        some: {
-                            idHabilidade:{
-                                in: ids_habilidades
+                            provaTipo:{
+                                tipo:{
+                                    equals: tipo
+                                }
+                            },
+                            provaHabilidade:{
+                                some: {
+                                    idHabilidade:{
+                                        in: ids_habilidades
+                                    }
+                                }
+                            },
+                            provaStack:{
+                                some: {
+                                    idProvaStack:{
+                                        in: ids_stacks
+                                    }
+                                }
                             }
-                        }
-                    },
-                    provaStack:{
-                        some: {
-                            idProvaStack:{
-                                in: ids_stacks
-                            }
-                        }
-                    }
                 }
             },
             select:{
@@ -222,7 +228,9 @@ export default class TestModel {
                         }
                     }
                 }
-            }
+            },
+            take: 20,
+            skip: pagina * 20
         })
     }
 }   

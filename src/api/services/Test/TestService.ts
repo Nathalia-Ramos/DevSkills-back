@@ -127,11 +127,37 @@ export default class TestService {
         }
     }
 
-    const adminTests = await TestModel.findAdminTests(userFilters)
+    if(!userFilters.pagina) {
+        if(typeof userFilters.pagina != 'number') {
+            return {
+                error: "Campo página deve ser um número.",
+                statusCode: 400
+            }
+        } else if(userFilters.pagina == 0) {
+            return {
+                error: "Campo página deve ser um valor positivo, acima de 0.",
+                statusCode: 400
+            }
+        }
+    }  
+
+    userFilters.pagina -= 1
+
+    const adminTests = await TestModel.filterAdminTests(userFilters)
 
     if (isEmpty(adminTests)) {
+
+        const allTests = (await TestModel.findAdminTests())?.length
+
+        const allPages = Math.floor(allTests / 20)
+
         return {
-            data: adminTests,
+            data: {
+                page: userFilters.pagina + 1,
+                totalPages: allPages,
+                totalResults: allTests,
+                results: adminTests
+            },
             statusCode: 200
         }
     } else {
