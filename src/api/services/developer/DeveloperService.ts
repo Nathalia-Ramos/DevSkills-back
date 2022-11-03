@@ -212,13 +212,13 @@ export default class DeveloperService {
                 port: 465,
                 secure: true,
                 auth: {
-                  user: 'skillhunters.devskills@gmail.com',
-                  pass: 'sgxlqcracqcwqyut',
+                  user: 'devskillsorg@gmail.com',
+                  pass: 'krplzgtrhdwgfain',
                 }
               })
         
               const info = await transporter.sendMail({
-                from: "DevSkills <skillhunters.devskills@gmail.com>",
+                from: "DevSkills <devskillsorg@gmail.com>",
                 to: userExist.email,
                 subject: "Nova Senha",
                 text: "Sua nova senha é: " + newPassword,

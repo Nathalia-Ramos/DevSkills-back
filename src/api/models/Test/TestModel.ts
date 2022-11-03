@@ -5,9 +5,10 @@ import { QuestaoProva } from "@prisma/client";
 import { Question, TestData } from "../../interfaces/Test/Tests";
 import Test from "../../interfaces/Test/Test";
 import TestProgress from "../../interfaces/Test/TestProgress";
+import filter from "../../interfaces/Test/AdminFilter";
 
 export default class TestModel {
-    static async create({
+    static async createTest({
         titulo,
         descricao,
         link_repositorio,
@@ -40,14 +41,14 @@ export default class TestModel {
             }
         })
     }
-    static async FindCompany(id: number) : Promise<any>{
+    static async findCompany(id: number) : Promise<any>{
         return await prismaClient.empresa.findFirst({
             where: {
                 id: Number(id)
             }
         })
     }
-    static async FindAdmin(id: number): Promise<any> {
+    static async findAdmin(id: number): Promise<any> {
         return await prismaClient.administrador.findFirst({
             where: {
                 id: Number(id)
@@ -113,6 +114,7 @@ export default class TestModel {
             }
         })
     }
+
     static async TestProgress({
         data_inicio,
         data_fim,
@@ -130,7 +132,7 @@ export default class TestModel {
             }
         })
     }
-    static async TestAdmin(
+    static async testAdmin(
         id_admin: number,
         id_prova: number
     ): Promise <AdministradorProvas>{
@@ -141,7 +143,7 @@ export default class TestModel {
             }
         })
     }
-    static async FindTypeQuestion (
+    static async findTypeQuestion (
         id_tipo: number
     ): Promise <QuestaoProvaTipo | null> {
         return await prismaClient.questaoProvaTipo.findFirst({
@@ -150,7 +152,7 @@ export default class TestModel {
             }
         })
     }
-    static async FindTestType (
+    static async findTestType (
         tipo: string
     ): Promise <ProvaTipo | null> {
         return await prismaClient.provaTipo.findFirst({
@@ -170,4 +172,77 @@ export default class TestModel {
         })
     }
     
+    static async findAdminTests() : Promise<AdministradorProvas[]> {
+        return await prismaClient.administradorProvas.findMany()
+    } 
+
+    static async filterAdminTests({
+        tipo,
+        ids_stacks,
+        ids_habilidades,
+        pagina,
+    } : filter) {
+        return await prismaClient.administradorProvas.findMany({
+            where:{
+                provas:{
+                            provaTipo:{
+                                tipo:{
+                                    equals: tipo
+                                }
+                            },
+                            provaHabilidade:{
+                                some: {
+                                    idHabilidade:{
+                                        in: ids_habilidades
+                                    }
+                                }
+                            },
+                            provaStack:{
+                                some: {
+                                    idProvaStack:{
+                                        in: ids_stacks
+                                    }
+                                }
+                            }
+                }
+            },
+            select:{
+                provas:{
+                    select:{
+                        id: true,
+                        titulo: true,
+                        descricao: true,
+                        provaTipo:{
+                            select:{
+                                tipo: true
+                            }
+                        },
+                        provaHabilidade:{
+                            select:{
+                                habilidade:{
+                                    select:{
+                                        id: true,
+                                        nome: true,
+                                        icone: true,
+                                    }
+                                }
+                            }
+                        },
+                        provaStack:{
+                            select:{
+                                stack:{
+                                    select:{
+                                        id: true,
+                                        nome: true,
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            take: 20,
+            skip: pagina * 20
+        })
+    }
 }   

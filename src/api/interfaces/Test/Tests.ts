@@ -1,4 +1,3 @@
- 
 interface TestData {
     titulo: string,
     id_criador: number,
@@ -10,13 +9,13 @@ interface TestData {
     data_fim: string,
     duracao: string,
   
-  
     tipo_prova: "TEORICA" | "PRATICA"
     ids_habilidades: number[],
     ids_stacks: number[],
   
     questoes: Question[],
  }
+ 
  interface Question {
     enunciado: string,
     img_url?: string,
@@ -25,6 +24,7 @@ interface TestData {
     tipo?: "DISSERTATIVA" | "MULTIPLA_ESCOLHA" | "UNICA_ESCOLHA"
     alternativas?: Option[]
  }
+
  interface Option {
     texto: string,
     correta: boolean

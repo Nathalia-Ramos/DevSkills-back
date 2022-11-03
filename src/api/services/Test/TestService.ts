@@ -4,13 +4,16 @@ import TestProgress from "../../interfaces/Test/TestProgress";
 import ReturnMessages from "../../../config/ReturnMessages"
 import QuestionService from "./QuestionService";
 import validateRegex from "../../utils/RegexValidate";
+import filter from "../../interfaces/Test/AdminFilter";
+import isEmpty from "../../utils/isEmpty";
 
 export default class TestService {
-    static async create (test:  TestData){
-        if(test.titulo, test.descricao, test.link_repositorio){
+    static async create (test:  TestData ){
+        if(test.titulo, test.descricao, test.tipo_prova){
+        
             if(test.titulo.length <= 50 ){
 
-                const testType = await TestModel.FindTestType(test.tipo_prova)
+                const testType = await TestModel.findTestType(test.tipo_prova)
 
                 if(test.tipo_prova == "TEORICA" || test.tipo_prova == "PRATICA"){      
                           if(testType) {        
@@ -22,7 +25,7 @@ export default class TestService {
                                     id_criador: test.id_criador               
                                 }
                     
-                            const prova = await TestModel.create(createTest)
+                            const prova = await TestModel.createTest(createTest)
                             const provaID = prova.id
 
                             const data_fim = new Date(test.data_fim)
@@ -31,9 +34,9 @@ export default class TestService {
 
                          //procurando admin
                          try {
-                            const admin = await TestModel.FindAdmin(test.id_criador)
+                            const admin = await TestModel.findAdmin(test.id_criador)
                             if(test.id_criador == admin){
-                                await TestModel.TestAdmin(test.id_criador, provaID)
+                                await TestModel.testAdmin(test.id_criador, provaID)
                             }
                          } catch (error) {
                             
@@ -53,7 +56,7 @@ export default class TestService {
                                 TestModel.TestProgress(testProgress)
                                 break;
                             case "ADMIN":
-                                TestModel.TestAdmin(test.id_criador, provaID)
+                                TestModel.testAdmin(test.id_criador, provaID)
                             default:
                                 break;
                          }
@@ -75,14 +78,22 @@ export default class TestService {
                             }
 
                             const questions = test.questoes
+
+                            console.log(provaID)
+                            console.log(prova)
                         
                             try {
-                                if(questions.length > 1 && test.tipo_prova === "TEORICA" )  {
+                                if(questions.length >= 1 && test.tipo_prova === "TEORICA" )  {
                                     questions.forEach(Questions => {
                                         return QuestionService.createQuestion(Questions, provaID)
                                     })
                                 }else if (questions.length <= 1 && test.tipo_prova === "PRATICA"){
                                     QuestionService.createQuestion(questions[0], provaID)
+                                }else{
+                                   return {
+                                       error: "Prova prática só pode conter uma questão",
+                                       statusCode: 400
+                                   } 
                                 }
                                    console.log(questions)
                             } catch (error: any) {
@@ -172,4 +183,79 @@ export default class TestService {
             }
         }
     }
+}   
+   }
+
+   static async findAdminTests(reqFilters: filter) {
+
+    const userFilters = reqFilters
+
+    if(userFilters.tipo) {
+        if(typeof userFilters.tipo != 'string') {
+            return {
+                error: "Campo tipo deve ser string.",
+                statusCode: 400
+            }
+        }
+    }
+
+    if(userFilters.ids_habilidades) {
+        if(typeof userFilters.ids_habilidades != 'number' && !Array.isArray(userFilters.ids_habilidades)) {
+            return {
+                error: "Campo ids_habilidades deve ser um número ou um array de números.",
+                statusCode: 400
+            }
+        }
+    }
+
+    if(userFilters.ids_stacks) {
+        if(typeof userFilters.ids_stacks != 'number' && !Array.isArray(userFilters.ids_stacks)) {
+            return {
+                error: "Campo ids_stacks deve ser um número ou um array de números.",
+                statusCode: 400
+            }
+        }
+    }
+
+    if(!userFilters.pagina) {
+        if(typeof userFilters.pagina != 'number') {
+            return {
+                error: "Campo página deve ser um número.",
+                statusCode: 400
+            }
+        } else if(userFilters.pagina == 0) {
+            return {
+                error: "Campo página deve ser um valor positivo, acima de 0.",
+                statusCode: 400
+            }
+        }
+    }  
+
+    userFilters.pagina -= 1
+
+    const adminTests = await TestModel.filterAdminTests(userFilters)
+
+    if (isEmpty(adminTests)) {
+
+        const allTests = (await TestModel.findAdminTests())?.length
+
+        const allPages = Math.ceil(allTests / 20)
+
+        return {
+            data: {
+                page: userFilters.pagina + 1,
+                totalPages: allPages,
+                totalResults: allTests,
+                results: adminTests
+            },
+            statusCode: 200
+        }
+    } else {
+        return {
+            error: "Não foram encontradas provas com as características especificadas.",
+            statusCode: 404
+        }
+    }
+
+   }
 }   

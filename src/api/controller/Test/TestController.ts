@@ -1,6 +1,7 @@
 import {Request, Response} from "express"
 import ReturnMessages from "../../../config/ReturnMessages"
 import TestProgress from "../../interfaces/Test/TestProgress"
+import filter from "../../interfaces/Test/AdminFilter"
 import {TestData} from "../../interfaces/Test/Tests"
 import TestModel from "../../models/Test/TestModel"
 import TestService from "../../services/Test/TestService"
@@ -11,12 +12,21 @@ export default class TestController {
     static async execute(req: Request, res: Response){
         
         const teste : TestData = req.body
+        console.log(teste)
         
         const tests = await TestService.create(teste)
-        // console.log(tests)
-        // console.log(teste)
 
-        return res.status(201).json(tests)
+    }
+
+    static async findAdminTests(req: Request, res: Response) {
+
+        const data : filter = req.body
+        console.log(data)
+
+        const answer = await TestService.findAdminTests(data)
+
+        return res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data })
+
     }
 
     static async relateTestTemplate(req: Request, res: Response){
