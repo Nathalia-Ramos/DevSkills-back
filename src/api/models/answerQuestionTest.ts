@@ -15,6 +15,40 @@ export default class answerQuestionTest {
         })
     }
 
+    static async updateTextAnswer(
+        id_resposta: number,
+        id_prova_usuario: number,
+        id_questao: number,
+        resposta: string
+    ) : Promise<RespostaQuestaoProva> {
+        return await prisma.respostaQuestaoProva.update({
+            data:{
+                idQuestaoProva: id_questao,
+                idUsuarioProva: id_prova_usuario,
+                resposta: resposta
+            },
+            where: {
+                id: id_resposta
+            }
+        })
+    }
+
+    static async updateChoiceAnswer(
+        id_resposta: number,
+        id_prova_usuario: number,
+        id_alternativa: number
+    ) : Promise<RespostaAlternativaProva> {
+        return await prisma.respostaAlternativaProva.update({
+            data:{
+                idUsuarioProva: id_prova_usuario,
+                idAlternativaProva: id_alternativa
+            },
+            where: {
+                id: id_resposta
+            }
+        })
+    }
+    
     static async relateTextAnswer(
         idProva: number,
         idQuestao: number,
@@ -83,5 +117,29 @@ export default class answerQuestionTest {
                 }
             })
         }
+    
+    static async findChoiceAnswer(
+        id_alternativa: number,
+        id_prova_usuario: number
+    ) : Promise<RespostaAlternativaProva | null> {
+        return await prisma.respostaAlternativaProva.findFirst({
+            where:{
+                idAlternativaProva: id_alternativa,
+                idUsuarioProva: id_prova_usuario
+            }
+        })
+    }
+
+    static async findTextAnswer(
+        id_prova_usuario: number,
+        id_questao: number 
+    ) {
+        return await prisma.respostaQuestaoProva.findFirst({
+            where:{
+                idUsuarioProva: id_prova_usuario,
+                idQuestaoProva: id_questao
+            }
+        })
+    }
 
 }
