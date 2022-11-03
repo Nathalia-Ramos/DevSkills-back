@@ -149,7 +149,7 @@ export default class TestService {
 
         const allTests = (await TestModel.findAdminTests())?.length
 
-        const allPages = Math.floor(allTests / 20)
+        const allPages = Math.ceil(allTests / 20)
 
         return {
             data: {
