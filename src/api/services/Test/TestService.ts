@@ -236,14 +236,13 @@ export default class TestService {
     if (isEmpty(adminTests)) {
 
         const allTests = (await TestModel.findAdminTests())?.length
-
         const allPages = Math.ceil(allTests / 20)
 
         return {
             data: {
                 page: userFilters.pagina + 1,
                 totalPages: allPages,
-                totalResults: allTests,
+                totalResults: Math.ceil(allTests / allPages),
                 results: adminTests
             },
             statusCode: 200
