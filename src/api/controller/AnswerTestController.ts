@@ -22,4 +22,14 @@ export default class AnswerTestController {
         res.status(200).json(answer)
 
     }
+
+    static async updateTest(req: Request, res: Response) {
+
+        const data : userTest = req.body
+
+        const answer = await TestService.upsertTest(data)
+
+        res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {message: answer.message})
+
+    }
 }
