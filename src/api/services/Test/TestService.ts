@@ -115,7 +115,7 @@ export default class TestService {
 
                 // if (validateRegex(testInfo.data_inicio, '([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))')) {
 
-                    const companyExist = await TestModel.FindCompany(testInfo.id_empresa)
+                    const companyExist = await TestModel.findCompany(testInfo.id_empresa)
                 
                     if (companyExist) {
                         
@@ -183,8 +183,6 @@ export default class TestService {
             }
         }
     }
-}   
-   }
 
    static async findAdminTests(reqFilters: filter) {
 
