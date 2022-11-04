@@ -1,10 +1,11 @@
-import { PrismaClient, Usuario, LoginUsuario, UsuarioHabilidade, UsuarioStack, UsuarioTelefone } from "@prisma/client";
+import { PrismaClient, Usuario, LoginUsuario, UsuarioHabilidade, UsuarioStack, UsuarioTelefone, Empresa, Prova, ProvaAndamento } from "@prisma/client";
 import bcrypt, { compare } from "bcrypt";
 import Jwt from "jsonwebtoken";
 import DeveloperData from "../../interfaces/Developer/Developer";
 import PhoneData from "../../interfaces/Developer/DeveloperPhone";
 import DeveloperStacks from "../../interfaces/Developer/DeveloperStacks";
 import DeveloperSkills from "../../interfaces/Developer/DeveloperSkills";
+import { prismaClient } from "../../../database/prismaClient";
 
 const prisma = new PrismaClient();
 
@@ -124,5 +125,37 @@ export default class UserDeveloperModel {
       }
     })
   } 
+
+  static async stackSearch(search: string) : Promise<ProvaAndamento | any>{
+    return await prismaClient.provaAndamento.findMany({
+      select:{
+        prova: true
+      },
+      where:{
+        prova:{
+          provaStack:{
+            some:{
+              stack:{
+                nome:{
+                  contains: search
+                }
+              }
+            }
+          },
+          OR:{
+            provaHabilidade:{
+              some:{
+                habilidade:{
+                  nome:{
+                    contains: search
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    })
+  }
   
 }

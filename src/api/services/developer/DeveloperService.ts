@@ -254,5 +254,12 @@ export default class DeveloperService {
       }
     }
     
-  }
+}
+
+static async stack(pesquisa: string){
+  const stack = await DeveloperModel.stackSearch(pesquisa);
+  const skills = await DeveloperModel.stackSearch(pesquisa)
+
+  return stack
+}
 }
