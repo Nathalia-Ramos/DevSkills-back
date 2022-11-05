@@ -45,18 +45,10 @@ export default class UserDeveloperController {
    static async skillsSearch(req: Request, res: Response){
     const {pesquisa} = req.params
 
+    if(!pesquisa) return res.status(404).json({error: "nao doi "})
     const result = await DeveloperService.skill(pesquisa)
 
     return res.status(200).json(result)
    }
-   static async test(req: Request, res: Response) {
-    
-    try { 
-        const test = await UserDeveloperModel.allTest()
-        console.log(test)
-        return res.status(200).json({message: "Provas", data: test})
-    } catch (error) {
-        
-    }
-   }
+  
 }

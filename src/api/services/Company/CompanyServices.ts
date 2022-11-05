@@ -163,4 +163,20 @@ export default class CompanyService {
         }
 
     }
+
+    static async stack(pesquisa: string){
+        const result =  UserCompanyModel.companySearchStack(pesquisa)
+        
+        return result
+    }
+    static async skill(search: string){
+        const resultado =  UserCompanyModel.Skill(search)
+
+        return resultado
+    }
+    static async testTitlle(search: string) {
+        const result = UserCompanyModel.tittleTestSearch(search)
+
+        return result
+    }
 }

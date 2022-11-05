@@ -15,5 +15,15 @@ export default class TestController {
 
         return res.status(201).json({message: "Prova inserida com sucesso!"})
     }
+    static async test(req: Request, res: Response) {
+    
+        try { 
+            const test = await TestModel.allTest()
+            
+            return res.status(200).json({message: "Provas", data: test})
+        } catch (error) {
+            
+        }
+       }
   
 }

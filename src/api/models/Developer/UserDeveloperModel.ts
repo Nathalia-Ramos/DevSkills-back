@@ -167,18 +167,5 @@ export default class UserDeveloperModel {
       }
     })
   }
-  static async allTest(){
-    try {
-      const testAll = await prismaClient.prova.findMany()
 
-      prisma.$disconnect;
-  
-      return {testAll};
-    } catch (error) {
-      prisma.$disconnect;
-          
-      return error
-    }
-    
-  }
 }

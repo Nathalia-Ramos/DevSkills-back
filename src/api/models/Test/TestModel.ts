@@ -169,5 +169,20 @@ export default class TestModel {
             }
         })
     }
+    static async allTest(){
+        try {
+          const testAll = await prismaClient.prova.findMany()
+    
+          prismaClient.$disconnect;
+      
+          return {testAll};
+        } catch (error) {
+          
+          prismaClient.$disconnect;
+              
+          return error
+        }
+        
+      }
     
 }   
