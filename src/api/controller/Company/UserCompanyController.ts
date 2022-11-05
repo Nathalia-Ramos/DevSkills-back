@@ -48,5 +48,12 @@ export default class UserCompanyController{
         return res.status(200).json({data: result})
 
     }
+    static async listTestCompany(req: Request, res: Response){
+        const {search} = req.params
+    
+        const result = await CompanyService.listTestCompany(search)
+    
+        return res.status(200).json({data: result})
+    }
 
 }

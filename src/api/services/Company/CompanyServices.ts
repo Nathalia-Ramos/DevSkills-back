@@ -108,7 +108,6 @@ export default class CompanyService {
             }
        }
     }
-
     static async sendMail(email: string) {
 
         const userExist = await UserCompanyModel.findEmailCompany(email);
@@ -163,11 +162,16 @@ export default class CompanyService {
         }
 
     }
-
     static async getCompanySeacrh(pesquisa: string){
         const result =  UserCompanyModel.userSeach(pesquisa)
         
         return result
     }
+    static async listTestCompany(search: string){
+        const result = UserCompanyModel.searchTestCompany(search)
+  
+        return result
+    }
+ 
   
 }

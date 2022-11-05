@@ -6,6 +6,8 @@ const router = Router()
 router.post('/', UserCompany.execute)
 router.get('/allCompany', UserCompany.getCompany)
 router.get('/search/:pesquisa', UserCompany.companySearch)
+router.get('/test/:search', UserCompany.listTestCompany)
+
 
 
 

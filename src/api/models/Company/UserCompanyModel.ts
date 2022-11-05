@@ -45,7 +45,6 @@ export default class UserCompanyModel{
 
         
   }
-
   static async findCompanyCnpj(cnpj : string) : Promise <any> {
         
         try {
@@ -317,4 +316,25 @@ export default class UserCompanyModel{
       }
     })
   }
+  static async searchTestCompany(search: string) {
+    return await prismaClient.provaAndamento.findMany({
+      select: {
+        prova: true
+      },
+      where:{
+        prova:{
+          provaAndamento:{
+            some:{
+              empresa:{
+                nome_fantasia:{
+                  contains: search
+                }
+              }
+            }
+          }
+        }
+      }
+    })
+  }
+ 
 }
