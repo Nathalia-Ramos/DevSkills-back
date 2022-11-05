@@ -132,17 +132,49 @@ export default class UserDeveloperModel {
         prova: true
       },
       where:{
-        prova: {
-          provaStack:{
-            some:{
-              stack:{
-                nome:{
-                  contains: search
+       OR:[
+        {
+          prova:{
+            provaStack:{
+              some:{
+                stack:{
+                  nome:{
+                    contains: search
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          prova:{
+            provaHabilidade:{
+              some:{
+                habilidade:{
+                  nome:{
+                    contains: search
+                  }
+                }
+
+              }
+
+            }
+          }
+        },
+        {
+          prova:{
+            provaAndamento:{
+              some:{
+                prova:{
+                  titulo:{
+                    contains: search
+                  }
                 }
               }
             }
           }
         }
+       ]
       }
     })
   }
