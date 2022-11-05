@@ -126,7 +126,7 @@ export default class UserDeveloperModel {
     })
   } 
 
-  static async stackSearch(search: string) : Promise<ProvaAndamento | any>{
+  static async testSearch(search: string) : Promise<ProvaAndamento | any>{
     return await prismaClient.provaAndamento.findMany({
       select:{
         prova: true
@@ -179,45 +179,5 @@ export default class UserDeveloperModel {
     })
   }
 
-  static async skillsSearch(pesquisa: string) : Promise<ProvaAndamento | any>{
-    return await prismaClient.provaAndamento.findMany({
-      select: {
-        prova: true
-      },
-      where: {
-        prova: {
-          provaHabilidade:{
-            some:{
-              habilidade:{
-                nome:{
-                  contains: pesquisa
-                }
-              }
-            }
-          }
-        }
-      }
-    })
-  }
-  static async TestSearch(search : string) : Promise <ProvaAndamento | any>{
-    return await prismaClient.provaAndamento.findMany({
-      select: {
-        prova: true
-      },
-      where: {
-        prova:{
-            provaAndamento:{
-                some:{
-                    prova:{
-                        titulo: {
-                            contains: search
-                        }
-                    }
-                }
-            }
-        }
-      }
-    })
-  }
-
+ 
 }

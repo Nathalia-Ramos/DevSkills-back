@@ -10,9 +10,8 @@ router.post('/login', UserDeveloperController.auth)
 router.post('/forgotPassword', UserDeveloperController.sendPassMail)
 router.post('/test_answer', AnswerTestController.create)
 router.get('/test/:id', AnswerTestController.findTest)
-router.get('/testSearch/:search', UserDeveloperController.stackSearch)
-router.get('/skill/:pesquisa', UserDeveloperController.skillsSearch)
-router.get('/teste/:search', UserDeveloperController.scrr)
+router.get('/testSearch/:search', UserDeveloperController.userSearch)
+
 
 
 export default router

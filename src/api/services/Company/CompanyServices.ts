@@ -164,19 +164,10 @@ export default class CompanyService {
 
     }
 
-    static async stack(pesquisa: string){
-        const result =  UserCompanyModel.Stack(pesquisa)
+    static async getCompanySeacrh(pesquisa: string){
+        const result =  UserCompanyModel.userSeach(pesquisa)
         
         return result
     }
-    static async skill(search: string){
-        const resultado =  UserCompanyModel.Skill(search)
-
-        return resultado
-    }
-    static async testTitlle(search: string) {
-        const result = UserCompanyModel.tittleTestSearch(search)
-
-        return result
-    }
+  
 }

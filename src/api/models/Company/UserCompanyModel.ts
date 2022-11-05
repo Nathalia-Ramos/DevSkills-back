@@ -255,7 +255,7 @@ export default class UserCompanyModel{
     }
 
   }
-  static async Stack(search: string) : Promise <ProvaAndamento |any>{
+  static async userSeach(search: string) : Promise <ProvaAndamento |any>{
     return await prismaClient.provaAndamento.findMany({
       select: {
         empresa: true
@@ -307,62 +307,4 @@ export default class UserCompanyModel{
       }
     })
   }
-  static async Skill(search: string) : Promise <ProvaAndamento |any>{
-    return await prismaClient.provaAndamento.findMany({
-      select: {
-        empresa: true
-      },
-      where: {
-        prova:{
-          provaHabilidade:{
-            some:{
-              habilidade:{
-                nome:{
-                  contains: search
-                }
-              }
-            }
-          }
-        }
-      }
-    })
-  }
-  static async tittleTestSearch(search : string) : Promise <Empresa | any>{
-    return await prismaClient.empresa.findMany({
-      select: {
-        nome_fantasia: true,
-        id: true
-      },
-      where: {
-       provaAndamento:{
-        some:{
-          prova:{
-            titulo: {
-              contains: search
-            }
-          }
-        }
-       }
-      }
-    })
-  }
- /* static async tittleTestSearch(search : string) : Promise <ProvaAndamento | any>{
-    return await prismaClient.provaAndamento.findMany({
-      select: {
-        empresa: true
-      },
-      where: {
-        prova:{
-          provaAndamento:{
-            some:{
-              prova:{
-                titulo: search
-              }
-            }
-          }
-        }
-      }
-    })
-  }*/
-  
 }

@@ -257,22 +257,10 @@ export default class DeveloperService {
 }
 
 static async stack(search: string){
-  const stack = await DeveloperModel.stackSearch(search);
+  const stack = await DeveloperModel.testSearch(search);
  
-  return {stack}
+  return stack
 }
 
-static async skill(pesquisa: string){
-  const result = await DeveloperModel.skillsSearch(pesquisa)
-  console.log(result)
-
-  return {result}
-}
-static async testTitlle(search: string) {
-  const result = DeveloperModel.TestSearch  (search)
-  console.log (result)
-
-  return result
-}
 
 }

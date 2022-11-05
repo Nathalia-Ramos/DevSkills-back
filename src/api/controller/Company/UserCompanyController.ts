@@ -39,30 +39,14 @@ export default class UserCompanyController{
         }
     }
 
-    static async getCompanyStack(req: Request, res: Response){
+    static async companySearch(req: Request, res: Response){
         const {pesquisa} = req.params
 
-        const result = await CompanyService.stack(pesquisa)
+        const result = await CompanyService.getCompanySeacrh(pesquisa)
         console.log(result)
 
         return res.status(200).json({data: result})
 
-    }
-    static async getCompanySkill(req: Request, res: Response){
-        const {search} = req.params
-
-        const resultado = await CompanyService.skill(search)
-        console.log(resultado)
-
-        return res.status(200).json( {data: resultado})
-
-    }
-    static async getCompanyTest(req: Request, res: Response){
-        const { search } = req.params
-
-        const result = await CompanyService.testTitlle(search)
-
-        return res.status(200).json({data: result})
     }
 
 }

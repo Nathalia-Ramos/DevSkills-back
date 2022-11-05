@@ -36,31 +36,14 @@ export default class UserDeveloperController {
     res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {message: answer.message})
 
    }
-   static async stackSearch(req: Request, res: Response){
+   static async userSearch(req: Request, res: Response){
        const {search} = req.params
 
        const result  = await DeveloperService.stack(search)
 
-       return res.status(200).json(result)
-
-   }
-   static async skillsSearch(req: Request, res: Response){
-    const {pesquisa} = req.params
-
-    const result = await DeveloperService.skill(pesquisa)
-
-    return res.status(200).json(result)
-   }
-   
-   static async scrr (req: Request, res: Response){
-
-       const { search } = req.params
-    
-       const result = await DeveloperService.testTitlle(search)
-       console.log(result)
-    
        return res.status(200).json({data: result})
-   }
 
+   }
+  
   
 }
