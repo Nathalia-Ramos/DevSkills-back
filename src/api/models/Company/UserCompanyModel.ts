@@ -255,33 +255,43 @@ export default class UserCompanyModel{
     }
 
   }
-  static async userSeach(search: string) : Promise <ProvaAndamento |any>{
-    return await prismaClient.provaAndamento.findMany({
+  static async userSeach(search: string) : Promise <Empresa |any>{
+    return await prismaClient.empresa.findMany({
       select: {
-        empresa: true
+        nome_fantasia: true,
+        logo: true,
+        id: true
       },
       where: {
         OR: [
           {
-           prova:{
-              provaStack:{
-                some:{
-                  stack:{
-                    nome:{
-                      contains: search
+           provaAndamento:{
+            some:{
+              prova:{ 
+                provaStack:{
+                  some:{
+                    stack:{
+                      nome:{
+                        contains: search
+                      }
                     }
                   }
-                }
-               }
+                 }
+              }
+            }
             },
           },
           {
-            prova:{
-              provaHabilidade:{
-                some:{
-                  habilidade:{
-                    nome:{
-                      contains: search
+            provaAndamento:{
+              some:{
+                prova:{
+                  provaHabilidade:{
+                    some:{
+                      habilidade:{
+                        nome:{
+                          contains: search
+                        }
+                      }
                     }
                   }
                 }
@@ -289,16 +299,16 @@ export default class UserCompanyModel{
             }
           },
           {
-            prova:{
-              provaAndamento:{
-                some:{
+            provaAndamento:{
+              some:{
                   prova:{
                     titulo:{
                       contains: search
                     }
                   }
-                }
               }
+              
+              
             }
           }
           
