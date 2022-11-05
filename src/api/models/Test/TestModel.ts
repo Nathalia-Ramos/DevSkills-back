@@ -180,6 +180,33 @@ export default class TestModel {
         })
     }
 
+    static async userSearch( empresa: any): Promise<ProvaAndamento | any> {
+        return await prismaClient.empresa.findMany({
+            where: {
+                provaAndamento: {
+                    every: {
+                        empresa
+                    }
+                }
+            }
+        })
+    }
+    static async allTest(){
+        try {
+          const testAll = await prismaClient.prova.findMany()
+    
+          prismaClient.$disconnect;
+      
+          return {testAll};
+        } catch (error) {
+          
+          prismaClient.$disconnect;
+              
+          return error
+        }
+        
+    }
+
     static async findAdminTest(
         id_prova: number
     ) : Promise<AdministradorProvas | null> {

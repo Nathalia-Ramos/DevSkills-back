@@ -11,10 +11,11 @@ export default class TestController {
 
     static async execute(req: Request, res: Response){
         
-        const teste : TestData = req.body
-        console.log(teste)
+        const test : TestData = req.body
         
-        const tests = await TestService.create(teste)
+        const tests = await TestService.create(test)
+        
+        return res.status(201).json({message: "Prova inserida com sucesso!"})
 
     }
 
@@ -38,6 +39,16 @@ export default class TestController {
         return res.status(answer?.statusCode).json(
             answer.error ? { 'error': answer.error } : { 'message': answer.message }
         )
-
     }
+    static async test(req: Request, res: Response) {
+    
+        try { 
+            const test = await TestModel.allTest()
+            
+            return res.status(200).json({message: "Provas", data: test})
+        } catch (error) {
+            
+        }
+       }
+  
 }

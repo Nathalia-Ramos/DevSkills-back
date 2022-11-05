@@ -182,6 +182,19 @@ export default class TestService {
                 statusCode: 400
             }
         }
+
+   }   
+   static async search(user: number) {
+       const testExist = await TestModel.userSearch(user)
+       
+             // console.log(testExist)
+
+    if(testExist){
+        const user = await TestModel.userSearch(testExist.idProvaTipo)
+    }else{
+        return "errorrrrrrrrrrrrrr"
+    }
+
     }
 
    static async findAdminTests(reqFilters: filter) {
@@ -253,6 +266,5 @@ export default class TestService {
             statusCode: 404
         }
     }
-
    }
 }   
