@@ -163,4 +163,11 @@ export default class CompanyService {
         }
 
     }
+
+    static async getCompanySeacrh(pesquisa: string){
+        const result =  UserCompanyModel.userSeach(pesquisa)
+        
+        return result
+    }
+  
 }

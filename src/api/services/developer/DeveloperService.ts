@@ -254,5 +254,13 @@ export default class DeveloperService {
       }
     }
     
-  }
+}
+
+static async stack(search: string){
+  const stack = await DeveloperModel.testSearch(search);
+ 
+  return stack
+}
+
+
 }

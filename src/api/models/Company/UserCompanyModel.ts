@@ -1,6 +1,6 @@
 
 import AddressData from "../../interfaces/Company/Address" 
-import { Empresa } from "@prisma/client"
+import { Empresa, ProvaAndamento } from "@prisma/client"
 import CityData from "../../interfaces/Company/City"
 import { LoginEmpresa } from "@prisma/client"
 import StateData from "../../interfaces/Company/State"
@@ -44,9 +44,9 @@ export default class UserCompanyModel{
         }
 
         
-      }
+  }
 
-      static async findCompanyCnpj(cnpj : string) : Promise <any> {
+  static async findCompanyCnpj(cnpj : string) : Promise <any> {
         
         try {
           const userExist = await prismaClient.empresa.findUnique({
@@ -66,9 +66,8 @@ export default class UserCompanyModel{
     
           return false;
         }
-      }
-
-      static async createPhone({
+  }
+  static async createPhone({
         ddd,
         numero_telefone,
         id_empresa
@@ -93,9 +92,8 @@ export default class UserCompanyModel{
     
           return false;
         }
-      }
-
-      static async createAdress({
+  }
+  static async createAdress({
         id_cidade,
         bairro,
         logradouro,
@@ -129,9 +127,8 @@ export default class UserCompanyModel{
     
           return false;
         }
-      }
-
-      static async createCity({
+  }
+  static async createCity({
         nome_cidade,
         id_estado
       }: CityData) : Promise<any> {
@@ -156,9 +153,8 @@ export default class UserCompanyModel{
     
           return false;
         }
-      }
-
-      static async createState({
+  }
+  static async createState({
         nome_estado
 
       }: StateData) : Promise<any> {
@@ -174,10 +170,8 @@ export default class UserCompanyModel{
         } catch (error) {
           console.error(error)
         }
-      }
-
-   
-      static async findAddresID(idEndereco : string) : Promise <any> {
+  }
+  static async findAddresID(idEndereco : string) : Promise <any> {
         try {
           const FindIDAdress = await prismaClient.enderecoEmpresa.findUnique({
             where:{
@@ -193,9 +187,8 @@ export default class UserCompanyModel{
           prismaClient.$disconnect;
           console.log(error)
         }
-      }
-
-      static async Login({
+  }
+  static async Login({
         senha,
         id_empresa
       } : LoginData) : Promise <any> {
@@ -219,10 +212,8 @@ export default class UserCompanyModel{
             prismaClient.$disconnect;
             console.log(error)
           }
-      }
-
-
-    static async findIDLogin(id_empresa: number) : Promise<LoginEmpresa | null> {
+  }
+  static async findIDLogin(id_empresa: number) : Promise<LoginEmpresa | null> {
 
         return await prismaClient.loginEmpresa.findFirst({
           where:{
@@ -230,9 +221,8 @@ export default class UserCompanyModel{
           }
         })
 
-    }
-
-    static async findEmailCompany (email: string): Promise<Empresa | null> {
+  }
+  static async findEmailCompany (email: string): Promise<Empresa | null> {
       
         return await prismaClient.empresa.findFirst({
           where: {
@@ -240,8 +230,7 @@ export default class UserCompanyModel{
           }
         })
             
-}
-
+  }
   static async updatePassword(id: number, senha : string) : Promise<LoginEmpresa> {
       return await prismaClient.loginEmpresa.update({
         data:{
@@ -251,7 +240,81 @@ export default class UserCompanyModel{
           id: id
         }
       })
-    } 
+  } 
+  static async allCompany(){
+    try {
+      const company = await prismaClient.empresa.findMany()
 
+      prismaClient.$disconnect
 
+      return company
+    } catch (error) {
+      prismaClient.$disconnect
+
+      return error
+    }
+
+  }
+  static async userSeach(search: string) : Promise <Empresa |any>{
+    return await prismaClient.empresa.findMany({
+      select: {
+        nome_fantasia: true,
+        logo: true,
+        id: true
+      },
+      where: {
+        OR: [
+          {
+           provaAndamento:{
+            some:{
+              prova:{ 
+                provaStack:{
+                  some:{
+                    stack:{
+                      nome:{
+                        contains: search
+                      }
+                    }
+                  }
+                 }
+              }
+            }
+            },
+          },
+          {
+            provaAndamento:{
+              some:{
+                prova:{
+                  provaHabilidade:{
+                    some:{
+                      habilidade:{
+                        nome:{
+                          contains: search
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            provaAndamento:{
+              some:{
+                  prova:{
+                    titulo:{
+                      contains: search
+                    }
+                  }
+              }
+              
+              
+            }
+          }
+          
+        ],
+
+      }
+    })
+  }
 }
