@@ -4,6 +4,8 @@ import { Administrador, AdministradorProvas, Empresa, prisma, Prova, ProvaAndame
 import { QuestaoProva } from "@prisma/client";
 import { Question, TestData } from "../../interfaces/Test/Tests";
 import Test from "../../interfaces/Test/Test";
+import TestProgress from "../../interfaces/Test/TestProgress";
+import filter from "../../interfaces/Test/AdminFilter";
 
 export default class TestModel {
     static async createTest({
@@ -112,13 +114,14 @@ export default class TestModel {
             }
         })
     }
-    static async testProgress(
-        data_inicio: string,
-        data_fim: Date,
-        duracao: string,
-        id_empresa: number,
-        id_prova: number
-    ): Promise <ProvaAndamento> {
+
+    static async TestProgress({
+        data_inicio,
+        data_fim,
+        duracao,
+        id_empresa,
+        id_prova
+    } : TestProgress): Promise <ProvaAndamento> {
         return await prismaClient.provaAndamento.create({
             data:{
                 data_fim: new Date(data_fim),
@@ -158,6 +161,7 @@ export default class TestModel {
             }
         })
     }
+
     static async userSearch( empresa: any): Promise<ProvaAndamento | any> {
         return await prismaClient.empresa.findMany({
             where: {
@@ -184,5 +188,88 @@ export default class TestModel {
         }
         
     }
+
+    static async findAdminTest(
+        id_prova: number
+    ) : Promise<AdministradorProvas | null> {
+        return await prismaClient.administradorProvas.findFirst({
+            where:{
+                idProva: id_prova
+            }
+        })
+    }
     
+    static async findAdminTests() : Promise<AdministradorProvas[]> {
+        return await prismaClient.administradorProvas.findMany()
+    } 
+
+    static async filterAdminTests({
+        tipo,
+        ids_stacks,
+        ids_habilidades,
+        pagina,
+    } : filter) {
+        return await prismaClient.administradorProvas.findMany({
+            where:{
+                provas:{
+                            provaTipo:{
+                                tipo:{
+                                    equals: tipo
+                                }
+                            },
+                            provaHabilidade:{
+                                some: {
+                                    idHabilidade:{
+                                        in: ids_habilidades
+                                    }
+                                }
+                            },
+                            provaStack:{
+                                some: {
+                                    idProvaStack:{
+                                        in: ids_stacks
+                                    }
+                                }
+                            }
+                }
+            },
+            select:{
+                provas:{
+                    select:{
+                        id: true,
+                        titulo: true,
+                        descricao: true,
+                        provaTipo:{
+                            select:{
+                                tipo: true
+                            }
+                        },
+                        provaHabilidade:{
+                            select:{
+                                habilidade:{
+                                    select:{
+                                        id: true,
+                                        nome: true,
+                                        icone: true,
+                                    }
+                                }
+                            }
+                        },
+                        provaStack:{
+                            select:{
+                                stack:{
+                                    select:{
+                                        id: true,
+                                        nome: true,
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            take: 2,
+            skip: pagina * 2
+        })
+    }
 }   

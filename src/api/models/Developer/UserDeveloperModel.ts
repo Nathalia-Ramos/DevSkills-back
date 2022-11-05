@@ -37,7 +37,7 @@ export default class UserDeveloperModel {
       });
   }
 
-  static async findBy(name:string, value: string) : Promise<Usuario | null> {
+  static async findBy(name:string, value: string | number) : Promise<Usuario | null> {
   
       return await prisma.usuario.findFirst({
         where:{
