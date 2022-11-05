@@ -268,5 +268,11 @@ static async skill(pesquisa: string){
 
   return {result}
 }
+static async testTitlle(search: string) {
+  const result = DeveloperModel.TestSearch  (search)
+  console.log (result)
+
+  return result
+}
 
 }

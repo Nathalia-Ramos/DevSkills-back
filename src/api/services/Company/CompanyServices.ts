@@ -165,7 +165,7 @@ export default class CompanyService {
     }
 
     static async stack(pesquisa: string){
-        const result =  UserCompanyModel.companySearchStack(pesquisa)
+        const result =  UserCompanyModel.Stack(pesquisa)
         
         return result
     }

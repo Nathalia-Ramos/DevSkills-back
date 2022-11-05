@@ -167,5 +167,25 @@ export default class UserDeveloperModel {
       }
     })
   }
+  static async TestSearch(search : string) : Promise <ProvaAndamento | any>{
+    return await prismaClient.provaAndamento.findMany({
+      select: {
+        prova: true
+      },
+      where: {
+        prova:{
+            provaAndamento:{
+                some:{
+                    prova:{
+                        titulo: {
+                            contains: search
+                        }
+                    }
+                }
+            }
+        }
+      }
+    })
+  }
 
 }

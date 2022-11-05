@@ -183,6 +183,6 @@ export default class TestModel {
           return error
         }
         
-      }
+    }
     
 }   

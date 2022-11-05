@@ -255,30 +255,18 @@ export default class UserCompanyModel{
     }
 
   }
-  static async companySearchStack(pesquisa: string) : Promise <ProvaAndamento |any>{
+  static async Stack(search: string) : Promise <ProvaAndamento |any>{
     return await prismaClient.provaAndamento.findMany({
       select: {
         empresa: true
       },
       where: {
         prova:{
-          provaAndamento:{
+          provaStack:{
             some:{
-              empresa:{
-                provaAndamento:{
-                  some:{
-                    prova:{
-                      provaStack:{
-                        some:{
-                          stack:{
-                            nome:{
-                              contains: pesquisa
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
+              stack:{
+                nome:{
+                  contains: search
                 }
               }
             }

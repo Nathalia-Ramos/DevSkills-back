@@ -3,6 +3,8 @@ import { Request, Response } from "express";
 import RegisterDeveloperData from "../../interfaces/Developer/RegisterDeveloper";
 import { json } from "stream/consumers";
 import UserDeveloperModel from "../../models/Developer/UserDeveloperModel";
+import { prismaClient } from "../../../database/prismaClient";
+import { ProvaAndamento } from "@prisma/client";
  
 export default class UserDeveloperController {
    static async create(req: Request, res: Response) {
@@ -45,10 +47,20 @@ export default class UserDeveloperController {
    static async skillsSearch(req: Request, res: Response){
     const {pesquisa} = req.params
 
-    if(!pesquisa) return res.status(404).json({error: "nao doi "})
     const result = await DeveloperService.skill(pesquisa)
 
     return res.status(200).json(result)
    }
+   
+   static async scrr (req: Request, res: Response){
+
+       const { search } = req.params
+    
+       const result = await DeveloperService.testTitlle(search)
+       console.log(result)
+    
+       return res.status(200).json({data: result})
+   }
+
   
 }
