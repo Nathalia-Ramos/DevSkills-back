@@ -256,10 +256,17 @@ export default class DeveloperService {
     
 }
 
-static async stack(pesquisa: string){
-  const stack = await DeveloperModel.stackSearch(pesquisa);
-  const skills = await DeveloperModel.stackSearch(pesquisa)
-
-  return stack
+static async stack(search: string){
+  const stack = await DeveloperModel.stackSearch(search);
+ 
+  return {stack}
 }
+
+static async skill(pesquisa: string){
+  const result = await DeveloperModel.skillsSearch(pesquisa)
+  console.log(result)
+
+  return {result}
+}
+
 }

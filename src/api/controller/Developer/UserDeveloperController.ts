@@ -1,6 +1,8 @@
 import DeveloperService from "../../services/developer/DeveloperService"
 import { Request, Response } from "express";
 import RegisterDeveloperData from "../../interfaces/Developer/RegisterDeveloper";
+import { json } from "stream/consumers";
+import UserDeveloperModel from "../../models/Developer/UserDeveloperModel";
  
 export default class UserDeveloperController {
    static async create(req: Request, res: Response) {
@@ -36,9 +38,25 @@ export default class UserDeveloperController {
        const {search} = req.params
 
        const result  = await DeveloperService.stack(search)
-       const skills = await DeveloperService.stack(search)
 
-       return res.status(200).json({result})
+       return res.status(200).json(result)
 
+   }
+   static async skillsSearch(req: Request, res: Response){
+    const {pesquisa} = req.params
+
+    const result = await DeveloperService.skill(pesquisa)
+
+    return res.status(200).json(result)
+   }
+   static async test(req: Request, res: Response) {
+    
+    try { 
+        const test = await UserDeveloperModel.allTest()
+        console.log(test)
+        return res.status(200).json({message: "Provas", data: test})
+    } catch (error) {
+        
+    }
    }
 }

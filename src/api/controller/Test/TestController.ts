@@ -12,13 +12,8 @@ export default class TestController {
         const test : TestData = req.body
         
         const tests = await TestService.create(test)
+
+        return res.status(201).json({message: "Prova inserida com sucesso!"})
     }
-    static async search(req: Request, res: Response) {
-
-        const pesquisa = req.body
-        console.log(pesquisa)
-
-        const teste = await TestService.search(pesquisa)   
-
-    }
+  
 }

@@ -132,7 +132,7 @@ export default class UserDeveloperModel {
         prova: true
       },
       where:{
-        prova:{
+        prova: {
           provaStack:{
             some:{
               stack:{
@@ -141,14 +141,24 @@ export default class UserDeveloperModel {
                 }
               }
             }
-          },
-          OR:{
-            provaHabilidade:{
-              some:{
-                habilidade:{
-                  nome:{
-                    contains: search
-                  }
+          }
+        }
+      }
+    })
+  }
+
+  static async skillsSearch(pesquisa: string) : Promise<ProvaAndamento | any>{
+    return await prismaClient.provaAndamento.findMany({
+      select: {
+        prova: true
+      },
+      where: {
+        prova: {
+          provaHabilidade:{
+            some:{
+              habilidade:{
+                nome:{
+                  contains: pesquisa
                 }
               }
             }
@@ -157,5 +167,18 @@ export default class UserDeveloperModel {
       }
     })
   }
+  static async allTest(){
+    try {
+      const testAll = await prismaClient.prova.findMany()
+
+      prisma.$disconnect;
   
+      return {testAll};
+    } catch (error) {
+      prisma.$disconnect;
+          
+      return error
+    }
+    
+  }
 }

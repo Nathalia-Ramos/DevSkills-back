@@ -30,7 +30,7 @@ export default class AnswerTestModel {
 
     static async findTest(id_prova: number) {
         return await prisma.provaAndamento.findFirst({
-            where:{
+            /*where:{
                 id: id_prova
             },
             include:{
@@ -48,7 +48,7 @@ export default class AnswerTestModel {
                             }
                         }
                     }
-                }
+                }*/
             }
         )
     }
