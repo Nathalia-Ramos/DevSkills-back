@@ -4,18 +4,20 @@ import { userAnswer, userTest } from "../../interfaces/AnswerTest";
 const prisma = new PrismaClient();
 
 export default class AnswerTestModel {
-    static async createUserTest({
-        id_usuario,
-        id_prova_andamento,
-        finalizada,
-        data_entrega
-    } : userTest) : Promise<UsuarioProva> {
+    static async createUserTest(
+        id_usuario: number,
+        id_prova_andamento: number,
+        finalizada: boolean,
+        data_entrega: string,
+        data_inicio: string
+    ) : Promise<UsuarioProva> {
         return await prisma.usuarioProva.create({
             data:{
                 idUsuario: id_usuario,
                 idProvaAndamento: id_prova_andamento,
                 finalizada,
-                data_entrega
+                data_entrega,
+                data_inicio
             }
         })
     }

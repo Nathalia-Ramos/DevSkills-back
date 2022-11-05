@@ -217,14 +217,13 @@ export default class AnswerTestService {
                                                 }
                                             }
 
-                                            const testData = {
-                                                id_usuario: testAnswer.id_usuario,
-                                                id_prova_andamento: testAnswer.id_prova_andamento,
-                                                finalizada: testAnswer.finalizada,
-                                                data_entrega: testAnswer.data_entrega,
-                                            }
-
-                                            const testUser = await AnswerTestModel.createUserTest(testData);
+                                            const testUser = await AnswerTestModel.createUserTest(
+                                                testAnswer.id_usuario,
+                                                testAnswer.id_prova_andamento,
+                                                testAnswer.finalizada,
+                                                testAnswer.data_entrega ? testAnswer.data_entrega : 'null',
+                                                testAnswer.data_inicio ? testAnswer.data_inicio : 'null'
+                                            );
                                             
                                             console.log(testUser)
         
@@ -284,14 +283,14 @@ export default class AnswerTestService {
                         
                                 } else {
 
-                                    const testData = {
-                                        id_usuario: testAnswer.id_usuario,
-                                        id_prova_andamento: testAnswer.id_prova_andamento,
-                                        finalizada: testAnswer.finalizada,
-                                        data_entrega: testAnswer.data_entrega,
-                                    }
+                                    // const testData = {
+                                    //     id_usuario: testAnswer.id_usuario,
+                                    //     id_prova_andamento: testAnswer.id_prova_andamento,
+                                    //     finalizada: testAnswer.finalizada,
+                                    //     data_entrega: testAnswer.data_entrega,
+                                    // }
 
-                                    await AnswerTestModel.createUserTest(testData);
+                                    // await AnswerTestModel.createUserTest(testData);
                                     
                                     return {
                                         message: "Prova salva com sucesso.",

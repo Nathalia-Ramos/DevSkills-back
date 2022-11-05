@@ -1,11 +1,12 @@
 //import TestData from "../../../interfaces/Test/Test";
 import { prismaClient } from "../../../database/prismaClient"
-import { Administrador, AdministradorProvas, Empresa, prisma, Prova, ProvaAndamento, ProvaHabilidade, ProvaStack, ProvasTodasQuestoes, ProvaTipo, QuestaoProvaTipo } from "@prisma/client";
+import { UsuarioProva, AdministradorProvas, Empresa, prisma, Prova, ProvaAndamento, ProvaHabilidade, ProvaStack, ProvasTodasQuestoes, ProvaTipo, QuestaoProvaTipo } from "@prisma/client";
 import { QuestaoProva } from "@prisma/client";
 import { Question, TestData } from "../../interfaces/Test/Tests";
 import Test from "../../interfaces/Test/Test";
 import TestProgress from "../../interfaces/Test/TestProgress";
 import filter from "../../interfaces/Test/AdminFilter";
+import { userTest } from "../../../interfaces/AnswerTest";
 
 export default class TestModel {
     static async createTest({
@@ -27,6 +28,23 @@ export default class TestModel {
             })
           
     } 
+    static async createUserTest(
+        id_usuario: number,
+        id_prova_andamento: number,
+        finalizada: boolean,
+        data_entrega: string,
+        data_inicio: string
+    ) : Promise<UsuarioProva> {
+        return await prismaClient.usuarioProva.create({
+            data:{
+                idUsuario: id_usuario,
+                idProvaAndamento: id_prova_andamento,
+                finalizada,
+                data_entrega,
+                data_inicio
+            }
+        })
+    }
     static async findTest(id: number) : Promise<Prova | null>{
         return await prismaClient.prova.findFirst({
             where: {
