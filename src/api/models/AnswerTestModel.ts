@@ -31,52 +31,61 @@ export default class AnswerTestModel {
   
     }
 
+    static async findUserTestByID(
+        id_prova_usuario: number
+    ) {
+        return await prisma.usuarioProva.findFirst({
+            where:{
+                id: id_prova_usuario
+            },
+            include:{
+                provaAndamento:{
+                    include:{
+                        prova:{
+                            include:{
+                                provasTodasQuestoes:{
+                                    include:{
+                                        questaoProva:{
+                                            include:{
+                                                alternativaProva: {
+                                                    include:{
+                                                        respostaAlternativaProva: true
+                                                    }
+                                                },
+                                                respostaQuestaoProva: true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        })
+    }
+
     static async findTest(id_prova: number) {
         return await prisma.provaAndamento.findFirst({
-            /*where:{
+            where:{
                 id: id_prova
             },
             include:{
                 prova: {
                     include:{
                         provasTodasQuestoes: {
-                            select:{
+                            include:{
                                 questaoProva: {
-                                    select: {
-                                        alternativaProva: {
-                                            select:{
-                                                id: true,
-                                                opcao: true
-                                            }
-                                        },
-                                        id: true,
-                                        enunciado: true,
-                                        foto: true,
-                                        questaoProvaTipo:{
-                                            select:{
-                                                tipo: true,
-                                                id: true
-                                            }
-                                        }
-                                    // }
-                                    // include:{
-                                    //     alternativaProva: {
-                                    //         select: {
-                                    //             opcao: true,
-                                    //             idQuestaoProva: true
-                                    //         }
-                                    //     },
-                                    //     questaoProvaTipo: true
-                                    // },
-                                    // }
+                                    include:{
+                                        alternativaProva: true,
+                                        questaoProvaTipo: true
+                                    },
+                                    }
                                 }
                             }
                         }
                     }
-
                 }
-                }
-            }*/
          } )
     }
 

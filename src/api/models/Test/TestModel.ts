@@ -1,12 +1,13 @@
 //import TestData from "../../../interfaces/Test/Test";
 import { prismaClient } from "../../../database/prismaClient"
-import { UsuarioProva, AdministradorProvas, Empresa, prisma, Prova, ProvaAndamento, ProvaHabilidade, ProvaStack, ProvasTodasQuestoes, ProvaTipo, QuestaoProvaTipo } from "@prisma/client";
+import { UsuarioProva, AdministradorProvas, RespostaAlternativaProva, RespostaQuestaoProva, AlternativaProva, Prova, ProvaAndamento, ProvaHabilidade, ProvaStack, ProvasTodasQuestoes, ProvaTipo, QuestaoProvaTipo, prisma } from "@prisma/client";
 import { QuestaoProva } from "@prisma/client";
 import { Question, TestData } from "../../interfaces/Test/Tests";
 import Test from "../../interfaces/Test/Test";
 import TestProgress from "../../interfaces/Test/TestProgress";
 import filter from "../../interfaces/Test/AdminFilter";
 import { userTest } from "../../../interfaces/AnswerTest";
+import { updateUserTest } from "../../interfaces/Test/AnswerTest";
 
 export default class TestModel {
     static async createTest({
@@ -32,19 +33,34 @@ export default class TestModel {
         id_usuario: number,
         id_prova_andamento: number,
         finalizada: boolean,
-        data_entrega: string,
-        data_inicio: string
+        data_inicio: Date
     ) : Promise<UsuarioProva> {
         return await prismaClient.usuarioProva.create({
             data:{
                 idUsuario: id_usuario,
                 idProvaAndamento: id_prova_andamento,
                 finalizada,
-                data_entrega,
                 data_inicio
             }
         })
     }
+
+    static async updateUserTest({
+        data_entrega,
+        finalizada,
+        id_prova_usuario
+    } : updateUserTest) {
+        return await prismaClient.usuarioProva.update({
+            data:{
+                data_entrega: new Date(data_entrega),
+                finalizada,
+            },
+            where:{
+                id: id_prova_usuario
+            }
+        })
+    }
+
     static async findTest(id: number) : Promise<Prova | null>{
         return await prismaClient.prova.findFirst({
             where: {
@@ -52,13 +68,36 @@ export default class TestModel {
             }
         })
     }
-    static async findQuestion (id: number) : Promise<QuestaoProva | null>{
-        return await prismaClient.questaoProva.findFirst({
-            where: {
-                id
+
+    static async findUserTest(
+        id_prova_andamento: number,
+        id_usuario: number
+    ) : Promise<UsuarioProva | null> {
+        return await prismaClient.usuarioProva.findFirst({
+            where:{
+                idProvaAndamento: id_prova_andamento,
+                idUsuario: id_usuario
             }
         })
     }
+
+    static async findUserTestByID(
+        id_prova_usuario: number
+    ) {
+        return await prismaClient.usuarioProva.findFirst({
+            where:{
+                id: id_prova_usuario
+            },
+            include:{
+                provaAndamento:{
+                    select:{
+                        prova: true
+                    }
+                }
+            }
+        })
+    }
+
     static async findCompany(id: number) : Promise<any>{
         return await prismaClient.empresa.findFirst({
             where: {
