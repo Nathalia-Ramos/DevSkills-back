@@ -5,7 +5,8 @@ import filter from "../../interfaces/Test/AdminFilter"
 import {TestData} from "../../interfaces/Test/Tests"
 import TestModel from "../../models/Test/TestModel"
 import TestService from "../../services/Test/TestService"
-
+import { updateUserTest, userAnswer, userTest } from "../../interfaces/Test/AnswerTest"
+import AnswerTestService from "../../services/Test/AnswerTestService"
 
 export default class TestController {
 
@@ -50,5 +51,55 @@ export default class TestController {
             
         }
        }
+
+    static async createUserTest(req: Request, res: Response) {
+
+        const data : userTest = req.body
+
+        const answer = await AnswerTestService.createUserTest(data)
+
+        return res.status(answer?.statusCode).json(answer?.error ? { error: answer.error } : { message: answer.message, data: answer?.data })
+
+    }
+
+    static async updateUserTest(req: Request, res: Response) {
+
+        const data : updateUserTest = req.body
+
+        const answer = await AnswerTestService.updateUserTest(data)
+
+        return res.status(answer?.statusCode).json(answer?.error? {error: answer.error} : { message: answer.message, data: answer.data })
+
+    }
+
+    static async createAnswer(req: Request, res: Response) {
+
+        const data : userAnswer = req.body
+
+        const answer = await AnswerTestService.createAnswer(data)
+
+        return res.status(answer?.statusCode).json(answer?.error ? { error: answer.error } : { message: answer?.message })
+
+    }
+
+    static async findTest(req: Request, res: Response) {
+
+        const { id  } = req.params
+
+        const answer = await TestService.findTest(parseInt(id))
+
+        res.status(200).json(answer)
+
+    }
+
+    static async updateAnswer(req: Request, res: Response) {
+
+        const data : userAnswer = req.body
+
+        const answer = await AnswerTestService.updateAnswer(data)
+
+        return res.status(answer?.statusCode).json(answer?.error ? { error: answer.error } : { message: answer?.message })
+
+    }
   
 }
