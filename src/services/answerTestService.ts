@@ -4,7 +4,6 @@ import answerQuestionTest from "../api/models/answerQuestionTest";
 import UserDeveloperModel from "../api/models/Developer/UserDeveloperModel";
 import message from "../config/ReturnMessages"
 import validateRegex from "../api/utils/RegexValidate";
-// import isNotEmpty from "../api/utils/isNotEmpty";
 import isNumber from "../api/utils/isNumber";
 import isString from "../api/utils/isString";
 
@@ -340,24 +339,6 @@ export default class AnswerTestService {
         }
     }
 
-    }
-
-    static async findTest(
-        id_prova: number) {
-
-        const test = await AnswerTestModel.findTest(id_prova)
-
-        if (test) {
-            return {
-                data: test,
-                statusCode: 200
-            }
-        } else {
-            return {
-                error: "Prova com o ID especificado não encontrada.",
-                statusCode: 404
-            }
-        }
     }
 
     static async upsertTest(testAnswer: userTest) {

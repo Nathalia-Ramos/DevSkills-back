@@ -6,6 +6,8 @@ import QuestionService from "./QuestionService";
 import validateRegex from "../../utils/RegexValidate";
 import filter from "../../interfaces/Test/AdminFilter";
 import isEmpty from "../../utils/isEmpty";
+import AnswerTestModel from "../../models/AnswerTestModel";
+// import jwt_decode from "jwt-decode";
 
 export default class TestService {
     static async create (test:  TestData ){
@@ -107,6 +109,24 @@ export default class TestService {
             }
         } 
    }
+
+   static async findTest(id_prova: number) {
+
+    const test = await AnswerTestModel.findUserTestByID(id_prova)
+
+    if (test) {
+        return {
+            data: test,
+            statusCode: 200
+        }
+    } else {
+        return {
+            error: "Prova com o ID especificado não encontrada.",
+            statusCode: 404
+        }
+    }
+}
+   
    static async relateTemplate(testInfo: TestProgress){
     
         if(testInfo) {

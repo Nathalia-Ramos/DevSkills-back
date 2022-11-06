@@ -13,16 +13,6 @@ export default class AnswerTestController {
         
     }
 
-    static async findTest(req: Request, res: Response) {
-
-        const { id  } = req.params
-
-        const answer = await TestService.findTest(parseInt(id))
-
-        res.status(200).json(answer)
-
-    }
-
     static async updateTest(req: Request, res: Response) {
 
         const data : userTest = req.body
