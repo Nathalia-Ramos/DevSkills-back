@@ -132,7 +132,6 @@ export default class TestModel {
             }
         })
     }
-
     static async TestProgress({
         data_inicio,
         data_fim,
@@ -179,7 +178,6 @@ export default class TestModel {
             }
         })
     }
-
     static async userSearch( empresa: any): Promise<ProvaAndamento | any> {
         return await prismaClient.empresa.findMany({
             where: {
@@ -206,7 +204,6 @@ export default class TestModel {
         }
         
     }
-
     static async findAdminTest(
         id_prova: number
     ) : Promise<AdministradorProvas | null> {
@@ -216,11 +213,9 @@ export default class TestModel {
             }
         })
     }
-    
     static async findAdminTests() : Promise<AdministradorProvas[]> {
         return await prismaClient.administradorProvas.findMany()
     } 
-
     static async filterAdminTests({
         tipo,
         ids_stacks,
@@ -288,6 +283,14 @@ export default class TestModel {
             },
             take: 2,
             skip: pagina * 2
+        })
+    }
+    static async testForNumber(){
+        return await prismaClient.provaAndamento.findMany({
+            select: {
+                prova: true
+            },
+            take: 3,
         })
     }
 }   

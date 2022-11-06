@@ -336,5 +336,9 @@ export default class UserCompanyModel{
       }
     })
   }
- 
+  static async listCompanyNumber(){
+    return await prismaClient.empresa.findMany({
+        take: 3,
+    })
+}
 }

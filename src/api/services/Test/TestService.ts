@@ -107,7 +107,6 @@ export default class TestService {
             }
         } 
    }
-   
    static async relateTemplate(testInfo: TestProgress){
     
         if(testInfo) {
@@ -196,7 +195,6 @@ export default class TestService {
     }
 
     }
-
    static async findAdminTests(reqFilters: filter) {
 
     const userFilters = reqFilters
@@ -266,5 +264,10 @@ export default class TestService {
             statusCode: 404
         }
     }
+   }
+   static async findTestNumber(){
+    const result = await TestModel.testForNumber()
+  
+    return result
    }
 }   

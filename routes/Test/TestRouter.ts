@@ -7,5 +7,7 @@ router.post('/', TestController.execute)
 router.get('/tests', TestController.test)
 router.post('/template', TestController.relateTestTemplate) 
 router.get('/admin', TestController.findAdminTests)
+router.get('/listTest', TestController.listTest)
+
 
 export default router
