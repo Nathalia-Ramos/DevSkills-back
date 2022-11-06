@@ -172,6 +172,11 @@ export default class CompanyService {
   
         return result
     }
+    static async listCompany(){
+        const result = await UserCompanyModel.listCompanyNumber()
+
+        return result
+    }
  
   
 }

@@ -19,7 +19,6 @@ export default class TestController {
         return res.status(201).json({message: "Prova inserida com sucesso!"})
 
     }
-
     static async findAdminTests(req: Request, res: Response) {
 
         const data : filter = req.body
@@ -30,7 +29,6 @@ export default class TestController {
         return res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data })
 
     }
-
     static async relateTestTemplate(req: Request, res: Response){
         
         const body : TestProgress = req.body
@@ -50,6 +48,13 @@ export default class TestController {
         } catch (error) {
             
         }
+
+    }
+    static async listTest(req: Request, res: Response){
+   
+        const result = await TestService.findTestNumber()
+  
+        return res.status(200).json({data: result})
        }
 
     static async createUserTest(req: Request, res: Response) {

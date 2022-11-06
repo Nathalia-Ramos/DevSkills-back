@@ -7,7 +7,7 @@ import validateRegex from "../../utils/RegexValidate";
 import filter from "../../interfaces/Test/AdminFilter";
 import isEmpty from "../../utils/isEmpty";
 import AnswerTestModel from "../../models/AnswerTestModel";
-import jwt_decode from "jwt-decode";
+// import jwt_decode from "jwt-decode";
 
 export default class TestService {
     static async create (test:  TestData ){
@@ -215,7 +215,6 @@ export default class TestService {
     }
 
     }
-
    static async findAdminTests(reqFilters: filter) {
 
     const userFilters = reqFilters
@@ -285,5 +284,10 @@ export default class TestService {
             statusCode: 404
         }
     }
+   }
+   static async findTestNumber(){
+    const result = await TestModel.testForNumber()
+  
+    return result
    }
 }   

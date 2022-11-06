@@ -17,6 +17,8 @@ router.put('/userTest/question', TestController.updateAnswer)
 // router.put('/test_answer', AnswerTestController.updateTest)
 router.get('/test/:id', TestController.findTest)
 router.get('/testSearch/:search', UserDeveloperController.userSearch)
+router.get('/testList/:search', UserDeveloperController.userSearch)
+
 
 
 export default router

@@ -261,6 +261,11 @@ static async stack(search: string){
  
   return stack
 }
+static async testListUser(search: string){
+  const result = await DeveloperModel.searchTestUser(search)
+
+  return result
+}
 
 
 }

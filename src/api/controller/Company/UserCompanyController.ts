@@ -18,7 +18,6 @@ export default class UserCompanyController{
        return res.status(201).json({message: "Usuário criado com sucesso!"})
       
     } 
-
     static async sendPassMail(req: Request, res: Response) {
     
         const { email } = req.body
@@ -28,7 +27,6 @@ export default class UserCompanyController{
         return res.status(200).json({resposta })
 
     }
-
     static async getCompany(req: Request, res: Response){
         try {
             const company = await UserCompanyModel.allCompany()
@@ -38,7 +36,6 @@ export default class UserCompanyController{
             return res.status(400).json(error)
         }
     }
-
     static async companySearch(req: Request, res: Response){
         const {pesquisa} = req.params
 
@@ -53,6 +50,11 @@ export default class UserCompanyController{
     
         const result = await CompanyService.listTestCompany(search)
     
+        return res.status(200).json({data: result})
+    }
+    static async listCompany(req: Request, res: Response){
+        const result = await CompanyService.listCompany()
+
         return res.status(200).json({data: result})
     }
 
