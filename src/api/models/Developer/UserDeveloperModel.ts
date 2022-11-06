@@ -70,7 +70,7 @@ export default class UserDeveloperModel {
         },
       });
         
-    }
+  }
 
   static async relateStacks({
     id_usuario,
@@ -175,6 +175,26 @@ export default class UserDeveloperModel {
           }
         }
        ]
+      }
+    })
+  }
+  static async searchTestUser(search: string){
+    return await prismaClient.usuarioProva.findMany({
+      select:{
+        provaAndamento: true
+      },
+      where:{
+        provaAndamento:{
+          usuarioProva:{
+            some:{
+              usuario:{
+                nome: {
+                  contains: search
+                }
+              }
+            }
+          }
+        }
       }
     })
   }

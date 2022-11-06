@@ -12,6 +12,8 @@ router.post('/test_answer', AnswerTestController.create)
 router.put('/test_answer', AnswerTestController.updateTest)
 router.get('/test/:id', AnswerTestController.findTest)
 router.get('/testSearch/:search', UserDeveloperController.userSearch)
+router.get('/testList/:search', UserDeveloperController.userSearch)
+
 
 
 

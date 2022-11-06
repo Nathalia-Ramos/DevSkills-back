@@ -42,7 +42,13 @@ export default class UserDeveloperController {
        return res.status(200).json({data: result})
 
    }
-   
+   static async userTest(req: Request, res: Response){
+    const {search} = req.params
+
+    const result = await DeveloperService.testListUser(search)
+
+    return res.status(200).json({data: result})
+   }
 
   
   
