@@ -215,50 +215,18 @@ export default class TestService {
     }
 
     }
-   static async findAdminTests(reqFilters: filter) {
+   static async findAdminTests(
+       pagina: string,
+       ids_habilidades: string,
+       ids_stacks: string,
+       tipo: string) {
 
-    const userFilters = reqFilters
-
-    if(userFilters.tipo) {
-        if(typeof userFilters.tipo != 'string') {
-            return {
-                error: "Campo tipo deve ser string.",
-                statusCode: 400
-            }
-        }
+    const userFilters = {
+        pagina: parseInt(pagina),
+        ids_habilidades: ids_habilidades.split(' ').map((value) => parseInt(value)),
+        ids_stacks: ids_stacks.split(' ').map((value) => parseInt(value)),
+        tipo: tipo
     }
-
-    if(userFilters.ids_habilidades) {
-        if(typeof userFilters.ids_habilidades != 'number' && !Array.isArray(userFilters.ids_habilidades)) {
-            return {
-                error: "Campo ids_habilidades deve ser um número ou um array de números.",
-                statusCode: 400
-            }
-        }
-    }
-
-    if(userFilters.ids_stacks) {
-        if(typeof userFilters.ids_stacks != 'number' && !Array.isArray(userFilters.ids_stacks)) {
-            return {
-                error: "Campo ids_stacks deve ser um número ou um array de números.",
-                statusCode: 400
-            }
-        }
-    }
-
-    if(!userFilters.pagina) {
-        if(typeof userFilters.pagina != 'number') {
-            return {
-                error: "Campo página deve ser um número.",
-                statusCode: 400
-            }
-        } else if(userFilters.pagina == 0) {
-            return {
-                error: "Campo página deve ser um valor positivo, acima de 0.",
-                statusCode: 400
-            }
-        }
-    }  
 
     userFilters.pagina -= 1
 
@@ -273,7 +241,7 @@ export default class TestService {
             data: {
                 page: userFilters.pagina + 1,
                 totalPages: allPages,
-                totalResults: Math.ceil(allTests / allPages),
+                totalResults: Math.floor(allTests / allPages),
                 results: adminTests
             },
             statusCode: 200
@@ -285,6 +253,7 @@ export default class TestService {
         }
     }
    }
+   
    static async findTestNumber(){
     const result = await TestModel.testForNumber()
   
