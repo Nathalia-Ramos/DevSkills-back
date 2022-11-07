@@ -36,7 +36,6 @@ export default class UserDeveloperModel {
         },
       });
   }
-
   static async findBy(name:string, value: string | number) : Promise<Usuario | null> {
   
       return await prisma.usuario.findFirst({
@@ -45,7 +44,6 @@ export default class UserDeveloperModel {
         }})
 
   }
-
   static async relatePhone({
     ddd,
     numero,
@@ -71,7 +69,6 @@ export default class UserDeveloperModel {
       });
         
   }
-
   static async relateStacks({
     id_usuario,
     id_stack
@@ -84,7 +81,6 @@ export default class UserDeveloperModel {
         }});
 
   }
-
   static async relateSkills({
     id_usuario,
     id_habilidade,
@@ -97,7 +93,6 @@ export default class UserDeveloperModel {
         }});
 
   }
-
   static async createLogin(password: string, id_usuario: number) : Promise<LoginUsuario> {
       return await prisma.loginUsuario.create({
         data: {
@@ -106,7 +101,6 @@ export default class UserDeveloperModel {
         },
       });   
   }
-
   static async findLogin(id_usuario: number) : Promise<LoginUsuario | null> {
       return await prisma.loginUsuario.findFirst({
         where:{
@@ -114,7 +108,6 @@ export default class UserDeveloperModel {
         }
       })
   }
-
   static async updatePassword(id: number, password : string) : Promise<LoginUsuario> {
     return await prisma.loginUsuario.update({
       data:{
@@ -124,8 +117,7 @@ export default class UserDeveloperModel {
         id: id
       }
     })
-  } 
-
+  }
   static async testSearch(search: string) : Promise<ProvaAndamento | any>{
     return await prismaClient.provaAndamento.findMany({
       select:{
@@ -155,9 +147,7 @@ export default class UserDeveloperModel {
                     contains: search
                   }
                 }
-
               }
-
             }
           }
         },
@@ -198,6 +188,36 @@ export default class UserDeveloperModel {
       }
     })
   }
-
+  static async foundTestbyUser(search: number){
+    return await prismaClient.usuarioProva.findMany({
+      select:{
+        provaAndamento: {
+          select:{
+            prova: {
+              select:{
+                titulo: true,
+                descricao: true,
+                id: true,
+                
+              }
+            }
+          }
+        }
+      }, 
+      where:{
+        provaAndamento:{
+          usuarioProva:{
+            some:{
+              usuario:{
+                id:{
+                  equals: search
+                }
+              }
+            }
+          }
+        }
+      }
+    })
+  }
  
 }

@@ -6,7 +6,6 @@ import { Question, TestData } from "../../interfaces/Test/Tests";
 import Test from "../../interfaces/Test/Test";
 import TestProgress from "../../interfaces/Test/TestProgress";
 import filter from "../../interfaces/Test/AdminFilter";
-import { userTest } from "../../../interfaces/AnswerTest";
 import { updateUserTest } from "../../interfaces/Test/AnswerTest";
 
 export default class TestModel {
@@ -44,7 +43,6 @@ export default class TestModel {
             }
         })
     }
-
     static async updateUserTest({
         data_entrega,
         finalizada,
@@ -60,7 +58,6 @@ export default class TestModel {
             }
         })
     }
-
     static async findTest(id: number) : Promise<Prova | null>{
         return await prismaClient.prova.findFirst({
             where: {
@@ -68,7 +65,6 @@ export default class TestModel {
             }
         })
     }
-
     static async findUserTest(
         id_prova_andamento: number,
         id_usuario: number
@@ -80,7 +76,6 @@ export default class TestModel {
             }
         })
     }
-
     static async findUserTestByID(
         id_prova_usuario: number
     ) {
@@ -97,7 +92,6 @@ export default class TestModel {
             }
         })
     }
-
     static async findCompany(id: number) : Promise<any>{
         return await prismaClient.empresa.findFirst({
             where: {

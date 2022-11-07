@@ -19,6 +19,4 @@ router.get('/test/:id', TestController.findTest)
 router.get('/testSearch/:search', UserDeveloperController.userSearch)
 router.get('/testList/:search', UserDeveloperController.userSearch)
 
-
-
 export default router

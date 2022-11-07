@@ -49,6 +49,11 @@ export default class UserDeveloperController {
 
     return res.status(200).json({data: result})
    }
+   static async findTestUser(req: Request, res: Response){
+    const {search} = req.params
+
+    return res.status()
+   }
 
   
   

@@ -316,7 +316,7 @@ export default class UserCompanyModel{
       }
     })
   }
-  static async searchTestCompany(search: string) {
+  static async searchTestCompany(search: string){
     return await prismaClient.provaAndamento.findMany({
       select: {
         prova: true
@@ -340,5 +340,5 @@ export default class UserCompanyModel{
     return await prismaClient.empresa.findMany({
         take: 3,
     })
-}
+  }
 }

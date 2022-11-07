@@ -9,7 +9,6 @@ import { updateUserTest, userAnswer, userTest } from "../../interfaces/Test/Answ
 import AnswerTestService from "../../services/Test/AnswerTestService"
 
 export default class TestController {
-
     static async execute(req: Request, res: Response){
         
         const test : TestData = req.body
@@ -19,7 +18,7 @@ export default class TestController {
         return res.status(201).json({message: "Prova inserida com sucesso!"})
 
     }
-    static async findAdminTests(req: Request, res: Response) {
+    static async findAdminTests(req: Request, res: Response){
 
         const data : filter = req.body
         console.log(data)
@@ -39,25 +38,22 @@ export default class TestController {
             answer.error ? { 'error': answer.error } : { 'message': answer.message }
         )
     }
-    static async test(req: Request, res: Response) {
-    
+    static async test(res: Response){
         try { 
             const test = await TestModel.allTest()
             
-            return res.status(200).json({message: "Provas", data: test})
+            return res.status(200).json({data: test})
         } catch (error) {
             
         }
-
     }
-    static async listTest(req: Request, res: Response){
+    static async listTest(res: Response){
    
         const result = await TestService.findTestNumber()
   
         return res.status(200).json({data: result})
-       }
-
-    static async createUserTest(req: Request, res: Response) {
+    }
+    static async createUserTest(req: Request, res: Response){
 
         const data : userTest = req.body
 
@@ -66,8 +62,7 @@ export default class TestController {
         return res.status(answer?.statusCode).json(answer?.error ? { error: answer.error } : { message: answer.message, data: answer?.data })
 
     }
-
-    static async updateUserTest(req: Request, res: Response) {
+    static async updateUserTest(req: Request, res: Response){
 
         const data : updateUserTest = req.body
 
@@ -76,8 +71,7 @@ export default class TestController {
         return res.status(answer?.statusCode).json(answer?.error? {error: answer.error} : { message: answer.message, data: answer.data })
 
     }
-
-    static async createAnswer(req: Request, res: Response) {
+    static async createAnswer(req: Request, res: Response){
 
         const data : userAnswer = req.body
 
@@ -86,8 +80,7 @@ export default class TestController {
         return res.status(answer?.statusCode).json(answer?.error ? { error: answer.error } : { message: answer?.message })
 
     }
-
-    static async findTest(req: Request, res: Response) {
+    static async findTest(req: Request, res: Response){
 
         const { id  } = req.params
 
@@ -96,8 +89,7 @@ export default class TestController {
         res.status(200).json(answer)
 
     }
-
-    static async updateAnswer(req: Request, res: Response) {
+    static async updateAnswer(req: Request, res: Response){
 
         const data : userAnswer = req.body
 
@@ -105,6 +97,5 @@ export default class TestController {
 
         return res.status(answer?.statusCode).json(answer?.error ? { error: answer.error } : { message: answer?.message })
 
-    }
-  
+    } 
 }
