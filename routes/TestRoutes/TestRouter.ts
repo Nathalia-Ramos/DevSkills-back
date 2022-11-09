@@ -9,6 +9,5 @@ router.post('/template', TestController.relateTestTemplate)
 router.get('/admin', TestController.findAdminTests)
 router.get('/listTest', TestController.listTest)
 // router.get('/:id', TestController.findTest)
-//routes/TestRoutes/TestRouter.ts
 
 export default router

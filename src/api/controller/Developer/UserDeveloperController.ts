@@ -1,10 +1,6 @@
 import DeveloperService from "../../services/developer/DeveloperService"
 import { Request, Response } from "express";
 import RegisterDeveloperData from "../../interfaces/Developer/RegisterDeveloper";
-import { json } from "stream/consumers";
-import UserDeveloperModel from "../../models/Developer/UserDeveloperModel";
-import { prismaClient } from "../../../database/prismaClient";
-import { ProvaAndamento } from "@prisma/client";
  
 export default class UserDeveloperController {
    static async create(req: Request, res: Response) {
@@ -43,9 +39,10 @@ export default class UserDeveloperController {
 
    }
    static async userTest(req: Request, res: Response){
-    const {search} = req.params
+    const  id  = req.params
 
-    const result = await DeveloperService.testListUser(search)
+    const result = await DeveloperService.testListUser(id)
+    console.log(result)
 
     return res.status(200).json({data: result})
    }

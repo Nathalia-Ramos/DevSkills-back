@@ -6,7 +6,6 @@ import bcrypt from "bcrypt";
 import Jwt from "jsonwebtoken";
 import validateRegex from "../../utils/RegexValidate";
 import message from "../../../config/ReturnMessages";
-import { compare } from "bcrypt";
 import nodemailer from "nodemailer";
 import generator from "generate-password";
 
@@ -255,15 +254,14 @@ export default class DeveloperService {
     }
     
 }
-
 static async stack(search: string){
   const stack = await DeveloperModel.testSearch(search);
  
   return stack
 }
-static async testListUser(search: string){
-  const result = await DeveloperModel.searchTestUser(search)
-
+static async testListUser(id: any){
+  const result = await DeveloperModel.searchTestUser(id)
+  
   return result
 }
 

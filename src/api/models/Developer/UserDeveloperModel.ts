@@ -170,23 +170,32 @@ export default class UserDeveloperModel {
       }
     })
   }
-  static async searchTestUser(search: string){
+  static async searchTestUser(id_usuario: number){
     return await prismaClient.usuarioProva.findMany({
-      select:{
-        provaAndamento: true
-      },
-      where:{
+     select:{
+       finalizada: true,
         provaAndamento:{
-          usuarioProva:{
-            some:{
-              usuario:{
-                nome: {
-                  contains: search
-                }
+          select:{
+            empresa:{
+              select:{
+                logo: true,
+                id: true
               }
+            },
+            prova:{
+              select:{
+                titulo: true,
+                descricao: true,
+                id: true
             }
           }
         }
+      }
+     },
+      where:{
+         idUsuario:{
+           equals: id_usuario
+         }
       }
     })
   }

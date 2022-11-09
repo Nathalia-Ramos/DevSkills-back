@@ -18,7 +18,6 @@ router.put('/test_answer', AnswerTestController.updateTest)
 router.get('/test/:id', TestController.findTest)
 router.get('/testSearch/:search', UserDeveloperController.userSearch)
 router.get('/testList/:search', UserDeveloperController.userSearch)
-
-
+router.get('/testListUser/:id_usuario', UserDeveloperController.userTest)
 
 export default router
