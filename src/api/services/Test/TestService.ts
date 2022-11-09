@@ -257,7 +257,7 @@ export default class TestService {
             data: {
                 page: userFilters.pagina + 1,
                 totalPages: allPages,
-                totalResults: Math.floor(adminTests.length / (userFilters.pagina + 1)),
+                // totalResults: Math.floor(adminTests.length / (userFilters.pagina + 1)),
                 results: adminTests
             },
             statusCode: 200
