@@ -21,10 +21,9 @@ export default class TestController {
     }
     static async findAdminTests(req: Request, res: Response) {
 
-        const data : filter = req.body
-        console.log(data)
+        const { ids_habilidades, ids_stacks, tipo, pagina } : any = req.query
 
-        const answer = await TestService.findAdminTests(data)
+        const answer = await TestService.findAdminTests(pagina, ids_habilidades, ids_stacks, tipo)
 
         return res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data })
 

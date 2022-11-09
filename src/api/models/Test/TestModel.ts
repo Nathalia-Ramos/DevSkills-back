@@ -259,30 +259,30 @@ export default class TestModel {
         tipo,
         ids_stacks,
         ids_habilidades,
-        pagina,
+        pagina
     } : filter) {
         return await prismaClient.administradorProvas.findMany({
             where:{
                 provas:{
-                            provaTipo:{
-                                tipo:{
-                                    equals: tipo
-                                }
-                            },
-                            provaHabilidade:{
-                                some: {
-                                    idHabilidade:{
-                                        in: ids_habilidades
-                                    }
-                                }
-                            },
-                            provaStack:{
-                                some: {
-                                    idProvaStack:{
-                                        in: ids_stacks
-                                    }
-                                }
+                    provaTipo:{
+                        tipo:{
+                            equals: tipo
+                        }
+                    },
+                    provaHabilidade:{
+                        some: {
+                            idHabilidade:{
+                                in: ids_habilidades
                             }
+                        }
+                    },
+                    provaStack:{
+                        some: {
+                            idProvaStack:{
+                                in: ids_stacks
+                            }
+                        }
+                    }
                 }
             },
             select:{

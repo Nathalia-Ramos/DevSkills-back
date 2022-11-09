@@ -215,52 +215,36 @@ export default class TestService {
     }
 
     }
-   static async findAdminTests(reqFilters: filter) {
 
-    const userFilters = reqFilters
 
-    if(userFilters.tipo) {
-        if(typeof userFilters.tipo != 'string') {
-            return {
-                error: "Campo tipo deve ser string.",
-                statusCode: 400
-            }
-        }
+   static async findAdminTests(pagina: string, ids_habilidades: string, ids_stacks: string, tipo: string) {
+
+    let userFilters : filter = {
+        pagina: 1,
+        ids_habilidades: undefined,
+        ids_stacks: undefined,
+        tipo: undefined
+    } 
+
+    if(tipo) {
+        userFilters.tipo = tipo
+    } 
+
+    if(ids_habilidades) {
+        userFilters.ids_habilidades = ids_habilidades.split(' ').map((value) => parseInt(value))
     }
 
-    if(userFilters.ids_habilidades) {
-        if(typeof userFilters.ids_habilidades != 'number' && !Array.isArray(userFilters.ids_habilidades)) {
-            return {
-                error: "Campo ids_habilidades deve ser um número ou um array de números.",
-                statusCode: 400
-            }
-        }
-    }
+    if(ids_stacks) {
+        userFilters.ids_stacks = ids_stacks.split(' ').map((value) => parseInt(value))
+    } 
 
-    if(userFilters.ids_stacks) {
-        if(typeof userFilters.ids_stacks != 'number' && !Array.isArray(userFilters.ids_stacks)) {
-            return {
-                error: "Campo ids_stacks deve ser um número ou um array de números.",
-                statusCode: 400
-            }
-        }
+    if(pagina) {
+        userFilters.pagina = parseInt(pagina)
     }
-
-    if(!userFilters.pagina) {
-        if(typeof userFilters.pagina != 'number') {
-            return {
-                error: "Campo página deve ser um número.",
-                statusCode: 400
-            }
-        } else if(userFilters.pagina == 0) {
-            return {
-                error: "Campo página deve ser um valor positivo, acima de 0.",
-                statusCode: 400
-            }
-        }
-    }  
 
     userFilters.pagina -= 1
+
+    console.log(userFilters)
 
     const adminTests = await TestModel.filterAdminTests(userFilters)
 
@@ -273,7 +257,7 @@ export default class TestService {
             data: {
                 page: userFilters.pagina + 1,
                 totalPages: allPages,
-                totalResults: Math.ceil(allTests / allPages),
+                totalResults: Math.floor(adminTests.length / (userFilters.pagina + 1)),
                 results: adminTests
             },
             statusCode: 200
