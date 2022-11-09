@@ -320,8 +320,8 @@ export default class TestModel {
                     }
                 }
             },
-            take: 2,
-            skip: pagina * 2
+            take: 20,
+            skip: pagina * 20
         })
     }
     static async testForNumber(){
