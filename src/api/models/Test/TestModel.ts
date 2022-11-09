@@ -324,6 +324,31 @@ export default class TestModel {
             skip: pagina * 20
         })
     }
+
+    static async findAdminTestByID(id_prova: number) {
+        return await prismaClient.administradorProvas.findFirst({
+            where:{
+                id: id_prova
+            },
+            include:{
+                provas:{
+                    include:{
+                        provaAndamento: true,
+                        provasTodasQuestoes:{
+                            include:{
+                                questaoProva: {
+                                    include: {
+                                        alternativaProva: true,
+                                        respostaQuestaoProva: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        })
+    }
     static async testForNumber(){
         return await prismaClient.provaAndamento.findMany({
             select: {

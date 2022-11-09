@@ -19,6 +19,17 @@ export default class TestController {
         return res.status(201).json({message: "Prova inserida com sucesso!"})
 
     }
+
+    static async findAdminTestByID(req: Request, res: Response) {
+
+        const { id } = req.params
+
+        const answer = await TestService.findAdminTestByID(parseInt(id))
+
+        return res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data })
+
+    }
+
     static async findAdminTests(req: Request, res: Response) {
 
         const { ids_habilidades, ids_stacks, tipo, pagina } : any = req.query

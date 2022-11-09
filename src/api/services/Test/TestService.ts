@@ -126,6 +126,22 @@ export default class TestService {
         }
     }
 }
+
+    static async findAdminTestByID(id_prova: number) {
+        const test = await TestModel.findAdminTestByID(id_prova)
+
+    if (test) {
+        return {
+            data: test,
+            statusCode: 200
+        }
+    } else {
+        return {
+            error: "Prova com o ID especificado não encontrada.",
+            statusCode: 404
+        }
+    }
+    }
    
    static async relateTemplate(testInfo: TestProgress){
     
