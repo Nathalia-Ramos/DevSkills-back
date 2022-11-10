@@ -112,7 +112,7 @@ export default class TestService {
 
    static async findTest(id_prova: number) {
 
-    const test = await AnswerTestModel.findUserTestByID(id_prova)
+    const test = await AnswerTestModel.findTest(id_prova)
 
     if (test) {
         return {
@@ -285,6 +285,24 @@ export default class TestService {
         }
     }
    }
+
+   static async listUserTest(id_prova_usuario: number) {
+
+    const test = await TestModel.findUserTestByID(id_prova_usuario)
+
+    if (test) {
+        return {
+            data: test,
+            statusCode: 200
+        }
+    } else {
+        return {
+            error: "Prova com o ID especificado não encontrada.",
+            statusCode: 404
+        }
+    }
+   }
+
    static async findTestNumber(){
     const result = await TestModel.testForNumber()
   

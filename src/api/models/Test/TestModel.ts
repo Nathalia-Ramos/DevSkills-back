@@ -89,9 +89,23 @@ export default class TestModel {
                 id: id_prova_usuario
             },
             include:{
+                respostaAlternativaProva: true,
+                respostaQuestaoProva: true,
                 provaAndamento:{
-                    select:{
-                        prova: true
+                    include:{
+                        prova:{
+                            include:{
+                                provasTodasQuestoes:{
+                                    include:{
+                                        questaoProva: {
+                                            include: {
+                                                alternativaProva: true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
