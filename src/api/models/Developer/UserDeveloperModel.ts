@@ -193,9 +193,7 @@ export default class UserDeveloperModel {
       }
      },
       where:{
-         idUsuario:{
-           equals: id_usuario
-         }
+         idUsuario: id_usuario
       }
     })
   }

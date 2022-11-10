@@ -39,9 +39,9 @@ export default class UserDeveloperController {
 
    }
    static async userTest(req: Request, res: Response){
-    const  id  = req.params
+    const  {id_usuario}  = req.params
 
-    const result = await DeveloperService.testListUser(id)
+    const result = await DeveloperService.testListUser(parseInt(id_usuario))
     console.log(result)
 
     return res.status(200).json({data: result})
