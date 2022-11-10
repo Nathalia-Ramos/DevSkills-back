@@ -103,7 +103,17 @@ export default class TestController {
 
         const answer = await TestService.findTest(parseInt(id))
 
-        res.status(200).json(answer)
+        res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data })
+
+    }
+
+    static async findUserTest(req: Request, res: Response) {
+
+        const { id } = req.params
+
+        const answer = await TestService.listUserTest(parseInt(id))
+
+        res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data })
 
     }
 

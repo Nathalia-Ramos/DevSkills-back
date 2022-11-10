@@ -11,6 +11,7 @@ router.post('/login', UserDeveloperController.auth)
 router.post('/forgotPassword', UserDeveloperController.sendPassMail)
 router.post('/userTest', TestController.createUserTest)
 router.put('/userTest', TestController.updateUserTest)
+router.get('/userTest/:id', TestController.findUserTest)
 router.post('/userTest/question', TestController.createAnswer)
 router.put('/userTest/question', TestController.updateAnswer)
 // router.post('/userTest', TestController)
@@ -18,7 +19,5 @@ router.put('/userTest/question', TestController.updateAnswer)
 router.get('/test/:id', TestController.findTest)
 router.get('/testSearch/:search', UserDeveloperController.userSearch)
 router.get('/testList/:search', UserDeveloperController.userSearch)
-
-
 
 export default router
