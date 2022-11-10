@@ -7,6 +7,7 @@ import TestModel from "../../models/Test/TestModel"
 import TestService from "../../services/Test/TestService"
 import { updateUserTest, userAnswer, userTest } from "../../interfaces/Test/AnswerTest"
 import AnswerTestService from "../../services/Test/AnswerTestService"
+import correctAnswer from "../../interfaces/Test/Answer"
 
 export default class TestController {
 
@@ -114,6 +115,16 @@ export default class TestController {
         const answer = await AnswerTestService.updateAnswer(data)
 
         return res.status(answer?.statusCode).json(answer?.error ? { error: answer.error } : { message: answer?.message })
+
+    }
+
+    static async updateCorrectAnswer(req: Request, res: Response) {
+
+        const data : correctAnswer = req.body
+
+        const answer = await TestService.correctionAnswer(data)
+
+        return res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {message: answer.message})
 
     }
   
