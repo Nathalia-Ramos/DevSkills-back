@@ -4,10 +4,12 @@ import TestController from "../../src/api/controller/Test/TestController"
 const router = Router()
 
 router.post('/', TestController.execute)
-router.get('/tests', TestController.test)
+router.get('/allTest', TestController.test)
 router.post('/template', TestController.relateTestTemplate) 
 router.get('/admin', TestController.findAdminTests)
 router.get('/list', TestController.listTest)
+router.get('/admin/:id', TestController.findAdminTestByID)
+router.put('/correctAnswer', TestController.updateCorrectAnswer)
 
 // router.get('/:id', TestController.findTest)
 

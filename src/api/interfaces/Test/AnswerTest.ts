@@ -8,7 +8,7 @@ interface userAnswer {
     id_prova_usuario: number,
     id_questao: number,
 
-    id_alternativa: number | number[],
+    id_alternativa?: number | number[],
     resposta?: string
 }
 

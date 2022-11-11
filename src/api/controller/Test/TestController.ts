@@ -7,6 +7,7 @@ import TestModel from "../../models/Test/TestModel"
 import TestService from "../../services/Test/TestService"
 import { updateUserTest, userAnswer, userTest } from "../../interfaces/Test/AnswerTest"
 import AnswerTestService from "../../services/Test/AnswerTestService"
+import correctAnswer from "../../interfaces/Test/Answer"
 
 export default class TestController {
 
@@ -19,12 +20,22 @@ export default class TestController {
         return res.status(201).json({message: "Prova inserida com sucesso!"})
 
     }
+
+    static async findAdminTestByID(req: Request, res: Response) {
+
+        const { id } = req.params
+
+        const answer = await TestService.findAdminTestByID(parseInt(id))
+
+        return res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data })
+
+    }
+
     static async findAdminTests(req: Request, res: Response) {
 
-        const data : filter = req.body
-        console.log(data)
+        const { ids_habilidades, ids_stacks, tipo, pagina } : any = req.query
 
-        const answer = await TestService.findAdminTests(data)
+        const answer = await TestService.findAdminTests(pagina, ids_habilidades, ids_stacks, tipo)
 
         return res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data })
 
@@ -96,7 +107,17 @@ export default class TestController {
 
         const answer = await TestService.findTest(parseInt(id))
 
-        res.status(200).json(answer)
+        res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data })
+
+    }
+
+    static async findUserTest(req: Request, res: Response) {
+
+        const { id } = req.params
+
+        const answer = await TestService.listUserTest(parseInt(id))
+
+        res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data })
 
     }
 
@@ -107,6 +128,16 @@ export default class TestController {
         const answer = await AnswerTestService.updateAnswer(data)
 
         return res.status(answer?.statusCode).json(answer?.error ? { error: answer.error } : { message: answer?.message })
+
+    }
+
+    static async updateCorrectAnswer(req: Request, res: Response) {
+
+        const data : correctAnswer = req.body
+
+        const answer = await TestService.correctionAnswer(data)
+
+        return res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {message: answer.message})
 
     }
   

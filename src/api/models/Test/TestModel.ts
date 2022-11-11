@@ -89,9 +89,23 @@ export default class TestModel {
                 id: id_prova_usuario
             },
             include:{
+                respostaAlternativaProva: true,
+                respostaQuestaoProva: true,
                 provaAndamento:{
-                    select:{
-                        prova: true
+                    include:{
+                        prova:{
+                            include:{
+                                provasTodasQuestoes:{
+                                    include:{
+                                        questaoProva: {
+                                            include: {
+                                                alternativaProva: true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -208,6 +222,17 @@ export default class TestModel {
             }
         })
     }
+
+    static async findAnswer (
+        id: number
+    ): Promise <RespostaQuestaoProva | null> {
+        return await prismaClient.respostaQuestaoProva.findFirst({
+            where: {
+                id: id
+            }
+        })
+    }
+
     static async findTestType (
         tipo: string
     ): Promise <ProvaTipo | null> {
@@ -243,6 +268,21 @@ export default class TestModel {
         }
         
     }
+
+    static async correctAnswer(
+        id: number,
+        correta: boolean
+    ) {
+        return await prismaClient.respostaQuestaoProva.update({
+            where:{
+                id: id
+            },
+            data:{
+                correta: correta
+            }
+        })
+    }
+
     static async findAdminTest(
         id_prova: number
     ) : Promise<AdministradorProvas | null> {
@@ -259,30 +299,30 @@ export default class TestModel {
         tipo,
         ids_stacks,
         ids_habilidades,
-        pagina,
+        pagina
     } : filter) {
         return await prismaClient.administradorProvas.findMany({
             where:{
                 provas:{
-                            provaTipo:{
-                                tipo:{
-                                    equals: tipo
-                                }
-                            },
-                            provaHabilidade:{
-                                some: {
-                                    idHabilidade:{
-                                        in: ids_habilidades
-                                    }
-                                }
-                            },
-                            provaStack:{
-                                some: {
-                                    idProvaStack:{
-                                        in: ids_stacks
-                                    }
-                                }
+                    provaTipo:{
+                        tipo:{
+                            equals: tipo
+                        }
+                    },
+                    provaHabilidade:{
+                        some: {
+                            idHabilidade:{
+                                in: ids_habilidades
                             }
+                        }
+                    },
+                    provaStack:{
+                        some: {
+                            idProvaStack:{
+                                in: ids_stacks
+                            }
+                        }
+                    }
                 }
             },
             select:{
@@ -320,8 +360,32 @@ export default class TestModel {
                     }
                 }
             },
-            take: 2,
-            skip: pagina * 2
+            take: 20,
+            skip: pagina * 20
+        })
+    }
+
+    static async findAdminTestByID(id_prova: number) {
+        return await prismaClient.administradorProvas.findFirst({
+            where:{
+                id: id_prova
+            },
+            include:{
+                provas:{
+                    include:{
+                        provaAndamento: true,
+                        provasTodasQuestoes:{
+                            include:{
+                                questaoProva: {
+                                    include: {
+                                        alternativaProva: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         })
     }
     static async testForNumber(take: number){

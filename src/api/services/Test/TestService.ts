@@ -7,6 +7,7 @@ import validateRegex from "../../utils/RegexValidate";
 import filter from "../../interfaces/Test/AdminFilter";
 import isEmpty from "../../utils/isEmpty";
 import AnswerTestModel from "../../models/AnswerTestModel";
+import correctAnswer from "../../interfaces/Test/Answer";
 // import jwt_decode from "jwt-decode";
 
 export default class TestService {
@@ -112,7 +113,7 @@ export default class TestService {
 
    static async findTest(id_prova: number) {
 
-    const test = await AnswerTestModel.findUserTestByID(id_prova)
+    const test = await AnswerTestModel.findTest(id_prova)
 
     if (test) {
         return {
@@ -126,6 +127,22 @@ export default class TestService {
         }
     }
 }
+
+    static async findAdminTestByID(id_prova: number) {
+        const test = await TestModel.findAdminTestByID(id_prova)
+
+    if (test) {
+        return {
+            data: test,
+            statusCode: 200
+        }
+    } else {
+        return {
+            error: "Prova com o ID especificado não encontrada.",
+            statusCode: 404
+        }
+    }
+    }
    
    static async relateTemplate(testInfo: TestProgress){
     
@@ -215,52 +232,36 @@ export default class TestService {
     }
 
     }
-   static async findAdminTests(reqFilters: filter) {
 
-    const userFilters = reqFilters
 
-    if(userFilters.tipo) {
-        if(typeof userFilters.tipo != 'string') {
-            return {
-                error: "Campo tipo deve ser string.",
-                statusCode: 400
-            }
-        }
+   static async findAdminTests(pagina: string, ids_habilidades: string, ids_stacks: string, tipo: string) {
+
+    let userFilters : filter = {
+        pagina: 1,
+        ids_habilidades: undefined,
+        ids_stacks: undefined,
+        tipo: undefined
+    } 
+
+    if(tipo) {
+        userFilters.tipo = tipo
+    } 
+
+    if(ids_habilidades) {
+        userFilters.ids_habilidades = ids_habilidades.split(' ').map((value) => parseInt(value))
     }
 
-    if(userFilters.ids_habilidades) {
-        if(typeof userFilters.ids_habilidades != 'number' && !Array.isArray(userFilters.ids_habilidades)) {
-            return {
-                error: "Campo ids_habilidades deve ser um número ou um array de números.",
-                statusCode: 400
-            }
-        }
-    }
+    if(ids_stacks) {
+        userFilters.ids_stacks = ids_stacks.split(' ').map((value) => parseInt(value))
+    } 
 
-    if(userFilters.ids_stacks) {
-        if(typeof userFilters.ids_stacks != 'number' && !Array.isArray(userFilters.ids_stacks)) {
-            return {
-                error: "Campo ids_stacks deve ser um número ou um array de números.",
-                statusCode: 400
-            }
-        }
+    if(pagina) {
+        userFilters.pagina = parseInt(pagina)
     }
-
-    if(!userFilters.pagina) {
-        if(typeof userFilters.pagina != 'number') {
-            return {
-                error: "Campo página deve ser um número.",
-                statusCode: 400
-            }
-        } else if(userFilters.pagina == 0) {
-            return {
-                error: "Campo página deve ser um valor positivo, acima de 0.",
-                statusCode: 400
-            }
-        }
-    }  
 
     userFilters.pagina -= 1
+
+    console.log(userFilters)
 
     const adminTests = await TestModel.filterAdminTests(userFilters)
 
@@ -273,7 +274,7 @@ export default class TestService {
             data: {
                 page: userFilters.pagina + 1,
                 totalPages: allPages,
-                totalResults: Math.ceil(allTests / allPages),
+                // totalResults: Math.floor(adminTests.length / (userFilters.pagina + 1)),
                 results: adminTests
             },
             statusCode: 200
@@ -285,9 +286,94 @@ export default class TestService {
         }
     }
    }
+
+   static async listUserTest(id_prova_usuario: number) {
+
+    const test = await TestModel.findUserTestByID(id_prova_usuario)
+
+    if (test) {
+        return {
+            data: test,
+            statusCode: 200
+        }
+    } else {
+        return {
+            error: "Prova com o ID especificado não encontrada.",
+            statusCode: 404
+        }
+    }
+   }
+
    static async findTestNumber(take: number){
     const result = await TestModel.testForNumber(take)
   
     return result
    }
+
+   static async correctionAnswer(correctAnswer: correctAnswer) {
+
+    if(Object.keys(correctAnswer).length > 0) {
+    
+        if(correctAnswer.id_resposta && correctAnswer.correta != undefined) {
+            
+            if(typeof correctAnswer.id_resposta === 'number') {
+
+                if(typeof correctAnswer.correta === 'boolean') {
+
+                    const answerExist = await TestModel.findAnswer(correctAnswer.id_resposta)
+
+                    if(answerExist) {
+
+                        try {
+                            const updatedAnswer = await TestModel.correctAnswer(correctAnswer.id_resposta, correctAnswer.correta)
+                            console.log(updatedAnswer)
+                        } catch (error) {
+                            return{
+                                error: error,
+                                statusCode: 500
+                            }
+                        }
+
+                        return {
+                            message: "Correção atualizada com sucesso!",
+                            statusCode: 200
+                        }
+
+                    } else {
+                        return {
+                            error: "Não foi encontrada uma resposta com o ID especificado. ID: " + correctAnswer.id_resposta,
+                            statusCode: 404
+                        }
+                    }
+
+                } else {
+                    return {
+                        error: "Correta deve ser do tipo booleana.",
+                        statusCode: 400
+                    }
+                }
+
+            } else {
+                return {
+                    error: "IDs devem ser números.",
+                    statusCode: 400
+                }
+            }
+
+
+        } else {
+            return {
+                error: ReturnMessages.MissingFields,
+                statusCode: 400
+            }
+        }
+    
+    } else {
+        return {
+            error: ReturnMessages.emptyBody,
+            statusCode: 400
+        }
+    }
+
+}
 }   
