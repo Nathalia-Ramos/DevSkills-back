@@ -46,6 +46,19 @@ export default class UserDeveloperModel {
 
   }
 
+  static async getUserInfo(id: number) {
+    return await prisma.usuario.findFirst({
+      where: {
+        id: id
+      },
+      include:{
+        EnderecoUsuario: true,
+        UsuarioTelefone: true,
+        genero: true
+      }
+    })
+  }
+
   static async relatePhone({
     ddd,
     numero,

@@ -50,6 +50,14 @@ export default class UserDeveloperController {
     return res.status(200).json({data: result})
    }
 
-  
+   static async userInfo(req: Request, res: Response) {
+
+    const {id} = req.params
+
+    const answer = await DeveloperService.getUserByID(parseInt(id))
+
+    return res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {data: answer.data})
+
+   } 
   
 }
