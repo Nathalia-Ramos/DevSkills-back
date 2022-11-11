@@ -304,8 +304,8 @@ export default class TestService {
     }
    }
 
-   static async findTestNumber(){
-    const result = await TestModel.testForNumber()
+   static async findTestNumber(take: number){
+    const result = await TestModel.testForNumber(take)
   
     return result
    }

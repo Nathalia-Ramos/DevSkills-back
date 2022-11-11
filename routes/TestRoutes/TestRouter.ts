@@ -7,7 +7,7 @@ router.post('/', TestController.execute)
 router.get('/allTest', TestController.test)
 router.post('/template', TestController.relateTestTemplate) 
 router.get('/admin', TestController.findAdminTests)
-router.get('/listTest', TestController.listTest)
+router.get('/list', TestController.listTest)
 router.get('/admin/:id', TestController.findAdminTestByID)
 router.put('/correctAnswer', TestController.updateCorrectAnswer)
 
