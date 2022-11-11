@@ -324,12 +324,12 @@ export default class TestModel {
             skip: pagina * 2
         })
     }
-    static async testForNumber(){
+    static async testForNumber(take: number){
         return await prismaClient.provaAndamento.findMany({
             select: {
                 prova: true
             },
-            take: 3,
+            take: take ? take : 3,
         })
     }
 }   

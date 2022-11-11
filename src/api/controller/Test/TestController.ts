@@ -51,10 +51,13 @@ export default class TestController {
 
     }
     static async listTest(req: Request, res: Response){
+
+        const { take } : any = req.query
    
-        const result = await TestService.findTestNumber()
+        const result = await TestService.findTestNumber(parseInt(take))
   
         return res.status(200).json({data: result})
+
        }
 
     static async createUserTest(req: Request, res: Response) {
