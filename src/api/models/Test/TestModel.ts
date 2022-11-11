@@ -222,6 +222,17 @@ export default class TestModel {
             }
         })
     }
+
+    static async findAnswer (
+        id: number
+    ): Promise <RespostaQuestaoProva | null> {
+        return await prismaClient.respostaQuestaoProva.findFirst({
+            where: {
+                id: id
+            }
+        })
+    }
+
     static async findTestType (
         tipo: string
     ): Promise <ProvaTipo | null> {
@@ -257,6 +268,21 @@ export default class TestModel {
         }
         
     }
+
+    static async correctAnswer(
+        id: number,
+        correta: boolean
+    ) {
+        return await prismaClient.respostaQuestaoProva.update({
+            where:{
+                id: id
+            },
+            data:{
+                correta: correta
+            }
+        })
+    }
+
     static async findAdminTest(
         id_prova: number
     ) : Promise<AdministradorProvas | null> {
@@ -352,8 +378,7 @@ export default class TestModel {
                             include:{
                                 questaoProva: {
                                     include: {
-                                        alternativaProva: true,
-                                        respostaQuestaoProva: true
+                                        alternativaProva: true
                                     }
                                 }
                             }

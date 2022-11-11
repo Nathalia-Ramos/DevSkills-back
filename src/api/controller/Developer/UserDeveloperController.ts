@@ -1,4 +1,4 @@
-import DeveloperService from "../../services/developer/DeveloperService"
+import DeveloperService from "../../services/Developer/DeveloperService"
 import { Request, Response } from "express";
 import RegisterDeveloperData from "../../interfaces/Developer/RegisterDeveloper";
 import { json } from "stream/consumers";
@@ -22,7 +22,7 @@ export default class UserDeveloperController {
 
     const answer = await DeveloperService.auth(login, senha)
 
-    res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {message: answer.message, type: answer.userType, token: answer.token})
+    res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {message: answer.message, type: answer.userType, token: answer.token, userInfo: answer.userInfo})
 
    }
    static async sendPassMail(req: Request, res: Response) {

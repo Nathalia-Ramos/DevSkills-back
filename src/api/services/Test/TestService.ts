@@ -7,6 +7,7 @@ import validateRegex from "../../utils/RegexValidate";
 import filter from "../../interfaces/Test/AdminFilter";
 import isEmpty from "../../utils/isEmpty";
 import AnswerTestModel from "../../models/AnswerTestModel";
+import correctAnswer from "../../interfaces/Test/Answer";
 // import jwt_decode from "jwt-decode";
 
 export default class TestService {
@@ -308,4 +309,71 @@ export default class TestService {
   
     return result
    }
+
+   static async correctionAnswer(correctAnswer: correctAnswer) {
+
+    if(Object.keys(correctAnswer).length > 0) {
+    
+        if(correctAnswer.id_resposta && correctAnswer.correta != undefined) {
+            
+            if(typeof correctAnswer.id_resposta === 'number') {
+
+                if(typeof correctAnswer.correta === 'boolean') {
+
+                    const answerExist = await TestModel.findAnswer(correctAnswer.id_resposta)
+
+                    if(answerExist) {
+
+                        try {
+                            const updatedAnswer = await TestModel.correctAnswer(correctAnswer.id_resposta, correctAnswer.correta)
+                            console.log(updatedAnswer)
+                        } catch (error) {
+                            return{
+                                error: error,
+                                statusCode: 500
+                            }
+                        }
+
+                        return {
+                            message: "Correção atualizada com sucesso!",
+                            statusCode: 200
+                        }
+
+                    } else {
+                        return {
+                            error: "Não foi encontrada uma resposta com o ID especificado. ID: " + correctAnswer.id_resposta,
+                            statusCode: 404
+                        }
+                    }
+
+                } else {
+                    return {
+                        error: "Correta deve ser do tipo booleana.",
+                        statusCode: 400
+                    }
+                }
+
+            } else {
+                return {
+                    error: "IDs devem ser números.",
+                    statusCode: 400
+                }
+            }
+
+
+        } else {
+            return {
+                error: ReturnMessages.MissingFields,
+                statusCode: 400
+            }
+        }
+    
+    } else {
+        return {
+            error: ReturnMessages.emptyBody,
+            statusCode: 400
+        }
+    }
+
+}
 }   

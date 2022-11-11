@@ -6,6 +6,7 @@ import validateRegex from "../../utils/RegexValidate";
 import UserDeveloperModel from "../../models/Developer/UserDeveloperModel";
 import QuestionModel from "../../models/Questions/QuestionsModel";
 import isString from "../../utils/isString";
+import correctAnswer from "../../interfaces/Test/Answer";
 
 export default class AnswerTestService {
 
