@@ -167,6 +167,10 @@ export default class DeveloperService {
           return {
             message: message.UserAuthorized,
             token: token,
+            userInfo:{
+              tag: userExist.tag,
+              fotoPerfil: userExist.foto_perfil
+            },
             userType: "DEVELOPER",
             statusCode: 200,
           }
@@ -265,6 +269,24 @@ static async testListUser(search: string){
   const result = await DeveloperModel.searchTestUser(search)
 
   return result
+}
+
+static async getUserByID(id: number) {
+
+  const userInfo = await DeveloperModel.getUserInfo(id)
+
+    if (userInfo) {
+        return {
+            data: userInfo,
+            statusCode: 200
+        }
+    } else {
+        return {
+            error: "Usuário com o ID especificado não encontrado.",
+            statusCode: 404
+        }
+    }
+
 }
 
 
