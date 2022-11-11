@@ -364,8 +364,7 @@ export default class TestModel {
                             include:{
                                 questaoProva: {
                                     include: {
-                                        alternativaProva: true,
-                                        respostaQuestaoProva: true
+                                        alternativaProva: true
                                     }
                                 }
                             }
