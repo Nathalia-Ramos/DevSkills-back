@@ -4,6 +4,7 @@ import bcrypt, { compare } from "bcrypt"
 import { prismaClient } from "../../../database/prismaClient";
 import generator from "generate-password"
 import nodemailer from "nodemailer"
+import filter from './../../interfaces/Test/AdminFilter';
 
 
 export default class CompanyService {
@@ -167,8 +168,8 @@ export default class CompanyService {
         
         return result
     }
-    static async listTestCompany(search: string){
-        const result = UserCompanyModel.searchTestCompany(search)
+    static async listTestCompany(id: number, filters: filter){
+        const result = UserCompanyModel.searchTestCompany(id, filters)
   
         return result
     }

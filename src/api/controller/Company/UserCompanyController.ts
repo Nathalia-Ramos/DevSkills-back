@@ -3,6 +3,8 @@ import UserCompanyModel from "../../models/Company/UserCompanyModel";
 import bcrypt, { compare } from "bcrypt";
 import CompanyData from "../../interfaces/Company/Company";
 import CompanyService from "../../services/Company/CompanyServices";
+import authGuard from './../../../middlewares/auth';
+import queryTestFilter from './../../utils/queryTestFilter';
 
 export default class UserCompanyController {
   static async execute(req: Request, res: Response) {
@@ -36,13 +38,20 @@ export default class UserCompanyController {
 
     return res.status(200).json({ data: result });
   }
-  static async listTestCompany(req: Request, res: Response) {
-    const { search } = req.params;
 
-    const result = await CompanyService.listTestCompany(search);
+  
+  static async listTestCompany(req: Request, res: Response) {
+
+    const id = await authGuard(req)
+    const userFilters = queryTestFilter(req)
+
+    const result = await CompanyService.listTestCompany(id, userFilters);
 
     return res.status(200).json({ data: result });
   }
+
+
+
   static async listCompany(req: Request, res: Response) {
     const result = await CompanyService.listCompany();
 
