@@ -396,5 +396,60 @@ export default class UserCompanyModel {
      
     })
   }
-  
+  static async updatePerfilCompany(
+    id: number,
+    email: string,
+    senha: string,
+    biografia: string,
+    complemento: string,
+    logo: string,
+    ddd: string,
+    numero: string,
+    fotosAmbiente: string,
+    legenda: string,
+
+    ) : Promise<Empresa>{
+    return await prismaClient.empresa.update({
+      where:{
+        id: id
+      },
+
+      data:{
+        email: email,
+        biografia: biografia,
+        logo: logo,
+        empresaTelefone:{
+         update: {
+          data:{
+            ddd: ddd,
+            numero: numero,
+            id: id
+          }
+         }
+        },
+        fotosAmbiente: {
+          update:{
+            data:{
+              foto: fotosAmbiente,
+              legenda: legenda
+            }
+          }
+        },
+        LoginEmpresa:{
+         update:{
+          data:{
+            senha: senha
+          }
+         }
+        },
+        enderecoEmpresa:{
+          update:{
+            complemento: complemento
+          }
+        }
+      
+      },
+    
+    })
+  }
 }
