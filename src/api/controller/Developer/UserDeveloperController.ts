@@ -1,6 +1,7 @@
-import DeveloperService from "../../services/Developer/DeveloperService"
+import DeveloperService from "../../services/developer/DeveloperService"
 import { Request, Response } from "express";
 import RegisterDeveloperData from "../../interfaces/Developer/RegisterDeveloper";
+import tokenVerify from "../../../middlewares/auth"
 import { json } from "stream/consumers";
 import UserDeveloperModel from "../../models/Developer/UserDeveloperModel";
 import { prismaClient } from "../../../database/prismaClient";
@@ -52,9 +53,9 @@ export default class UserDeveloperController {
 
    static async userInfo(req: Request, res: Response) {
 
-    const {id} = req.params
+    const tokenValidate = await tokenVerify(req)
 
-    const answer = await DeveloperService.getUserByID(parseInt(id))
+    const answer = await DeveloperService.listUserProfile(tokenValidate)
 
     return res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {data: answer.data})
 

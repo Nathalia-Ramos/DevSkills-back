@@ -51,10 +51,113 @@ export default class UserDeveloperModel {
       where: {
         id: id
       },
-      include:{
-        EnderecoUsuario: true,
-        UsuarioTelefone: true,
-        genero: true
+      select:{
+        id: true,
+        nome: true,
+        foto_perfil: true,
+        email: true,
+        cpf: true,
+        biografia: true,
+        pontuacao_plataforma: true,
+        tag: true,
+        data_nascimento: true,
+        link_github: true,
+        link_portfolio: true,
+        usuarioStack: {
+          select:{
+            stack:{
+              select:{
+                id: true,
+                nome: true,
+              }
+            }
+          }
+        },
+        usuarioHabilidade: {
+          select:{
+            idHabilidade: true,
+            habilidade: true,
+          }
+        },
+        EnderecoUsuario: {
+          select:{
+            logradouro: true,
+            numero: true,
+            bairro: true,
+            cidade: {
+              select:{
+                id: true,
+                nome: true,
+              }
+            },
+            complemento: true,
+          }
+        },
+        UsuarioTelefone: {
+          select:{
+            ddd: true,
+            numero: true,
+            tipoTelefone:{
+              select:{
+                nome: true
+              }
+            }
+          }
+        },
+        genero: {
+          select:{
+            id: true,
+            nome: true,
+          }
+        },
+        usuarioProva: {
+          select:{
+            id: true,
+            pontuacao: true,
+            provaAndamento:{
+              select:{
+                id: true,
+                prova:{
+                  select:{
+                    titulo: true,
+                    descricao: true,
+                    provaStack: {
+                      select:{
+                        idProvaStack: true,
+                        stack: true,
+                      }
+                    },
+                    provaHabilidade:{
+                      select:{
+                        idHabilidade: true,
+                        habilidade: true,
+                      }
+                    },
+                  }
+                }
+              }
+            }
+          }
+        },
+        usuarioTesteCompetencia: {
+          select: {
+            id: true,
+            pontuacao: true,
+            testeCompetencia: {
+              select:{
+                id: true,
+                titulo: true,
+                descricao: true,
+                testeCompetenciaHabilidade: {
+                  select:{
+                    idHabilidade: true,
+                    habilidade: true
+                  }
+                },
+              }
+            }
+          }
+        },
       }
     })
   }

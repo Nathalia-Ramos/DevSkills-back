@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 import Jwt from "jsonwebtoken";
 import validateRegex from "../../utils/RegexValidate";
 import message from "../../../config/ReturnMessages";
+import { ErrorReturn, SuccessReturn } from "../../interfaces/ReturnPattern/Returns"
 import { compare } from "bcrypt";
 import nodemailer from "nodemailer";
 import generator from "generate-password";
@@ -271,21 +272,30 @@ static async testListUser(search: string){
   return result
 }
 
-static async getUserByID(id: number) {
+static async listUserProfile(tokenValidate: number | ErrorReturn) {
 
-  const userInfo = await DeveloperModel.getUserInfo(id)
+  if(typeof tokenValidate === 'number') {
 
-    if (userInfo) {
-        return {
-            data: userInfo,
-            statusCode: 200
-        }
-    } else {
-        return {
-            error: "Usuário com o ID especificado não encontrado.",
-            statusCode: 404
-        }
+    const userInfo = await DeveloperModel.getUserInfo(tokenValidate)
+  
+      if (userInfo) {
+          return {
+              data: userInfo,
+              statusCode: 200
+          }
+      } else {
+          return {
+              error: "Usuário com o ID especificado não encontrado.",
+              statusCode: 404
+          }
+      }
+
+  } else {
+    return {
+      error: tokenValidate.error,
+      statusCode: tokenValidate.statusCode
     }
+  }
 
 }
 
