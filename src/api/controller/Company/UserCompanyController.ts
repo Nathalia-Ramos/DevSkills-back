@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import UserCompanyModel from "../../models/Company/UserCompanyModel";
-import bcrypt, { compare } from "bcrypt";
+import tokenVerify from "../../../middlewares/auth"
 import CompanyData from "../../interfaces/Company/Company";
 import CompanyService from "../../services/Company/CompanyServices";
 import authGuard from './../../../middlewares/auth';
@@ -38,8 +38,6 @@ export default class UserCompanyController {
 
     return res.status(200).json({ data: result });
   }
-
-  
   static async listTestCompany(req: Request, res: Response) {
 
     const tokenValidate = await authGuard(req)
@@ -50,12 +48,17 @@ export default class UserCompanyController {
     return res.status(result.statusCode).json(result.error ? { error: result.error } : { data: result.data });
 
   }
-
-
-
   static async listCompany(req: Request, res: Response) {
     const result = await CompanyService.listCompany();
 
     return res.status(200).json({ data: result });
   }
+  static async perfilCompany(req: Request, res: Response){
+      
+    const tokenValidate = await tokenVerify(req)
+    
+    const result = await CompanyService.perfilCompany(tokenValidate)
+
+    return res.status(200).json({data: result})
+}
 }

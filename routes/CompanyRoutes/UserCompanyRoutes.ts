@@ -8,5 +8,6 @@ router.get("/allCompany", UserCompany.getCompany);
 router.get("/search/:pesquisa", UserCompany.companySearch);
 router.get("/tests", UserCompany.listTestCompany);
 router.get('/listCompany', UserCompany.listCompany)
+router.get('/listCompanyPerfil', UserCompany.perfilCompany)
 
 export default router

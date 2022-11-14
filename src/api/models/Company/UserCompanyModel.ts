@@ -353,4 +353,48 @@ export default class UserCompanyModel {
       take: 3,
     });
   }
+
+  static async perfilCompany(id: number) {
+    return await prismaClient.empresa.findFirst({
+      where:{
+        id: id
+      },
+      select:{
+        biografia: true,
+        email: true,
+        cnpj: true,
+        logo: true,
+        nome_fantasia: true,
+        Seguidores: true,
+        enderecoEmpresa:{
+          select:{
+            bairro: true,
+            cep: true,
+            cidade: {
+              select:{
+                estado: {
+                  select:{
+                    nome: true
+                  }
+                },
+                nome: true,
+              }
+            },
+            complemento: true,
+            logradouro: true,
+            numero: true,
+          }
+          
+        },
+        empresaTelefone:{
+          select:{
+            ddd: true,
+            numero: true
+          }
+        },
+      },
+     
+    })
+  }
+  
 }

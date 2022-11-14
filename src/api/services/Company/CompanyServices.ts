@@ -192,6 +192,26 @@ export default class CompanyService {
 
         return result
     }
+    static async perfilCompany(token: number | ErrorReturn){
+
+        if(token){
+            if(typeof token === 'number'){
+
+                const userInfo = await UserCompanyModel.perfilCompany(token)
+              
+                  if (userInfo) {
+                      return userInfo
+                  } 
+            }else{
+                return "Favor inserir um token válido"
+            }
+        
+          } else {
+            return  "Token invalido"
+
+    }
  
+}
+
   
 }
