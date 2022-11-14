@@ -42,12 +42,13 @@ export default class UserCompanyController {
   
   static async listTestCompany(req: Request, res: Response) {
 
-    const id = await authGuard(req)
+    const tokenValidate = await authGuard(req)
     const userFilters = queryTestFilter(req)
 
-    const result = await CompanyService.listTestCompany(id, userFilters);
+    const result = await CompanyService.listTestCompany(tokenValidate, userFilters);
 
-    return res.status(200).json({ data: result });
+    return res.status(result.statusCode).json(result.error ? { error: result.error } : { data: result.data });
+
   }
 
 

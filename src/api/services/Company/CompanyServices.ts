@@ -5,7 +5,7 @@ import { prismaClient } from "../../../database/prismaClient";
 import generator from "generate-password"
 import nodemailer from "nodemailer"
 import filter from './../../interfaces/Test/AdminFilter';
-
+import { ErrorReturn } from "../../interfaces/ReturnPattern/Returns";
 
 export default class CompanyService {
     static async createCompany (user: CompanyUser ){
@@ -168,10 +168,24 @@ export default class CompanyService {
         
         return result
     }
-    static async listTestCompany(id: number, filters: filter){
-        const result = UserCompanyModel.searchTestCompany(id, filters)
+    static async listTestCompany(tokenValidate: number | ErrorReturn, filters: filter){
+
+        if(typeof tokenValidate === 'number') {
+
+            const result = await UserCompanyModel.searchTestCompany(tokenValidate, filters)
   
-        return result
+            return {
+                data: result,
+                statusCode: 200
+            }
+            
+          } else {
+            return {
+              error: tokenValidate.error,
+              statusCode: tokenValidate.statusCode
+            }
+          }
+       
     }
     static async listCompany(){
         const result = await UserCompanyModel.listCompanyNumber()

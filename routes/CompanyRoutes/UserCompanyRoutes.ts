@@ -6,9 +6,7 @@ const router = Router();
 router.post("/", UserCompany.execute);
 router.get("/allCompany", UserCompany.getCompany);
 router.get("/search/:pesquisa", UserCompany.companySearch);
-router.get("/mytests", UserCompany.listTestCompany);
+router.get("/tests", UserCompany.listTestCompany);
 router.get('/listCompany', UserCompany.listCompany)
-
-
 
 export default router

@@ -1,4 +1,4 @@
-import { Empresa, LoginEmpresa } from "@prisma/client";
+import { Empresa, LoginEmpresa, ProvaAndamento } from "@prisma/client";
 import { prismaClient } from "../../../database/prismaClient";
 import AddressData from "../../interfaces/Company/Address";
 import CityData from "../../interfaces/Company/City";
@@ -282,16 +282,10 @@ export default class UserCompanyModel {
   static async searchTestCompany(
     id: number,
     { tipo, ids_stacks, ids_habilidades, pagina }: filter
-  ) {
-    console.log(id);
+  ) : Promise<ProvaAndamento[] | null> {
     return await prismaClient.provaAndamento.findMany({
-      orderBy: {
-        id: "desc",
-      },
       where: {
         idEmpresa: id,
-
-        
         prova: {
           provaTipo: {
             tipo: {
@@ -314,7 +308,7 @@ export default class UserCompanyModel {
           },
         },
       },
-      select: {
+      include: {
         prova: {
           select: {
             id: true,
@@ -349,11 +343,11 @@ export default class UserCompanyModel {
           },
         },
       },
-
       take: 20,
       skip: pagina * 20,
     });
   }
+
   static async listCompanyNumber() {
     return await prismaClient.empresa.findMany({
       take: 3,
