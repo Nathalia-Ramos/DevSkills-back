@@ -411,4 +411,17 @@ export default class TestModel {
       take: take ? take : 3,
     });
   }
+
+  static async listUserAnswers(
+    id_prova_usuario: number) {
+      return await prismaClient.usuarioProva.findFirst({
+        where: {
+          id: id_prova_usuario
+        },
+        select:{
+          respostaAlternativaProva: true,
+          respostaQuestaoProva: true
+        }
+      })
+  }
 }   

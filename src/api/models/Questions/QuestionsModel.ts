@@ -157,6 +157,18 @@ export default class QuestionModel{
         })
     }
 
+    static async findOptionAnswer(
+        id_prova_usuario: number,
+        id_alternativa: number
+    ) {
+        return await prismaClient.respostaAlternativaProva.findFirst({
+            where:{
+                idAlternativaProva: id_alternativa,
+                idUsuarioProva: id_prova_usuario
+            }
+        })
+    }
+
     static async findUserChoices(
         id_prova_usuario: number,
         id_questao: number
