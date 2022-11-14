@@ -211,6 +211,15 @@ export default class AnswerTestService {
                             const questionType = await QuestionModel.findQuestionTypeByID(questionExist.idQuestaoProvaTipo)
     
                             if (questionType?.tipo === 'DISSERTATIVA') {
+
+                                const answerExist = await QuestionModel.findTextAnswer(userTestExist.id, questionExist.id)
+
+                                if(answerExist) {
+                                    return {
+                                        error: "Essa questão já foi respondida!",
+                                        statusCode: 400
+                                    }
+                                }
                                 
                                 if(userAnswer.resposta) {
     
@@ -244,7 +253,7 @@ export default class AnswerTestService {
                                 }
                                 
                             } else if(questionType?.tipo === 'MULTIPLA_ESCOLHA') {
-                             
+
                                 if(userAnswer.id_alternativa) {
 
                                     if (Array.isArray(userAnswer.id_alternativa)) {
@@ -258,6 +267,15 @@ export default class AnswerTestService {
                                                 userChoices[i],
                                                 userAnswer.id_questao
                                             )
+
+                                            const answerExist = await QuestionModel.findOptionAnswer(userTestExist.id, userChoices[i])
+                                
+                                            if(answerExist) {
+                                                return {
+                                                    error: "Essa questão já foi respondida!",
+                                                    statusCode: 400
+                                                }
+                                            }
 
                                             if(!optionExist) {
                                                 return {
@@ -299,6 +317,15 @@ export default class AnswerTestService {
 
                             } else if(questionType?.tipo === 'UNICA_ESCOLHA') {
     
+                                const answerExist = await QuestionModel.findChoiceAnswer(userTestExist.id, questionExist.id)
+
+                                if(answerExist) {
+                                    return {
+                                        error: "Essa questão já foi respondida!",
+                                        statusCode: 400
+                                    }
+                                }
+
                                 if(userAnswer.id_alternativa) {
 
                                     if(typeof userAnswer.id_alternativa == 'number') {
@@ -620,6 +647,45 @@ export default class AnswerTestService {
             }
         }
     }
+
+    static async listAnswers(id: number) {
+
+        if (typeof id == 'number') {
+    
+          const userTest = await AnswerTestModel.findUserTestByID(id)
+    
+          if(userTest) {
+    
+            try {
+              const allAnswers = await AnswerTestModel.listUserAnswers(userTest.id)
+              
+              return {
+                data: allAnswers,
+                statusCode: 200
+              }
+    
+            } catch (error) {
+              return {
+                error: error,
+                statusCode: 500
+              }
+            }
+    
+          } else {
+              return {
+                error: "Prova com o ID especificado não encontrada.",
+                statusCode: 404,
+              };
+          }
+    
+        } else {
+          return {
+            error: "IDs devem ser números.",
+            statusCode: 400,
+          };
+        }
+    
+      }
 
 }
     

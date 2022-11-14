@@ -143,4 +143,14 @@ export default class TestController {
 
     }
   
+    static async listUserAnswers(req: Request, res: Response) {
+
+        const { id } = req.params
+
+        const answer = await AnswerTestService.listAnswers(parseInt(id))
+
+        res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data })
+
+    } 
+
 }
