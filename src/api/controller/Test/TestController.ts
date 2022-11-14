@@ -8,6 +8,7 @@ import TestService from "../../services/Test/TestService"
 import { updateUserTest, userAnswer, userTest } from "../../interfaces/Test/AnswerTest"
 import AnswerTestService from "../../services/Test/AnswerTestService"
 import correctAnswer from "../../interfaces/Test/Answer"
+import queryTestFilter from './../../utils/queryTestFilter';
 
 export default class TestController {
 
@@ -33,9 +34,10 @@ export default class TestController {
 
     static async findAdminTests(req: Request, res: Response) {
 
-        const { ids_habilidades, ids_stacks, tipo, pagina } : any = req.query
+        // const { ids_habilidades, ids_stacks, tipo, pagina } : any = req.query
+        const userFiltersData = queryTestFilter(req)
 
-        const answer = await TestService.findAdminTests(pagina, ids_habilidades, ids_stacks, tipo)
+        const answer = await TestService.findAdminTests(userFiltersData);
 
         return res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data })
 
