@@ -164,7 +164,7 @@ export default class CompanyService {
 
     }
     static async getCompanySeacrh(pesquisa: string){
-        const result =  UserCompanyModel.userSeach(pesquisa)
+        const result =  UserCompanyModel.userSeaach(pesquisa)
         
         return result
     }
