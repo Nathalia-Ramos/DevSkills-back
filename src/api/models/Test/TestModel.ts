@@ -407,6 +407,7 @@ export default class TestModel {
     return await prismaClient.provaAndamento.findMany({
       select: {
         prova: true,
+        id: true
       },
       take: take ? take : 3,
     });

@@ -60,5 +60,24 @@ export default class UserCompanyController {
     const result = await CompanyService.perfilCompany(tokenValidate)
 
     return res.status(200).json({data: result})
+  }
+  static async updateCompanyPerfil(req:Request, res: Response){
+    const {id} = req.params
+
+    const {
+      email,
+      biografia,
+      logo,
+      ddd,
+      numero,
+      foto,
+      legenda,
+      senha,
+      complemento
+    } = req.body
+
+ /*   const updatePerfil = 
+
+  }*/
 }
 }

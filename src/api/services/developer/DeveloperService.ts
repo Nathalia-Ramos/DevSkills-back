@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 import Jwt from "jsonwebtoken";
 import validateRegex from "../../utils/RegexValidate";
 import message from "../../../config/ReturnMessages";
-import { ErrorReturn, SuccessReturn } from "../../interfaces/ReturnPattern/Returns"
+import {ErrorReturn} from "../../interfaces/ReturnPattern/Returns"
 import { compare } from "bcrypt";
 import nodemailer from "nodemailer";
 import generator from "generate-password";

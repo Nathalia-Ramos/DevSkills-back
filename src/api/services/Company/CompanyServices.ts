@@ -211,7 +211,7 @@ export default class CompanyService {
 
     }
  
-}
-
+    }
+  
   
 }

@@ -413,22 +413,26 @@ export default class UserCompanyModel {
       where:{
         id: id
       },
-
       data:{
         email: email,
         biografia: biografia,
         logo: logo,
         empresaTelefone:{
-         update: {
-          data:{
-            ddd: ddd,
-            numero: numero,
-            id: id
+          update:{
+            where:{
+              id: id
+            },
+            data:{
+              ddd: ddd,
+              numero: numero
+            }
           }
-         }
         },
         fotosAmbiente: {
           update:{
+            where:{
+              id: id
+            },
             data:{
               foto: fotosAmbiente,
               legenda: legenda
@@ -437,6 +441,9 @@ export default class UserCompanyModel {
         },
         LoginEmpresa:{
          update:{
+          where:{
+            id: id
+          },
           data:{
             senha: senha
           }
@@ -445,6 +452,7 @@ export default class UserCompanyModel {
         enderecoEmpresa:{
           update:{
             complemento: complemento
+
           }
         }
       
