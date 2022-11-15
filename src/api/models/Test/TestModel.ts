@@ -52,6 +52,54 @@ export default class TestModel {
     });
   }
 
+  static async findUsersAnswers(
+    id: number
+  ) {
+    console.log(id)
+    return await prismaClient.usuarioProva.findMany({
+      where:{
+        idProvaAndamento: {
+          equals: id
+        },
+        finalizada: {
+          equals: true
+        }
+      },
+      select:{  
+        usuario:{
+          select :{
+            nome: true,
+            id: true,
+            usuarioProva:{
+              select:{
+                id: true,
+                pontuacao: true,
+                data_entrega: true,
+                data_inicio: true,
+                provaAndamento: {
+                  select: {
+                    id: true,
+                    prova: {
+                      include: {
+                        provasTodasQuestoes: {
+                          include: {
+                            questaoProva: true
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                respostaAlternativaProva: true,
+                respostaQuestaoProva: true,
+              }
+            }
+          }
+          }
+          }
+    })
+  }
+
   static async updateUserTest({
     data_entrega,
     finalizada,
@@ -228,7 +276,7 @@ export default class TestModel {
   static async findAnswer(id: number): Promise<RespostaQuestaoProva | null> {
     return await prismaClient.respostaQuestaoProva.findFirst({
       where: {
-        id: id,
+        idQuestaoProva: id
       },
     });
   }

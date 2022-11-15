@@ -10,6 +10,7 @@ router.get('/admin', TestController.findAdminTests)
 router.get('/list', TestController.listTest)
 router.get('/admin/:id', TestController.findAdminTestByID)
 router.put('/correctAnswer', TestController.updateCorrectAnswer)
+router.get('/answers/:id', TestController.findUserAnswers)
 
 // router.get('/:id', TestController.findTest)
 

@@ -1,4 +1,5 @@
 export default interface correctAnswer{
-    id_resposta: number,
+    id_questao: number,
+    id_prova_usuario: number,
     correta: boolean
 }

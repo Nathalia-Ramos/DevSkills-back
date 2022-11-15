@@ -22,6 +22,16 @@ export default class TestController {
 
     }
 
+    static async findUserAnswers(req: Request, res: Response) {
+
+        const { id } = req.params
+
+        const result = await TestService.findUserAnswers(parseInt(id))
+
+        return res.status(result.statusCode).json(result.error ? {error: result.error} : {data: result.data})
+
+    }  
+
     static async findAdminTestByID(req: Request, res: Response) {
 
         const { id } = req.params
