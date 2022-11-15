@@ -330,7 +330,9 @@ export default class UserDeveloperModel {
   static async searchTestUser(search: string){
     return await prismaClient.usuarioProva.findMany({
       select:{
-        provaAndamento: true
+        provaAndamento: true,
+        id: true
+
       },
       where:{
         provaAndamento:{

@@ -253,7 +253,11 @@ export default class TestModel {
   }
   static async allTest() {
     try {
-      const testAll = await prismaClient.prova.findMany();
+      const testAll = await prismaClient.prova.findMany({
+        select:{
+          id: true
+        }
+      });
 
       prismaClient.$disconnect;
 
@@ -407,6 +411,7 @@ export default class TestModel {
     return await prismaClient.provaAndamento.findMany({
       select: {
         prova: true,
+        id: true
       },
       take: take ? take : 3,
     });
