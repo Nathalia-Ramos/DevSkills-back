@@ -245,7 +245,37 @@ export default class UserDeveloperModel {
   static async testSearch(search: string) : Promise<ProvaAndamento | any>{
     return await prismaClient.provaAndamento.findMany({
       select:{
-        prova: true
+        id: true,
+        
+        prova: {
+          select:{
+            provaHabilidade:{
+              select:{
+                habilidade:{
+                  select:{
+                    nome: true
+                  }
+                }
+              }
+            },
+            descricao:true,
+            titulo: true,
+            ativo: true,
+            
+            provaStack:{
+              select:{
+                stack:{
+                  select:{
+                    nome: true
+                  }
+                }
+              }
+            }
+          },
+        
+        },
+        
+        
       },
       where:{
        OR:[
@@ -259,7 +289,7 @@ export default class UserDeveloperModel {
                   }
                 }
               }
-            }
+            },
           }
         },
         {
@@ -291,6 +321,9 @@ export default class UserDeveloperModel {
           }
         }
        ]
+      },
+      orderBy:{
+        id: 'desc'
       }
     })
   }
