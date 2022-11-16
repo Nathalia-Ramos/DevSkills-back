@@ -1,6 +1,7 @@
 import { Router } from "express";
 import UserCompany from "../../src/api/controller/Company/UserCompanyController";
 
+
 const router = Router();
 
 router.post("/", UserCompany.execute);
@@ -9,5 +10,8 @@ router.get("/search/:pesquisa", UserCompany.companySearch);
 router.get("/tests", UserCompany.listTestCompany);
 router.get('/listCompany', UserCompany.listCompany)
 router.get('/listCompanyPerfil', UserCompany.perfilCompany)
+router.put('/updatePerfil/:id', UserCompany.updateCompanyPerfil)
+
+
 
 export default router

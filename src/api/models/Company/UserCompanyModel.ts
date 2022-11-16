@@ -1,4 +1,4 @@
-import { Empresa, LoginEmpresa, ProvaAndamento } from "@prisma/client";
+import { Empresa, EnderecoEmpresa, LoginEmpresa, prisma, ProvaAndamento } from "@prisma/client";
 import { prismaClient } from "../../../database/prismaClient";
 import AddressData from "../../interfaces/Company/Address";
 import CityData from "../../interfaces/Company/City";
@@ -396,6 +396,7 @@ export default class UserCompanyModel {
      
     })
   }
+
   static async updatePerfilCompany(
     id: number,
     email: string,
@@ -413,22 +414,35 @@ export default class UserCompanyModel {
       where:{
         id: id
       },
+      
       data:{
-        email: email,
-        biografia: biografia,
-        logo: logo,
-        empresaTelefone:{
+         /*empresaTelefone:{
           update:{
             where:{
               id: id
             },
             data:{
-              ddd: ddd,
+              ddd: ddd, 
               numero: numero
-            }
+            },
           }
-        },
-        fotosAmbiente: {
+         },*/
+         enderecoEmpresa:{
+          update:{
+            complemento: complemento
+          }
+         },
+      /*   LoginEmpresa:{
+          update:{
+            where:{
+              id: id
+            },
+            data:{
+              senha: senha
+            },
+          }
+         },*/
+        /* fotosAmbiente:{
           update:{
             where:{
               id: id
@@ -436,28 +450,16 @@ export default class UserCompanyModel {
             data:{
               foto: fotosAmbiente,
               legenda: legenda
-            }
+            },
           }
-        },
-        LoginEmpresa:{
-         update:{
-          where:{
-            id: id
-          },
-          data:{
-            senha: senha
-          }
-         }
-        },
-        enderecoEmpresa:{
-          update:{
-            complemento: complemento
-
-          }
-        }
-      
-      },
-    
+         },*/
+         email: email,
+         biografia: biografia,
+         logo: logo
+      }, 
     })
   }
+
+
+
 }

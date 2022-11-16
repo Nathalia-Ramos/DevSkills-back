@@ -212,6 +212,32 @@ export default class CompanyService {
     }
  
     }
-  
+    static async updatePerfilCompany(
+        biografia: any,
+        senha: string,
+        email: string,
+        complemnto: string,
+        logo: string,
+        ddd: string,
+        numero: string,
+        fotosAmbiente: string,
+        legenda: string,
+        id: any
+        ){
+            const result = await UserCompanyModel.updatePerfilCompany(
+                biografia,
+                senha,
+                email,
+                complemnto,
+                logo,
+                ddd,
+                numero,
+                fotosAmbiente,
+                legenda,
+                id
+                )
+
+        return result
+    }
   
 }

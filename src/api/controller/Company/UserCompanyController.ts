@@ -76,8 +76,16 @@ export default class UserCompanyController {
       complemento
     } = req.body
 
- /*   const updatePerfil = 
+    try {
+    
+      const result = await CompanyService.updatePerfilCompany(parseInt(id), email, biografia, logo, ddd, numero, foto, legenda, senha, complemento)
+      console.log("ENTROUWW???")
+     
+      return res.status(200).json({message: "Registro atualizado com sucesso!", result})
 
-  }*/
+    } catch (error) {
+      console.error(error)
+    }
+
 }
 }
