@@ -313,6 +313,7 @@ export default class UserCompanyModel {
           select: {
             id: true,
             titulo: true,
+            ativo: true,
             descricao: true,
             provaTipo: {
               select: {
@@ -347,7 +348,6 @@ export default class UserCompanyModel {
       skip: pagina * 20,
     });
   }
-
   static async listCompanyNumber() {
     return await prismaClient.empresa.findMany({
       take: 3,
