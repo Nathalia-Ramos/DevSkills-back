@@ -351,6 +351,19 @@ export default class UserCompanyModel {
   static async listCompanyNumber() {
     return await prismaClient.empresa.findMany({
       take: 3,
+      select:{
+        ativo: true,
+        nome_fantasia: true,
+        enderecoEmpresa:{
+          select:{
+            complemento: true,
+            bairro: true,
+            cidade: true,
+            logradouro: true,
+            numero: true
+          }
+        }
+      }
     });
   }
 }

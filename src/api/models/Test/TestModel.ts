@@ -410,8 +410,24 @@ export default class TestModel {
   static async testForNumber(take: number) {
     return await prismaClient.provaAndamento.findMany({
       select: {
-        prova: true,
+        prova: {
+          select:{
+            ativo: true,
+            titulo: true,
+            descricao: true,
+            provaHabilidade:{
+              select: {
+                habilidade:{
+                  select:{
+                    nome:  true
+                  }
+                }
+              }
+            }
+          }
+        },
         id: true,
+        
                  
       },
       take: take ? take : 3,
