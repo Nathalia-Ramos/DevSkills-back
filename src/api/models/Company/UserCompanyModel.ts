@@ -398,34 +398,36 @@ export default class UserCompanyModel {
   }
 
   static async updatePerfilCompany(
-    id: number,
+    id_empresa: number,
     email: string,
-    senha: string,
     biografia: string,
-    complemento: string,
     logo: string,
     ddd: string,
-    numero_telefone: string,
-    fotosAmbiente: string,
+    foto: string,
     legenda: string,
+    senha: string,
+    complemento: string,
+   // nome_fantasia: any
 
     ) : Promise<Empresa>{
     return await prismaClient.empresa.update({
       
+      where:{
+        id: id_empresa
+      },
       data:{
         biografia: biografia,
         logo: logo,
         email: email,
-         empresaTelefone:{
-          update:{
-            where:{
-              id:  15
+         empresaTelefone:{  
+           update:{
+             where:{  
+               id: id_empresa
+              },
+              data:{
+                ddd: ddd
+              },
             },
-            data:{
-              ddd: ddd, 
-            //  numero: numero_telefone
-            },
-          }
          },
          enderecoEmpresa:{
           update:{
@@ -433,9 +435,12 @@ export default class UserCompanyModel {
           }
          },
          LoginEmpresa:{
+          connect:{
+            id: id_empresa
+          },
           update:{
             where:{
-              id: 15
+              id: id_empresa
             },
             data:{
               senha: senha
@@ -456,9 +461,7 @@ export default class UserCompanyModel {
          
       }, 
       include:{enderecoEmpresa: true, LoginEmpresa: true,},
-      where:{
-        id: id
-      },
+    
     })
   }
 }

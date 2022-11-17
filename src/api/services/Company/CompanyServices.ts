@@ -213,28 +213,28 @@ export default class CompanyService {
  
     }
     static async updatePerfilCompany(
-        biografia: any,
-        senha: string,
+        id_empresa: number,
         email: string,
-        complemnto: string,
+        biografia: string,
         logo: string,
         ddd: string,
-        numero_telefone: string,
-        fotosAmbiente: string,
+        foto: string,
         legenda: string,
-        id: any
+        senha: string,
+        complemento: string,
+        
         ){
             const result = await UserCompanyModel.updatePerfilCompany(
-                biografia,
-                senha,
+                id_empresa,
                 email,
-                complemnto,
+                biografia,
                 logo,
                 ddd,
-                numero_telefone,
-                fotosAmbiente,
+                foto,
                 legenda,
-                id
+                senha,
+                complemento,
+         
                 )
             
         return result
