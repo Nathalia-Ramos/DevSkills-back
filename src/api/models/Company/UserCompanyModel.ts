@@ -210,7 +210,11 @@ export default class UserCompanyModel {
   }
   static async allCompany() {
     try {
-      const company = await prismaClient.empresa.findMany();
+      const company = await prismaClient.empresa.findMany({
+        select:{
+          
+        }
+      });
 
       prismaClient.$disconnect;
 
@@ -354,6 +358,7 @@ export default class UserCompanyModel {
       select:{
         ativo: true,
         nome_fantasia: true,
+        logo: true,
         enderecoEmpresa:{
           select:{
             complemento: true,
