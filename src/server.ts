@@ -43,7 +43,6 @@ app.use('/find', UserCompanyController)
 app.use('/auth', AuthRoutes)
 app.use('/admin', AdminRoutes)
 
-app.listen(4041, () => {
+app.listen(process.env.PORT || 4041, () => {
     console.log("Server running")
 })
-
