@@ -411,7 +411,6 @@ export default class UserCompanyModel {
 
     ) : Promise<Empresa>{
     return await prismaClient.empresa.update({
-      
       where:{
         id: id_empresa
       },
@@ -435,9 +434,6 @@ export default class UserCompanyModel {
           }
          },
          LoginEmpresa:{
-          connect:{
-            id: id_empresa
-          },
           update:{
             where:{
               id: id_empresa

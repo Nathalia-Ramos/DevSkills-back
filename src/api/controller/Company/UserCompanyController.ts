@@ -65,6 +65,7 @@ export default class UserCompanyController {
     const {id_empresa} = req.params
 
     const {
+
       email,
       biografia,
       logo,
