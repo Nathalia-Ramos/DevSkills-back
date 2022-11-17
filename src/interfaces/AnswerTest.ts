@@ -3,8 +3,8 @@ interface userTest {
     id_prova_andamento: number,
     
     finalizada: boolean,
-    data_entrega?: string,
-    data_inicio?: string,
+    data_entrega: string,
+    data_inicio: string,
     
     respostas?: userAnswer[]
 }

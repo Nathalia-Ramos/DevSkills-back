@@ -10,11 +10,14 @@ import {
     QuestaoProva,
     QuestaoProvaTipo,
     RespostaQuestaoProva,
-    UsuarioProva
+    UsuarioProva,
+    AlternativaProva,
+    RespostaAlternativaProva
 } from "@prisma/client";
 import { prismaClient } from "../../../database/prismaClient";
+import { userTest } from "../../../interfaces/AnswerTest";
 import filter from "../../interfaces/Test/AdminFilter";
-import { updateUserTest } from "../../interfaces/Test/AnswerTest";
+// import { updateUserTest } from "../../interfaces/Test/AnswerTest";
 import Test from "../../interfaces/Test/Test";
 import TestProgress from "../../interfaces/Test/TestProgress";
 import { Question } from "../../interfaces/Test/Tests";
@@ -36,20 +39,86 @@ export default class TestModel {
       },
     });
   }
-  static async createUserTest(
-    id_usuario: number,
-    id_prova_andamento: number,
-    finalizada: boolean,
-    data_inicio: Date
-  ): Promise<UsuarioProva> {
+  static async createUserTest({
+    id_usuario,
+    id_prova_andamento,
+    finalizada,
+    data_inicio,
+    data_entrega
+  }: userTest): Promise<UsuarioProva> {
     return await prismaClient.usuarioProva.create({
       data: {
         idUsuario: id_usuario,
         idProvaAndamento: id_prova_andamento,
         finalizada,
-        data_inicio,
+        data_inicio: new Date(data_inicio),
+        data_entrega: new Date(data_entrega)
       },
     });
+  }
+
+  static async findAllQuestions(
+        id_prova: number) {
+            return await prismaClient.provasTodasQuestoes.findMany({
+                where:{
+                    idProva: id_prova
+                }
+            })
+  }
+
+  static async findQuestion (id: number) {
+    return await prismaClient.questaoProva.findFirst({
+        where: {
+            id
+        },
+        include:{
+          questaoProvaTipo: true
+        }
+      })
+    }
+
+    static async relateChoiceAnswer(
+      id_prova: number,
+      id_alternativa: number) : Promise<RespostaAlternativaProva> {
+      return await prismaClient.respostaAlternativaProva.create({
+          data:{
+              idAlternativaProva: id_alternativa,
+              idUsuarioProva: id_prova
+          }
+      })
+    }
+    
+    static async relateTextAnswer(
+      id_prova_usuario: number,
+      id_questao: number,
+      resposta: string
+    ) : Promise<RespostaQuestaoProva> {
+      return await prismaClient.respostaQuestaoProva.create({
+          data:{
+              questaoProva: {
+                  connect:{
+                      id: id_questao
+                  }
+              },
+              usuarioProva:{
+                  connect: {
+                      id: id_prova_usuario
+                  }
+              },
+              resposta: resposta
+          }
+      })
+    }
+
+    static async findOption(
+      id_alternativa: number,
+      id_questao: number) : Promise<AlternativaProva | null> { 
+          return await prismaClient.alternativaProva.findFirst({
+              where:{
+                  idQuestaoProva: id_questao,
+                  id: id_alternativa
+              }
+          })
   }
 
   static async findUsersAnswers(
@@ -100,21 +169,31 @@ export default class TestModel {
     })
   }
 
-  static async updateUserTest({
-    data_entrega,
-    finalizada,
-    id_prova_usuario,
-  }: updateUserTest) {
-    return await prismaClient.usuarioProva.update({
-      data: {
-        data_entrega: new Date(data_entrega),
-        finalizada,
-      },
+  static async findTestProgress(
+    id_prova_andamento: number
+  ) : Promise<ProvaAndamento | null> {
+    return prismaClient.provaAndamento.findFirst({
       where: {
-        id: id_prova_usuario,
-      },
-    });
+        id: id_prova_andamento
+      }
+    })    
   }
+
+  // static async updateUserTest({
+  //   data_entrega,
+  //   finalizada,
+  //   id_prova_usuario,
+  // }: updateUserTest) {
+  //   return await prismaClient.usuarioProva.update({
+  //     data: {
+  //       data_entrega: new Date(data_entrega),
+  //       finalizada,
+  //     },
+  //     where: {
+  //       id: id_prova_usuario,
+  //     },
+  //   });
+  // }
 
   static async findTest(id: number): Promise<Prova | null> {
     return await prismaClient.prova.findFirst({
@@ -269,7 +348,7 @@ export default class TestModel {
     return await prismaClient.questaoProvaTipo.findFirst({
       where: {
         id: id_tipo,
-      },
+      }
     });
   }
 
