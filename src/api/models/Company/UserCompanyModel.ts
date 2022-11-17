@@ -405,44 +405,44 @@ export default class UserCompanyModel {
     complemento: string,
     logo: string,
     ddd: string,
-    numero: string,
+    numero_telefone: string,
     fotosAmbiente: string,
     legenda: string,
 
     ) : Promise<Empresa>{
     return await prismaClient.empresa.update({
-      where:{
-        id: id
-      },
       
       data:{
-         /*empresaTelefone:{
+        biografia: biografia,
+        logo: logo,
+        email: email,
+         empresaTelefone:{
           update:{
             where:{
-              id: id
+              id:  15
             },
             data:{
               ddd: ddd, 
-              numero: numero
+            //  numero: numero_telefone
             },
           }
-         },*/
+         },
          enderecoEmpresa:{
           update:{
             complemento: complemento
           }
          },
-      /*   LoginEmpresa:{
+         LoginEmpresa:{
           update:{
             where:{
-              id: id
+              id: 15
             },
             data:{
               senha: senha
             },
           }
-         },*/
-        /* fotosAmbiente:{
+         },
+        /*fotosAmbiente:{
           update:{
             where:{
               id: id
@@ -453,13 +453,12 @@ export default class UserCompanyModel {
             },
           }
          },*/
-         email: email,
-         biografia: biografia,
-         logo: logo
+         
       }, 
+      include:{enderecoEmpresa: true, LoginEmpresa: true,},
+      where:{
+        id: id
+      },
     })
   }
-
-
-
 }

@@ -65,27 +65,20 @@ export default class UserCompanyController {
     const {id} = req.params
 
     const {
-      email,
       biografia,
+      email,
       logo,
       ddd,
-      numero,
+      numero_telefone,
       foto,
       legenda,
       senha,
       complemento
     } = req.body
 
-    try {
-    
-      const result = await CompanyService.updatePerfilCompany(parseInt(id), email, biografia, logo, ddd, numero, foto, legenda, senha, complemento)
+      await CompanyService.updatePerfilCompany(parseInt(id), email, biografia, logo, ddd, numero_telefone, foto, legenda, senha, complemento)
       console.log("ENTROUWW???")
      
-      return res.status(200).json({message: "Registro atualizado com sucesso!", result})
-
-    } catch (error) {
-      console.error(error)
-    }
-
+      return res.status(200).json({message: "Registro atualizado com sucesso!"})
 }
 }

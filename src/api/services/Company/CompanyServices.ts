@@ -219,7 +219,7 @@ export default class CompanyService {
         complemnto: string,
         logo: string,
         ddd: string,
-        numero: string,
+        numero_telefone: string,
         fotosAmbiente: string,
         legenda: string,
         id: any
@@ -231,12 +231,12 @@ export default class CompanyService {
                 complemnto,
                 logo,
                 ddd,
-                numero,
+                numero_telefone,
                 fotosAmbiente,
                 legenda,
                 id
                 )
-
+            
         return result
     }
   
