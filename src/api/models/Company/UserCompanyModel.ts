@@ -235,6 +235,11 @@ export default class UserCompanyModel {
       where: {
         OR: [
           {
+            nome_fantasia: {
+              contains: search
+            }
+          },
+          {
             provaAndamento: {
               some: {
                 prova: {
