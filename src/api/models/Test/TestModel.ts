@@ -256,6 +256,9 @@ export default class TestModel {
       const testAll = await prismaClient.prova.findMany({
         select:{
           id: true,
+          titulo: true,
+          descricao: true,
+          ativo: true
 
         }
       });
