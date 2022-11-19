@@ -231,9 +231,23 @@ export default class UserCompanyModel {
         nome_fantasia: true,
         logo: true,
         id: true,
+        enderecoEmpresa: {
+          select:{
+            complemento: true,
+            bairro: true,
+            cidade: true,
+            logradouro: true,
+            numero: true
+          }
+        }
       },
       where: {
         OR: [
+          {
+            nome_fantasia: {
+              contains: search
+            }
+          },
           {
             provaAndamento: {
               some: {
