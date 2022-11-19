@@ -122,6 +122,37 @@ export default class TestService {
     }
   }
 
+  static async findUserAnswers(id_prova_andamento: number) {
+
+    if(typeof id_prova_andamento === 'number') {
+
+      const testExist = await TestModel.findTest(id_prova_andamento)
+
+      if(testExist) {
+
+        const usersAnswers = await TestModel.findUsersAnswers(id_prova_andamento)
+
+        return {
+          data: usersAnswers,
+          statusCode: 200
+        }
+
+      } else {
+          return {
+            error: "Prova com o ID especificado não encontrada.",
+            statusCode: 404,
+          };
+      }
+
+    } else {
+        return {
+          error: "IDs devem ser números.",
+          statusCode: 400,
+        };
+    }
+
+  }
+
   static async findAdminTestByID(id_prova: number) {
     const test = await TestModel.findAdminTestByID(id_prova);
 
@@ -273,18 +304,22 @@ export default class TestService {
   }
 
   static async correctionAnswer(correctAnswer: correctAnswer) {
+    
     if (Object.keys(correctAnswer).length > 0) {
-      if (correctAnswer.id_resposta && correctAnswer.correta != undefined) {
-        if (typeof correctAnswer.id_resposta === "number") {
+
+      if (correctAnswer.id_questao && correctAnswer.id_prova_usuario && correctAnswer.correta != undefined) {
+        
+        if (typeof correctAnswer.id_questao === "number" && typeof correctAnswer.id_prova_usuario === "number") {
+          
           if (typeof correctAnswer.correta === "boolean") {
             const answerExist = await TestModel.findAnswer(
-              correctAnswer.id_resposta
+              correctAnswer.id_questao
             );
 
             if (answerExist) {
               try {
                 const updatedAnswer = await TestModel.correctAnswer(
-                  correctAnswer.id_resposta,
+                  answerExist.id,
                   correctAnswer.correta
                 );
                 console.log(updatedAnswer);
@@ -296,14 +331,14 @@ export default class TestService {
               }
 
               return {
-                message: "Correção atualizada com sucesso!",
+                message: "Resposta corrigida com sucesso!",
                 statusCode: 200,
               };
             } else {
               return {
                 error:
-                  "Não foi encontrada uma resposta com o ID especificado. ID: " +
-                  correctAnswer.id_resposta,
+                  "Não foi encontrada uma resposta para a questão com o ID especificado. ID: " +
+                  correctAnswer.id_questao,
                 statusCode: 404,
               };
             }

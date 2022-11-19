@@ -10,11 +10,14 @@ import {
     QuestaoProva,
     QuestaoProvaTipo,
     RespostaQuestaoProva,
-    UsuarioProva
+    UsuarioProva,
+    AlternativaProva,
+    RespostaAlternativaProva
 } from "@prisma/client";
 import { prismaClient } from "../../../database/prismaClient";
+import { userTest } from "../../interfaces/Test/AnswerTest";
 import filter from "../../interfaces/Test/AdminFilter";
-import { updateUserTest } from "../../interfaces/Test/AnswerTest";
+// import { updateUserTest } from "../../interfaces/Test/AnswerTest";
 import Test from "../../interfaces/Test/Test";
 import TestProgress from "../../interfaces/Test/TestProgress";
 import { Question } from "../../interfaces/Test/Tests";
@@ -36,27 +39,149 @@ export default class TestModel {
       },
     });
   }
-  static async createUserTest(
-    id_usuario: number,
-    id_prova_andamento: number,
-    finalizada: boolean,
-    data_inicio: Date
-  ): Promise<UsuarioProva> {
+  static async createUserTest({
+    id_usuario,
+    id_prova_andamento,
+    finalizada,
+    data_inicio
+  }: userTest): Promise<UsuarioProva> {
     return await prismaClient.usuarioProva.create({
       data: {
         idUsuario: id_usuario,
         idProvaAndamento: id_prova_andamento,
         finalizada,
-        data_inicio,
+        data_inicio: new Date(data_inicio)
       },
     });
   }
 
-  static async updateUserTest({
-    data_entrega,
-    finalizada,
-    id_prova_usuario,
-  }: updateUserTest) {
+  static async findAllQuestions(
+        id_prova: number) {
+            return await prismaClient.provasTodasQuestoes.findMany({
+                where:{
+                    idProva: id_prova
+                }
+            })
+  }
+
+  static async findQuestion (id: number) {
+    return await prismaClient.questaoProva.findFirst({
+        where: {
+            id
+        },
+        include:{
+          questaoProvaTipo: true
+        }
+      })
+    }
+
+    static async relateChoiceAnswer(
+      id_prova: number,
+      id_alternativa: number) : Promise<RespostaAlternativaProva> {
+      return await prismaClient.respostaAlternativaProva.create({
+          data:{
+              idAlternativaProva: id_alternativa,
+              idUsuarioProva: id_prova
+          }
+      })
+    }
+    
+    static async relateTextAnswer(
+      id_prova_usuario: number,
+      id_questao: number,
+      resposta: string
+    ) : Promise<RespostaQuestaoProva> {
+      return await prismaClient.respostaQuestaoProva.create({
+          data:{
+              questaoProva: {
+                  connect:{
+                      id: id_questao
+                  }
+              },
+              usuarioProva:{
+                  connect: {
+                      id: id_prova_usuario
+                  }
+              },
+              resposta: resposta
+          }
+      })
+    }
+
+    static async findOption(
+      id_alternativa: number,
+      id_questao: number) : Promise<AlternativaProva | null> { 
+          return await prismaClient.alternativaProva.findFirst({
+              where:{
+                  idQuestaoProva: id_questao,
+                  id: id_alternativa
+              }
+          })
+  }
+
+  static async findUsersAnswers(
+    id: number
+  ) {
+    console.log(id)
+    return await prismaClient.usuarioProva.findMany({
+      where:{
+        idProvaAndamento: {
+          equals: id
+        },
+        finalizada: {
+          equals: true
+        }
+      },
+      select:{  
+        usuario:{
+          select :{
+            nome: true,
+            id: true,
+            usuarioProva:{
+              select:{
+                id: true,
+                pontuacao: true,
+                data_entrega: true,
+                data_inicio: true,
+                provaAndamento: {
+                  select: {
+                    id: true,
+                    prova: {
+                      include: {
+                        provasTodasQuestoes: {
+                          include: {
+                            questaoProva: true
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                respostaAlternativaProva: true,
+                respostaQuestaoProva: true,
+              }
+            }
+          }
+          }
+          }
+    })
+  }
+
+  static async findTestProgress(
+    id_prova_andamento: number
+  ) : Promise<ProvaAndamento | null> {
+    return prismaClient.provaAndamento.findFirst({
+      where: {
+        id: id_prova_andamento
+      }
+    })    
+  }
+
+  static async updateUserTest(
+    data_entrega: string,
+    finalizada: boolean,
+    id_prova_usuario: number,
+  ) {
     return await prismaClient.usuarioProva.update({
       data: {
         data_entrega: new Date(data_entrega),
@@ -221,14 +346,14 @@ export default class TestModel {
     return await prismaClient.questaoProvaTipo.findFirst({
       where: {
         id: id_tipo,
-      },
+      }
     });
   }
 
   static async findAnswer(id: number): Promise<RespostaQuestaoProva | null> {
     return await prismaClient.respostaQuestaoProva.findFirst({
       where: {
-        id: id,
+        idQuestaoProva: id
       },
     });
   }
@@ -484,8 +609,22 @@ export default class TestModel {
           id: id_prova_usuario
         },
         select:{
-          respostaAlternativaProva: true,
-          respostaQuestaoProva: true
+          respostaAlternativaProva: {
+            select:{
+              alternativaProva:{
+                select:{
+                  idQuestaoProva: true,
+                  respostaAlternativaProva: true
+                }
+              }
+            } 
+          },
+          respostaQuestaoProva: {
+            select: {
+              idQuestaoProva: true,
+              resposta: true
+            }
+          }
         }
       })
   }
