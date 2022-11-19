@@ -5,7 +5,7 @@ import filter from "../../interfaces/Test/AdminFilter"
 import {TestData} from "../../interfaces/Test/Tests"
 import TestModel from "../../models/Test/TestModel"
 import TestService from "../../services/Test/TestService"
-import { userAnswer, userTest } from "../../interfaces/Test/AnswerTest"
+import { userAnswer, userTest, testAnswer } from "../../interfaces/Test/AnswerTest"
 import AnswerTestService from "../../services/Test/AnswerTestService"
 import correctAnswer from "../../interfaces/Test/Answer"
 import queryTestFilter from './../../utils/queryTestFilter';
@@ -103,15 +103,15 @@ export default class TestController {
 
     // }
 
-    // static async createAnswer(req: Request, res: Response) {
+    static async createUserAnswer(req: Request, res: Response) {
 
-    //     const data : userAnswer = req.body
+        const data : testAnswer = req.body
 
-    //     const answer = await AnswerTestService.createAnswer(data)
+        const answer = await AnswerTestService.createAnswerTest(data)
 
-    //     return res.status(answer?.statusCode).json(answer?.error ? { error: answer.error } : { message: answer?.message })
+        return res.status(answer?.statusCode).json(answer?.error ? { error: answer.error } : { message: answer?.message })
 
-    // }
+    }
 
     static async findTest(req: Request, res: Response) {
 

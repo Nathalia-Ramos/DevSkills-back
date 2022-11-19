@@ -15,7 +15,7 @@ import {
     RespostaAlternativaProva
 } from "@prisma/client";
 import { prismaClient } from "../../../database/prismaClient";
-import { userTest } from "../../../interfaces/AnswerTest";
+import { userTest } from "../../interfaces/Test/AnswerTest";
 import filter from "../../interfaces/Test/AdminFilter";
 // import { updateUserTest } from "../../interfaces/Test/AnswerTest";
 import Test from "../../interfaces/Test/Test";
@@ -43,16 +43,14 @@ export default class TestModel {
     id_usuario,
     id_prova_andamento,
     finalizada,
-    data_inicio,
-    data_entrega
+    data_inicio
   }: userTest): Promise<UsuarioProva> {
     return await prismaClient.usuarioProva.create({
       data: {
         idUsuario: id_usuario,
         idProvaAndamento: id_prova_andamento,
         finalizada,
-        data_inicio: new Date(data_inicio),
-        data_entrega: new Date(data_entrega)
+        data_inicio: new Date(data_inicio)
       },
     });
   }
@@ -179,21 +177,21 @@ export default class TestModel {
     })    
   }
 
-  // static async updateUserTest({
-  //   data_entrega,
-  //   finalizada,
-  //   id_prova_usuario,
-  // }: updateUserTest) {
-  //   return await prismaClient.usuarioProva.update({
-  //     data: {
-  //       data_entrega: new Date(data_entrega),
-  //       finalizada,
-  //     },
-  //     where: {
-  //       id: id_prova_usuario,
-  //     },
-  //   });
-  // }
+  static async updateUserTest(
+    data_entrega: string,
+    finalizada: boolean,
+    id_prova_usuario: number,
+  ) {
+    return await prismaClient.usuarioProva.update({
+      data: {
+        data_entrega: new Date(data_entrega),
+        finalizada,
+      },
+      where: {
+        id: id_prova_usuario,
+      },
+    });
+  }
 
   static async findTest(id: number): Promise<Prova | null> {
     return await prismaClient.prova.findFirst({

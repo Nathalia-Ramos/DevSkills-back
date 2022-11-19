@@ -3,10 +3,15 @@ interface userTest {
     id_prova_andamento: number,
 
     data_inicio: string,
-    data_entrega: string,
     finalizada: boolean,
+}
 
-    respostas?: userAnswer[]
+interface testAnswer {
+    id_prova_usuario: number,
+    finalizada: boolean,
+    data_entrega: string,
+
+    respostas: userAnswer[]
 }
 
 interface userAnswer {
@@ -34,4 +39,4 @@ interface userAnswer {
 //     resposta: string
 // }
 
-export { userAnswer, userTest }
+export { userAnswer, userTest, testAnswer }
