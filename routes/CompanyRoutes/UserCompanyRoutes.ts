@@ -10,8 +10,6 @@ router.get("/search/:pesquisa", UserCompany.companySearch);
 router.get("/tests", UserCompany.listTestCompany);
 router.get('/listCompany', UserCompany.listCompany)
 router.get('/listCompanyPerfil', UserCompany.perfilCompany)
-router.put('/updatePerfil/:id_empresa', UserCompany.updateCompanyPerfil)
-
-
+router.put('/updatePerfil/:idEmpresa', UserCompany.executeUpdate)
 
 export default router

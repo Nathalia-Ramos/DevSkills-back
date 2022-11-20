@@ -212,7 +212,7 @@ export default class CompanyService {
     }
  
     }
-    static async updatePerfilCompany(
+    /*static async updatePerfilCompany(
         id_empresa: number,
         email: string,
         biografia: string,
@@ -238,6 +238,86 @@ export default class CompanyService {
                 )
             
         return result
-    }
-  
+    }*/
+   static async updateProfileCompany(
+    idEmpresa: any, 
+    nome_fantasia: any,
+    biografia: string,
+    email: any, 
+    cnpj: string,
+    logo: string,
+    senha: any,
+    numero: string,
+    ddd: any,
+    foto: string,
+    legenda: any,
+    logradouro: any,
+    numero_rua: string,
+    complemento: string,
+    cep: string,
+    bairro: string
+    ){
+        //buscando empresa pelo id
+        const companyById = await UserCompanyModel.findCompanyByID(idEmpresa)
+        /*try {
+            const companyExists = await UserCompanyModel.updateProfileCompany(
+                email,
+                nome_fantasia,
+                biografia,
+                cnpj,
+                logo,
+                idEmpresa
+                )
+            } catch (error) {
+                console.log("caiu no perfil")
+                console.error(error)
+            }*/
+                try {
+                    const updatePassword = await UserCompanyModel.updatePasswordCompany(
+                        senha,
+                        idEmpresa
+                    )
+                    
+                } catch (error)     {
+                    console.error(error)
+                    console.log("caiu na senha")
+                    
+                }
+                //atualizando o telefone
+                try {
+                    const updatePhone = await UserCompanyModel.updatePhoneCompany(
+                        ddd,
+                        numero,
+                        idEmpresa
+                    )
+                } catch (error) {
+                    console.log("caiu no numero do celular")
+                }
+                try {
+                    //atualizando fotos
+                    const updatePhotos = await UserCompanyModel.updatPhotosCompany(
+                        legenda,
+                        foto,
+                        idEmpresa
+                    )
+                } catch (error) {
+                    console.log("caiu nas fotos")
+                }
+                try{
+                    //atualizando endereco da empresa
+                    const updateAddress = await UserCompanyModel.updateAddresCompany(
+                        logradouro,
+                        numero_rua,
+                        complemento,
+                        cep,
+                        bairro,
+                        idEmpresa
+                    )
+                }
+                catch(error){
+                    console.log("caiu no enderendero")
+                }
+      
+        
+   }
 }

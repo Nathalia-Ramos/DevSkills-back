@@ -61,7 +61,7 @@ export default class UserCompanyController {
 
     return res.status(200).json({data: result})
   }
-  static async updateCompanyPerfil(req:Request, res: Response){
+ /*static async updateCompanyPerfil(req:Request, res: Response){
     const {id_empresa} = req.params
 
     const {
@@ -81,5 +81,48 @@ export default class UserCompanyController {
       console.log("ENTROUWW???")
      
       return res.status(200).json({message: "Registro atualizado com sucesso!"})
+  }*/
+
+  static async executeUpdate(req: Request, res: Response){
+   const {idEmpresa} = req.params
+
+   const {
+    nome_fantasia,
+    biografia,
+    email ,
+    cnpj,
+    logo,
+    senha,
+    numero,
+    ddd,
+    foto,
+    legenda,
+    logradouro,
+    numero_rua,
+    complemento,
+    cep,
+    bairro
+  } = req.body 
+    
+    await CompanyService.updateProfileCompany(
+    parseInt(idEmpresa),
+    nome_fantasia,
+    biografia,
+    email ,
+    cnpj,
+    logo,
+    senha,
+    numero,
+    ddd,
+    foto,
+    legenda,
+    logradouro,
+    numero_rua,
+    complemento,
+    cep,
+    bairro
+    )
+
+    return res.status(200).json({message: "Registro atualizado com sucesso!"})
   }
 }

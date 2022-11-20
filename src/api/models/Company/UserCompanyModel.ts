@@ -1,4 +1,4 @@
-import { Empresa, EnderecoEmpresa, LoginEmpresa, prisma, ProvaAndamento } from "@prisma/client";
+import { Empresa, EmpresaTelefone, EnderecoEmpresa, FotosAmbiente, LoginEmpresa, prisma, ProvaAndamento } from "@prisma/client";
 import { prismaClient } from "../../../database/prismaClient";
 import AddressData from "../../interfaces/Company/Address";
 import CityData from "../../interfaces/Company/City";
@@ -397,7 +397,7 @@ export default class UserCompanyModel {
     })
   }
 
-  static async updatePerfilCompany(
+  /*static async updatePerfilCompany(
     id_empresa: number,
     email: string,
     biografia: string,
@@ -453,11 +453,106 @@ export default class UserCompanyModel {
               legenda: legenda
             },
           }
-         },*/
+         },
          
       }, 
       include:{enderecoEmpresa: true, LoginEmpresa: true,},
     
+    })
+  }*/
+  static async updateAddresCompany(
+    idEmpresa: number,
+    logradouro: string,
+    numero_rua: string,
+    complemento: string,
+    cep: string,
+    bairro: string
+  ) :  Promise <EnderecoEmpresa> {
+    return await prismaClient.enderecoEmpresa.update({
+      data:{
+        bairro: bairro,
+        cep: cep,
+        numero: numero_rua,
+        complemento: complemento,
+        logradouro: logradouro
+      },
+      where:{
+        id:idEmpresa
+      }
+    })
+  }
+  static async updatPhotosCompany(
+    idEmpresa: number,
+    foto: string,
+    legenda: string
+  ) :  Promise <FotosAmbiente> {
+    return await prismaClient.fotosAmbiente.update({
+      data:{
+        foto: foto,
+        legenda: legenda
+      },
+      where:{
+        id: idEmpresa
+      }
+    })
+  }
+  static async updatePhoneCompany(
+    idEmpresa: number,
+    numero: string,
+    ddd: string
+  ) : Promise <EmpresaTelefone>{
+    return await prismaClient.empresaTelefone.update({
+      data: {
+        numero: numero,
+        ddd: ddd
+      },
+      where:{
+        id: idEmpresa
+      }
+    })
+  }
+  static async updateProfileCompany(
+    idEmpresa: number,
+    nome_fantasia: string,
+    biografia: string,
+    email: string,
+    cnpj: string,
+    logo: string
+  ) :  Promise <Empresa> {
+    return await prismaClient.empresa.update({
+      where:{
+        id: idEmpresa
+      },
+      data:{
+        biografia: biografia,
+        cnpj: cnpj,
+        email: email,
+        nome_fantasia: nome_fantasia,
+        logo: logo
+      },
+    })
+  }
+  static async updatePasswordCompany(
+    idEmpresa: number,
+    senha: string
+  ) :  Promise <LoginEmpresa> {
+    return await prismaClient.loginEmpresa.update({
+      data:{
+        senha: senha
+      }, 
+      where:{
+        id: idEmpresa
+      }
+    })
+  }
+  static async findCompanyByID(
+    idEmpresa: number
+  ) : Promise <Empresa | any> {
+    return await prismaClient.empresa.findFirst({
+      where: {
+        id: idEmpresa
+      },
+
     })
   }
 }
