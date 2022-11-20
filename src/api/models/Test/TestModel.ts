@@ -570,6 +570,7 @@ export default class TestModel {
       select: {
         prova: {
           select:{
+            id: true,
             ativo: true,
             titulo: true,
             descricao: true,
@@ -577,7 +578,9 @@ export default class TestModel {
               select:{
               empresa:{
                 select:{
-                  logo : true
+                  logo : true,
+                  id: true,
+                  nome_fantasia: true
                 }
               }
             }},
