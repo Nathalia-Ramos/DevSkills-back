@@ -8,6 +8,7 @@ import QuestionModel from "../../models/Questions/QuestionsModel";
 import isString from "../../utils/isString";
 import correctAnswer from "../../interfaces/Test/Answer";
 
+
 export default class AnswerTestService {
 
     static async createAnswerTest(testAnswer: testAnswer) {
@@ -298,6 +299,7 @@ export default class AnswerTestService {
         
 
     static async createUserTest(testAnswer : userTest) {
+
         if(Object.keys(testAnswer).length > 0) {
 
             if (testAnswer.id_prova_andamento, testAnswer.id_usuario, testAnswer.data_inicio, testAnswer.finalizada != undefined) {
@@ -311,7 +313,7 @@ export default class AnswerTestService {
                         }
                     }
             
-                    const testExist = await TestModel.findTest(testAnswer.id_prova_andamento)
+                    const testExist = await AnswerTestModel.findTest(testAnswer.id_prova_andamento)
 
                     if(testExist) {
 
@@ -943,6 +945,7 @@ export default class AnswerTestService {
     // }
 
     static async listAnswers(id: number) {
+
 
         if (typeof id == 'number') {
     
