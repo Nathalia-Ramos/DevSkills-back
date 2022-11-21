@@ -121,8 +121,24 @@ export default class TestService {
       };
     }
   }
+  
+  static async listOverview(id_prova: number) {
+    const test = await TestModel.findUsersAnswers(id_prova);
 
-  static async findUserAnswers(id_prova_andamento: number) {
+    if (test) {
+      return {
+        data: test,
+        statusCode: 200,
+      };
+    } else {
+      return {
+        error: "Prova com o ID especificado não encontrada.",
+        statusCode: 404,
+      };
+    }
+  }
+
+  static async findUserAnswers(id_prova_andamento: number, take: number) {
 
     if(typeof id_prova_andamento === 'number') {
 
@@ -133,7 +149,9 @@ export default class TestService {
         const usersAnswers = await TestModel.findUsersAnswers(id_prova_andamento)
 
         return {
-          data: usersAnswers,
+          data: {
+            totalResults: usersAnswers.length - 1,
+            result: usersAnswers[take]},
           statusCode: 200
         }
 

@@ -173,6 +173,8 @@ export default class CompanyService {
         if(typeof tokenValidate === 'number') {
 
             const result = await UserCompanyModel.searchTestCompany(tokenValidate, filters)
+
+            console.log(result)
   
             return {
                 data: result,

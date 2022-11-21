@@ -24,9 +24,9 @@ export default class TestController {
 
     static async findUserAnswers(req: Request, res: Response) {
 
-        const { id } = req.params
+        const { id, take } = req.params
 
-        const result = await TestService.findUserAnswers(parseInt(id))
+        const result = await TestService.findUserAnswers(parseInt(id), parseInt(take))
 
         return res.status(result.statusCode).json(result.error ? {error: result.error} : {data: result.data})
 
@@ -160,7 +160,17 @@ export default class TestController {
         const answer = await AnswerTestService.listAnswers(parseInt(id))
 
         res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data })
-
+        
     } 
+    
+    static async listOverview(req: Request, res: Response) {
+        
+        const { id } = req.params
+        
+        const answer = await TestService.listOverview(parseInt(id))
+        
+        res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data })
+        
+    }
 
 }
