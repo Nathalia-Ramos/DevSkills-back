@@ -30,6 +30,13 @@ export default class AnswerTestService {
 
                             if (userTestExist) {
 
+                                if(userTestExist.finalizada) {
+                                    return {
+                                        error: "Prova já respondida.",
+                                        statusCode: 400
+                                    }
+                                }
+
                                 if (testAnswer.respostas) {
 
                                     if (Array.isArray(testAnswer.respostas)) {
@@ -311,7 +318,7 @@ export default class AnswerTestService {
                         }
                     }
             
-                    const testExist = await TestModel.findTest(testAnswer.id_prova_andamento)
+                    const testExist = await AnswerTestModel.findTestProgress(testAnswer.id_prova_andamento)
 
                     if(testExist) {
 

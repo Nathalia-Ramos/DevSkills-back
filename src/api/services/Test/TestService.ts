@@ -1,8 +1,10 @@
 import ReturnMessages from "../../../config/ReturnMessages";
+import { ErrorReturn } from "../../interfaces/ReturnPattern/Returns";
 import filter from "../../interfaces/Test/AdminFilter";
 import correctAnswer from "../../interfaces/Test/Answer";
 import TestProgress from "../../interfaces/Test/TestProgress";
 import { TestData } from "../../interfaces/Test/Tests";
+import TokenData from "../../interfaces/Token/Token";
 import AnswerTestModel from "../../models/AnswerTestModel";
 import TestModel from "../../models/Test/TestModel";
 import isEmpty from "../../utils/isEmpty";
@@ -106,20 +108,41 @@ export default class TestService {
     }
   }
 
-  static async findTest(id_prova: number) {
-    const test = await AnswerTestModel.findTest(id_prova);
+  static async findTest(id_prova: number, tokenValidate: TokenData | ErrorReturn) {
+    
+    if('id' in tokenValidate) {
+      
+      const test = await AnswerTestModel.findTest(id_prova);
+      
+      if (test) {
 
-    if (test) {
-      return {
-        data: test,
-        statusCode: 200,
-      };
+        const userTestExist = await TestModel.findUserTest(id_prova, tokenValidate.id)
+
+        if(userTestExist) {
+          return {
+            error: "Prova já respondida.",
+            statusCode: 400
+          }
+        } else {
+          return {
+            data: test,
+            statusCode: 200,
+          };
+        }
+
+      } else {
+        return {
+          error: "Prova com o ID especificado não encontrada.",
+          statusCode: 404,
+        };
+      }
     } else {
       return {
-        error: "Prova com o ID especificado não encontrada.",
-        statusCode: 404,
-      };
+        error: tokenValidate.error,
+        statusCode: tokenValidate.statusCode
+      }
     }
+    
   }
   
   static async listOverview(id_prova: number) {

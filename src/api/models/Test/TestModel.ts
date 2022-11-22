@@ -633,23 +633,9 @@ export default class TestModel {
         where: {
           id: id_prova_usuario
         },
-        select:{
-          respostaAlternativaProva: {
-            select:{
-              alternativaProva:{
-                select:{
-                  idQuestaoProva: true,
-                  respostaAlternativaProva: true
-                }
-              }
-            } 
-          },
-          respostaQuestaoProva: {
-            select: {
-              idQuestaoProva: true,
-              resposta: true
-            }
-          }
+        include:{
+          respostaAlternativaProva: true,
+          respostaQuestaoProva: true
         }
       })
   }
