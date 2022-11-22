@@ -6,6 +6,7 @@ import generator from "generate-password"
 import nodemailer from "nodemailer"
 import filter from './../../interfaces/Test/AdminFilter';
 import { ErrorReturn } from "../../interfaces/ReturnPattern/Returns";
+import TokenData from "../../interfaces/Token/Token";
 
 export default class CompanyService {
     static async createCompany (user: CompanyUser ){
@@ -168,17 +169,32 @@ export default class CompanyService {
         
         return result
     }
-    static async listTestCompany(tokenValidate: number | ErrorReturn, filters: filter){
+    static async listTestCompany(tokenValidate: TokenData | ErrorReturn, filters: filter){
 
-        if(typeof tokenValidate === 'number') {
+        if('id' in tokenValidate) {
 
-            const result = await UserCompanyModel.searchTestCompany(tokenValidate, filters)
+            const totalResults = await UserCompanyModel.searchTestCompany(tokenValidate.id, filters)
 
-            console.log(result)
-  
-            return {
-                data: result,
-                statusCode: 200
+            if (totalResults) {
+                const startIndex = 20 * filters.pagina
+                const endIndex = 20 * (filters.pagina + 1)
+
+                const result = totalResults.slice(startIndex, endIndex)
+      
+                return {
+                    data: {
+                        totalPages: Math.ceil(totalResults?.length / 20),
+                        totalResult: totalResults?.length,
+                        page: filters.pagina + 1,
+                        results: result
+                    },
+                    statusCode: 200
+                }
+            } else {
+                return {
+                    error: "Não foram encontradas provas com as características especificadas.",
+                    statusCode: 404,
+                }
             }
             
           } else {
