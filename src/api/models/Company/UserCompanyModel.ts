@@ -212,7 +212,26 @@ export default class UserCompanyModel {
     try {
       const company = await prismaClient.empresa.findMany({
         select:{
-          
+          id: true,
+          nome_fantasia: true,
+          logo: true,
+          cnpj: true,
+          biografia: true,
+          email: true,
+          enderecoEmpresa: {
+            select:{
+              bairro: true,
+              cep: true,
+              logradouro: true,
+              numero: true,
+              complemento: true,
+              cidade:{
+                select:{
+                  nome: true
+                }
+              }
+            }
+          }
         }
       });
 
@@ -373,6 +392,7 @@ export default class UserCompanyModel {
         ativo: true,
         nome_fantasia: true,
         logo: true,
+        id: true,
         enderecoEmpresa:{
           select:{
             complemento: true,
