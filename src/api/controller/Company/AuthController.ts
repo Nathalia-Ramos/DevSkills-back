@@ -15,6 +15,7 @@ export default class AuthController {
     if (userExist != null) {
       const CompanyLogin = await UserCompanyModel.findIDLogin(userExist.id);
       console.log(CompanyLogin);
+    
       if (CompanyLogin != null) {
         if (await bcrypt.compare(senha, CompanyLogin.senha)) {
           const data = {
@@ -27,8 +28,12 @@ export default class AuthController {
           });
 
           return res.json({ data, token });
-        }
+        }else{
+          return res.status(400).json({error: "Usuario ou senha inválido!"})
       }
+      }
+    }else{
+      return res.status(400).json({error: "Usuario ou senha inválido!"})
     }
   }
 }

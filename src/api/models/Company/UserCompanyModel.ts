@@ -164,7 +164,7 @@ export default class UserCompanyModel {
       console.log(error);
     }
   }
-  static async Login({ senha, id_empresa }: LoginData): Promise<any> {
+  static async Login({ senha, id_empresa }: LoginData): Promise<LoginEmpresa | any> {
     try {
       const newLogin = await prismaClient.loginEmpresa.create({
         data: {
@@ -177,7 +177,9 @@ export default class UserCompanyModel {
 
       return newLogin;
     } catch (error) {
+
       prismaClient.$disconnect;
+
       console.log(error);
     }
   }
