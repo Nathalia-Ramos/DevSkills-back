@@ -144,7 +144,6 @@ export default class TestModel {
   static async findUsersAnswers(
     id: number
   ) {
-    console.log(id)
     return await prismaClient.usuarioProva.findMany({
       where:{
         finalizada: {
@@ -172,14 +171,28 @@ export default class TestModel {
                       include: {
                         provasTodasQuestoes: {
                           include: {
-                            questaoProva: true
+                            questaoProva: {
+                              include:{
+                                questaoProvaTipo: true
+                              }
+                            }
                           }
                         }
                       }
                     }
                   }
                 },
-                respostaAlternativaProva: true,
+                respostaAlternativaProva: {
+                  include:{
+                    alternativaProva:{
+                      select:{
+                        opcao: true,
+                        correta: true,
+                        idQuestaoProva: true
+                      }
+                    }
+                  }
+                },
                 respostaQuestaoProva: true,
               }
             }
