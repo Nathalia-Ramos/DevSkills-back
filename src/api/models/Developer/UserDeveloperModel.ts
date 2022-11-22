@@ -246,7 +246,13 @@ export default class UserDeveloperModel {
     return await prismaClient.provaAndamento.findMany({
       select:{
         id: true,
-        
+        empresa:{
+          select:{
+            id: true,
+            nome_fantasia: true,
+            logo: true,
+          }
+        },
         prova: {
           select:{
             provaHabilidade:{
