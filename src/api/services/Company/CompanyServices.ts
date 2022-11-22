@@ -179,11 +179,20 @@ export default class CompanyService {
                 const startIndex = 20 * filters.pagina
                 const endIndex = 20 * (filters.pagina + 1)
 
+                const totalPages = Math.ceil(totalResults?.length / 20)
+
+                if(totalPages < (filters.pagina + 1)) {
+                  return {
+                    error: "Essa página não existe.",
+                    statusCode: 404
+                  }
+                }
+
                 const result = totalResults.slice(startIndex, endIndex)
       
                 return {
                     data: {
-                        totalPages: Math.ceil(totalResults?.length / 20),
+                        totalPages: totalPages,
                         totalResult: totalResults?.length,
                         page: filters.pagina + 1,
                         results: result
