@@ -12,7 +12,8 @@ import {
     RespostaQuestaoProva,
     UsuarioProva,
     AlternativaProva,
-    RespostaAlternativaProva
+    RespostaAlternativaProva,
+    Usuario
 } from "@prisma/client";
 import { prismaClient } from "../../../database/prismaClient";
 import { userTest } from "../../interfaces/Test/AnswerTest";
@@ -118,6 +119,27 @@ export default class TestModel {
               }
           })
   }
+  
+  // static async findOverview(
+  //   id_prova_andamento: number) { 
+  //       return await prismaClient.usuarioProva.findMany({
+  //         where:{
+  //           idProvaAndamento: id_prova_andamento,
+  //           finalizada: true
+  //         },
+  //         select:{
+  //           usuario:{
+  //             select:{
+  //               _count:{
+  //                 select:{
+  //                   usuarioProva: true
+  //                 }
+  //               }
+  //             }
+  //           }
+  //         }
+  //       })
+  // }
 
   static async findUsersAnswers(
     id: number
@@ -125,19 +147,19 @@ export default class TestModel {
     console.log(id)
     return await prismaClient.usuarioProva.findMany({
       where:{
-        idProvaAndamento: {
-          equals: id
-        },
         finalizada: {
           equals: true
         }
       },
-      select:{  
+      select:{ 
         usuario:{
           select :{
             nome: true,
             id: true,
             usuarioProva:{
+              where:{
+                idProvaAndamento: id
+              },
               select:{
                 id: true,
                 pontuacao: true,

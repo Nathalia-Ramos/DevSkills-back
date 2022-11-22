@@ -45,6 +45,8 @@ export default class UserCompanyController {
     const tokenValidate = await authGuard(req)
     const userFilters = queryTestFilter(req)
 
+    console.log(userFilters)
+
     const result = await CompanyService.listTestCompany(tokenValidate, userFilters);
 
     return res.status(result.statusCode).json(result.error ? { error: result.error } : { data: result.data });

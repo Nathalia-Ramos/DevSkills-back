@@ -33,18 +33,7 @@ export default class GenderModel{
       }
 
       static async showAll() {
-        try {
-          const getAll = await prisma.genero.findMany() 
-          
-          prisma.$disconnect;
-  
-          return getAll;
-          
-        } catch (error) {
+          return await prisma.genero.findMany() 
 
-          prisma.$disconnect;
-          
-          return error
-        }
       }
     }
