@@ -9,6 +9,7 @@ import AnswerTestModel from "../../models/AnswerTestModel";
 import TestModel from "../../models/Test/TestModel";
 import isEmpty from "../../utils/isEmpty";
 import QuestionService from "./QuestionService";
+import { answerData, testAnswers, questionAnswer, questionTest }   from "../../interfaces/Test/TestUserAnswers"
 // import jwt_decode from "jwt-decode";
 
 export default class TestService {
@@ -169,13 +170,170 @@ export default class TestService {
 
       if(testExist) {
 
+        const questionData : questionTest[] = []
+        const userData : testAnswers[] = []
+        
         const usersAnswers = await TestModel.findUsersAnswers(id_prova_andamento)
 
-        return {
-          data: {
-            totalResults: usersAnswers.length - 1,
-            result: usersAnswers[take]},
-          statusCode: 200
+        if(usersAnswers) {
+
+          const userAnswer = usersAnswers[take]
+
+          if(!userAnswer) {
+            return {
+              error: "Candidato não encontrado.",
+              statusCode: 404
+            }
+          }
+
+          const userInfo = userAnswer.usuario.usuarioProva
+
+          const allQuestions = userInfo[0].provaAndamento.prova.provasTodasQuestoes
+  
+          const optionAnswers = userInfo[0]?.respostaAlternativaProva
+          
+          const textAnswers = userInfo[0]?.respostaQuestaoProva
+          
+            allQuestions.forEach((userQuestion) => {
+            
+              if(userQuestion.questaoProva.questaoProvaTipo.tipo === 'DISSERTATIVA') {
+    
+                textAnswers.forEach((userAnswer) =>{
+                  if(userAnswer.idQuestaoProva == userQuestion.idQuestaoProva) {
+                    
+                    const question = {
+                      id: userQuestion.id,
+                      enunciado: userQuestion.questaoProva.enunciado,
+                      tipo: userQuestion.questaoProva.questaoProvaTipo.tipo,
+                      resposta: {
+                        id: userAnswer.id,
+                        texto: userAnswer.resposta
+                      }
+                    }
+    
+                    questionData.push(question)
+    
+                  }
+                })
+                
+                // const userAnswers = textAnswers.map((value) => {
+                //   if(value.idQuestaoProva === userQuestion.id)
+                //     return value
+                //   })
+                
+                // userAnswers.forEach((value) => {
+                //   if(value) {
+                //     const answerData = {
+                //       id: value?.id,
+                //       enunciado: userQuestion.questaoProva.enunciado,
+                //       tipo: userQuestion.questaoProva.questaoProvaTipo.tipo,
+                //       resposta: {
+                  //         id: userQuestion.id,
+                //         texto: value?.resposta
+                //       }
+                //     }
+                
+                //     questionAnswerData.push(answerData)
+                //   }
+                // })
+                
+    
+              } else {
+    
+                const options : questionAnswer[] = []
+    
+                optionAnswers.forEach((value) =>{
+                  if(value.alternativaProva.idQuestaoProva === userQuestion.idQuestaoProva) {
+                    
+                    options.push({
+                      id: value.alternativaProva.idQuestaoProva,
+                      texto: value.alternativaProva.opcao,
+                      correta: value.alternativaProva.correta
+                    })
+                  }
+                })
+    
+                optionAnswers.forEach((userAnswer) =>{
+                  if(userQuestion.idQuestaoProva == userQuestion.idQuestaoProva) {
+    
+                    const question = {
+                      id: userQuestion.id,
+                      enunciado: userQuestion.questaoProva.enunciado,
+                      tipo: userQuestion.questaoProva.questaoProvaTipo.tipo,
+                      acertou: userAnswer.alternativaProva.correta ? true : false,
+                      alternativas: options
+                    }
+    
+                    questionData.push(question)
+    
+                  }
+                })
+    
+                // const userAnswers = optionAnswers.map((value) => {
+                //   if(value.alternativaProva.idQuestaoProva === userQuestion.id)
+                //   return value
+                // })
+    
+                // const options : questionTest[] = []
+                
+                // userAnswers.forEach((value) => {
+                //   if(value) {
+    
+                //     options.push({
+                //       id: value.id,
+                //       texto: value.alternativaProva.opcao,
+                //       correta: value.alternativaProva.correta
+                //     })
+                    
+                //   }
+                // })
+    
+                // questionAnswerData.push({
+                //   id: userQuestion.id,
+                //   enunciado: userQuestion.questaoProva.enunciado,
+                //   tipo: userQuestion.questaoProva.questaoProvaTipo.tipo,
+                //   acertou: false,
+                //   alternativas: options
+                // })
+    
+              }
+              
+            })
+            console.log(questionData)
+          
+            const userTest = userAnswer.usuario.usuarioProva[0]
+            const user = userAnswer.usuario
+  
+            const userInfos = {
+              id: user.id,
+              idProvaUsuario: userTest.id,
+              nome: user.nome,
+              tempo: '01:05:00',
+              corrigida: userTest.pontuacao ? true : false,
+              pontuacao: userTest.pontuacao,
+              questoes: questionData
+            }
+  
+          userData.push(userInfos)
+          
+          const answerData : answerData = {
+            idProvaAndamento: id_prova_andamento,
+            candidatos: userData
+          }
+  
+          return {
+            data: {
+              totalResults: usersAnswers.length - 1,
+              result: answerData
+            },
+              statusCode: 200
+          }
+
+        } else {
+          return {
+            error: "Não foram encontradas respostas para a prova especificada.",
+            statusCode: 404
+          }
         }
 
       } else {
