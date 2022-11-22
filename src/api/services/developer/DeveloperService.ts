@@ -169,8 +169,9 @@ export default class DeveloperService {
             message: message.UserAuthorized,
             token: token,
             userInfo:{
+              id: userExist.id,
               tag: userExist.tag,
-              fotoPerfil: userExist.foto_perfil
+              fotoPerfil: userExist.foto_perfil,
             },
             userType: "DEVELOPER",
             statusCode: 200,
