@@ -10,6 +10,7 @@ import { ErrorReturn, SuccessReturn } from "../../interfaces/ReturnPattern/Retur
 import { compare } from "bcrypt";
 import nodemailer from "nodemailer";
 import generator from "generate-password";
+import TokenData from "../../interfaces/Token/Token";
 
 export default class DeveloperService {
   static async create(userInfo: RegisterDeveloperData) {
@@ -273,11 +274,11 @@ static async testListUser(search: string){
   return result
 }
 
-static async listUserProfile(tokenValidate: number | ErrorReturn) {
+static async listUserProfile(tokenValidate: TokenData | ErrorReturn) {
 
-  if(typeof tokenValidate === 'number') {
+  if('id' in tokenValidate) {
 
-    const userInfo = await DeveloperModel.getUserInfo(tokenValidate)
+    const userInfo = await DeveloperModel.getUserInfo(tokenValidate.id)
   
       if (userInfo) {
           return {

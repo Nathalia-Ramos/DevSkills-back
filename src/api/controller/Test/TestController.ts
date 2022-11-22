@@ -1,6 +1,7 @@
 import {Request, Response} from "express"
 import ReturnMessages from "../../../config/ReturnMessages"
 import TestProgress from "../../interfaces/Test/TestProgress"
+import tokenVerify from "../../../middlewares/auth"
 import filter from "../../interfaces/Test/AdminFilter"
 import {TestData} from "../../interfaces/Test/Tests"
 import TestModel from "../../models/Test/TestModel"
@@ -89,11 +90,11 @@ export default class TestController {
 
         const answer = await AnswerTestService.createUserTest(data)
 
-        return res.status(answer?.statusCode).json(answer?.error ? { error: answer.error } : { message: answer.message })
+        return res.status(answer?.statusCode).json(answer?.error ? { error: answer.error } : { message: answer.message, data: answer.data })
 
     }
 
-    // static async updateUserTest(req: Request, res: Response) {
+    // static async updateUserTest(req: Request, res: Response) {, 
 
     //     const data : updateUserTest = req.body
 
@@ -115,9 +116,11 @@ export default class TestController {
 
     static async findTest(req: Request, res: Response) {
 
-        const { id  } = req.params
+        const { id } = req.params
 
-        const answer = await TestService.findTest(parseInt(id))
+        const tokenValidate = await tokenVerify(req)
+
+        const answer = await TestService.findTest(parseInt(id), tokenValidate)
 
         res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data })
 
