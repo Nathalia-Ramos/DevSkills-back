@@ -146,6 +146,7 @@ export default class TestModel {
   ) {
     return await prismaClient.usuarioProva.findMany({
       where:{
+        idProvaAndamento: id,
         finalizada: {
           equals: true
         }
@@ -173,7 +174,9 @@ export default class TestModel {
                           include: {
                             questaoProva: {
                               include:{
-                                questaoProvaTipo: true
+                                questaoProvaTipo: true,
+                                alternativaProva: true,
+                                respostaQuestaoProva: true
                               }
                             }
                           }
@@ -254,7 +257,18 @@ export default class TestModel {
         id: id_prova_usuario,
       },
       include: {
-        respostaAlternativaProva: true,
+        respostaAlternativaProva: {
+          select:{
+            alternativaProva: {
+              select:{
+                idQuestaoProva: true
+              }
+            },
+            idAlternativaProva: true,
+            idUsuarioProva: true,
+            id: true
+          }
+        },
         respostaQuestaoProva: true,
         provaAndamento: {
           include: {

@@ -176,8 +176,9 @@ export default class TestService {
         const usersAnswers = await TestModel.findUsersAnswers(id_prova_andamento)
 
         if(usersAnswers) {
-
-          const userAnswer = usersAnswers[take]
+          
+          console.log(usersAnswers)
+          const userAnswer = usersAnswers[take - 1]
 
           if(!userAnswer) {
             return {
@@ -186,148 +187,101 @@ export default class TestService {
             }
           }
 
+          console.log(userAnswer)
+
           const userInfo = userAnswer.usuario.usuarioProva
 
-          const allQuestions = userInfo[0].provaAndamento.prova.provasTodasQuestoes
-  
-          const optionAnswers = userInfo[0]?.respostaAlternativaProva
-          
-          const textAnswers = userInfo[0]?.respostaQuestaoProva
-          
-            allQuestions.forEach((userQuestion) => {
+            const allQuestions = userInfo[0].provaAndamento.prova.provasTodasQuestoes
+
+            const optionAnswers = userInfo[0]?.respostaAlternativaProva
             
-              if(userQuestion.questaoProva.questaoProvaTipo.tipo === 'DISSERTATIVA') {
-    
-                textAnswers.forEach((userAnswer) =>{
-                  if(userAnswer.idQuestaoProva == userQuestion.idQuestaoProva) {
+            const textAnswers = userInfo[0]?.respostaQuestaoProva
+            
+            const textQuestionIDS = textAnswers.map((value) => value.idQuestaoProva)
+  
+              allQuestions.forEach((userQuestion: any) => {
+              
+                if(userQuestion.questaoProva.questaoProvaTipo.tipo === 'DISSERTATIVA') {
+      
+                  if(textQuestionIDS.includes(userQuestion.idQuestaoProva)) {
                     
-                    const question = {
-                      id: userQuestion.id,
-                      enunciado: userQuestion.questaoProva.enunciado,
-                      tipo: userQuestion.questaoProva.questaoProvaTipo.tipo,
-                      resposta: {
-                        id: userAnswer.id,
-                        texto: userAnswer.resposta
+                    const userAnswer = textAnswers.find((value) => value.idQuestaoProva == userQuestion.idQuestaoProva)
+  
+                    if(userAnswer) {
+                      const question = {
+                        id: userQuestion.id,
+                        enunciado: userQuestion.questaoProva.enunciado,
+                        tipo: userQuestion.questaoProva.questaoProvaTipo.tipo,
+                        resposta: {
+                          id: userAnswer.id,
+                          texto: userAnswer.resposta
+                        }
                       }
+                      
+                      questionData.push(question)
+                      console.log('adicionou'+ question.id)
                     }
-    
-                    questionData.push(question)
-    
+  
                   }
-                })
-                
-                // const userAnswers = textAnswers.map((value) => {
-                //   if(value.idQuestaoProva === userQuestion.id)
-                //     return value
-                //   })
-                
-                // userAnswers.forEach((value) => {
-                //   if(value) {
-                //     const answerData = {
-                //       id: value?.id,
-                //       enunciado: userQuestion.questaoProva.enunciado,
-                //       tipo: userQuestion.questaoProva.questaoProvaTipo.tipo,
-                //       resposta: {
-                  //         id: userQuestion.id,
-                //         texto: value?.resposta
-                //       }
-                //     }
-                
-                //     questionAnswerData.push(answerData)
-                //   }
-                // })
-                
-    
-              } else {
-    
-                const options : questionAnswer[] = []
-    
-                optionAnswers.forEach((value) =>{
-                  if(value.alternativaProva.idQuestaoProva === userQuestion.idQuestaoProva) {
+      
+                } else {
+      
+                  const options : questionAnswer[] = []
+      
+                  optionAnswers.forEach((value: any) =>{
+                      
+                      options.push({
+                        id: value.id,
+                        texto: value.alternativaProva.opcao,
+                        correta: value.alternativaProva.correta,
+                        selecionada: value.alternativaProva.idQuestaoProva === userQuestion.idQuestaoProva ? true : false
+                      })
                     
-                    options.push({
-                      id: value.alternativaProva.idQuestaoProva,
-                      texto: value.alternativaProva.opcao,
-                      correta: value.alternativaProva.correta
-                    })
-                  }
-                })
-    
-                optionAnswers.forEach((userAnswer) =>{
-                  if(userQuestion.idQuestaoProva == userQuestion.idQuestaoProva) {
+                  })
     
                     const question = {
                       id: userQuestion.id,
                       enunciado: userQuestion.questaoProva.enunciado,
                       tipo: userQuestion.questaoProva.questaoProvaTipo.tipo,
-                      acertou: userAnswer.alternativaProva.correta ? true : false,
+                      acertou: userQuestion.questaoProva.alternativaProva.correta,
                       alternativas: options
                     }
     
                     questionData.push(question)
-    
-                  }
-                })
-    
-                // const userAnswers = optionAnswers.map((value) => {
-                //   if(value.alternativaProva.idQuestaoProva === userQuestion.id)
-                //   return value
-                // })
-    
-                // const options : questionTest[] = []
+                    console.log('adicionou'+ question.id)
+                  
+                }
                 
-                // userAnswers.forEach((value) => {
-                //   if(value) {
+              })
+              console.log(questionData)
+            
+              const userTest = userAnswer.usuario.usuarioProva[0]
+              const user = userAnswer.usuario
     
-                //     options.push({
-                //       id: value.id,
-                //       texto: value.alternativaProva.opcao,
-                //       correta: value.alternativaProva.correta
-                //     })
-                    
-                //   }
-                // })
-    
-                // questionAnswerData.push({
-                //   id: userQuestion.id,
-                //   enunciado: userQuestion.questaoProva.enunciado,
-                //   tipo: userQuestion.questaoProva.questaoProvaTipo.tipo,
-                //   acertou: false,
-                //   alternativas: options
-                // })
-    
+              const userInfos = {
+                id: user.id,
+                idProvaUsuario: userTest.id,
+                nome: user.nome,
+                tempo: '01:05:00',
+                corrigida: userTest.pontuacao ? true : false,
+                pontuacao: userTest.pontuacao,
+                questoes: questionData
               }
-              
-            })
-            console.log(questionData)
-          
-            const userTest = userAnswer.usuario.usuarioProva[0]
-            const user = userAnswer.usuario
-  
-            const userInfos = {
-              id: user.id,
-              idProvaUsuario: userTest.id,
-              nome: user.nome,
-              tempo: '01:05:00',
-              corrigida: userTest.pontuacao ? true : false,
-              pontuacao: userTest.pontuacao,
-              questoes: questionData
+    
+            userData.push(userInfos)
+            
+            const answerData : answerData = {
+              idProvaAndamento: id_prova_andamento,
+              candidato: userData
             }
-  
-          userData.push(userInfos)
-          
-          const answerData : answerData = {
-            idProvaAndamento: id_prova_andamento,
-            candidatos: userData
-          }
-  
-          return {
-            data: {
-              totalResults: usersAnswers.length - 1,
-              result: answerData
-            },
-              statusCode: 200
-          }
+    
+            return {
+              data: {
+                totalResults: usersAnswers.length,
+                result: answerData
+              },
+                statusCode: 200
+            }
 
         } else {
           return {

@@ -1,6 +1,6 @@
 interface answerData {
     idProvaAndamento: number,
-    candidatos: testAnswers[]
+    candidato: testAnswers[]
 }
 
 interface testAnswers {
@@ -25,7 +25,8 @@ interface questionTest {
 interface questionAnswer {
     id: number,
     texto: string,
-    correta?: boolean | null
+    correta?: boolean | null,
+    selecionada?: boolean
 }
 
 export { answerData, testAnswers, questionAnswer, questionTest }  
