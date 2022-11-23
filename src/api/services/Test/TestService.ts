@@ -405,26 +405,36 @@ export default class TestService {
   }
 
   static async findAdminTests(
-   userFilters: filter
+   filters: filter
   ) {
 
-    console.log(userFilters);
+    const totalResults = await TestModel.filterAdminTests(filters);
 
-    const adminTests = await TestModel.filterAdminTests(userFilters);
+    if (totalResults) {
 
-    if (isEmpty(adminTests)) {
-      const allTests = (await TestModel.findAdminTests())?.length;
-      const allPages = Math.ceil(allTests / 20);
+      const startIndex = 20 * filters.pagina
+      const endIndex = 20 * (filters.pagina + 1)
+
+      const totalPages = Math.ceil(totalResults?.length / 20)
+
+      if(totalPages < (filters.pagina + 1)) {
+        return {
+          error: "Essa página não existe.",
+          statusCode: 404
+        }
+      }
+
+      const result = totalResults.slice(startIndex, endIndex)
 
       return {
-        data: {
-          page: userFilters.pagina + 1,
-          totalPages: allPages,
-          // totalResults: Math.floor(adminTests.length / (userFilters.pagina + 1)),
-          results: adminTests,
-        },
-        statusCode: 200,
-      };
+          data: {
+              totalPages: totalPages,
+              totalResult: totalResults?.length,
+              page: filters.pagina + 1,
+              results: result
+          },
+          statusCode: 200
+      }
     } else {
       return {
         error:

@@ -290,6 +290,7 @@ export default class TestModel {
       },
     });
   }
+  
 
   static async findCompany(id: number): Promise<any> {
     return await prismaClient.empresa.findFirst({
@@ -427,40 +428,40 @@ export default class TestModel {
   }
   static async allTest() {
     try {
-      const testAll = await prismaClient.prova.findMany({
+      const testAll = await prismaClient.provaAndamento.findMany({
         select:{
-          provaAndamento:{
+          id: true,
+          prova:{
             select:{
-              id: true,
-            }
-          },
-          titulo: true,
-          descricao: true,
-          ativo: true,
-          provaHabilidade: {
-            select:{
-              habilidade:{
+              titulo: true,
+              descricao: true,
+              ativo: true,
+              provaHabilidade: {
                 select:{
-                  id: true,
-                  nome: true,
-                  icone: true,
+                  habilidade:{
+                    select:{
+                      id: true,
+                      nome: true,
+                      icone: true,
+                    }
+                  }
+                }
+              },
+              provaStack:{
+                select:{
+                  stack:{
+                    select:{
+                      id: true,
+                      nome: true,
+                    }
+                  }
+                }
+              },
+              provaTipo: {
+                select:{
+                  tipo: true,
                 }
               }
-            }
-          },
-          provaStack:{
-            select:{
-              stack:{
-                select:{
-                  id: true,
-                  nome: true,
-                }
-              }
-            }
-          },
-          provaTipo: {
-            select:{
-              tipo: true,
             }
           }
         }
@@ -475,6 +476,7 @@ export default class TestModel {
       return error;
     }
   }
+
 
   static async correctAnswer(id: number, correta: boolean) {
     return await prismaClient.respostaQuestaoProva.update({
