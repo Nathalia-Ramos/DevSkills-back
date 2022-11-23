@@ -83,46 +83,46 @@ export default class UserCompanyController {
       return res.status(200).json({message: "Registro atualizado com sucesso!"})
   }*/
 
-  static async executeUpdate(req: Request, res: Response){
-   const {idEmpresa} = req.params
+  // static async executeUpdate(req: Request, res: Response){
+  //  const {idEmpresa} = req.params
 
-   const {
-    nome_fantasia,
-    biografia,
-    email ,
-    cnpj,
-    logo,
-    senha,
-    numero,
-    ddd,
-    foto,
-    legenda,
-    logradouro,
-    numero_rua,
-    complemento,
-    cep,
-    bairro
-  } = req.body 
+  //  const {
+  //   nome_fantasia,
+  //   biografia,
+  //   email ,
+  //   cnpj,
+  //   logo,
+  //   senha,
+  //   numero,
+  //   ddd,
+  //   foto,
+  //   legenda,
+  //   logradouro,
+  //   numero_rua,
+  //   complemento,
+  //   cep,
+  //   bairro
+  // } = req.body 
     
-    await CompanyService.updateProfileCompany(
-    parseInt(idEmpresa),
-    nome_fantasia,
-    biografia,
-    email ,
-    cnpj,
-    logo,
-    senha,
-    numero,
-    ddd,
-    foto,
-    legenda,
-    logradouro,
-    numero_rua,
-    complemento,
-    cep,
-    bairro
-    )
+  //   await CompanyService.updateProfileCompany(
+  //   parseInt(idEmpresa),
+  //   nome_fantasia,
+  //   biografia,
+  //   email ,
+  //   cnpj,
+  //   logo,
+  //   senha,
+  //   numero,
+  //   ddd,
+  //   foto,
+  //   legenda,
+  //   logradouro,
+  //   numero_rua,
+  //   complemento,
+  //   cep,
+  //   bairro
+  //   )
 
-    return res.status(200).json({message: "Registro atualizado com sucesso!"})
-  }
+  //   return res.status(200).json({message: "Registro atualizado com sucesso!"})
+  // }
 }

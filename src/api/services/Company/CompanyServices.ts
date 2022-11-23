@@ -1,7 +1,7 @@
 import CompanyUser from "../../interfaces/Company/CompanyUser";
 import UserCompanyModel from "../../models/Company/UserCompanyModel";
 import bcrypt, { compare } from "bcrypt"
-import { prismaClient } from "../../../database/prismaClient";
+import CompanyUpdate from "../../interfaces/Company/update/CompanyUpdate";
 import generator from "generate-password"
 import nodemailer from "nodemailer"
 import filter from './../../interfaces/Test/AdminFilter';
@@ -13,99 +13,99 @@ export default class CompanyService {
         const userExist = await UserCompanyModel.findCompanyCnpj(user.cnpj)
 
         if (userExist == null) {
-        if(user.nome_fantasia, user.cnpj, user.email, user.senha, user.confirmar_senha){
+            if(user.nome_fantasia, user.cnpj, user.email, user.senha, user.confirmar_senha){
                 if (user.cnpj.length > 14 || user.cnpj.length < 14) return { error: "CNPJ inválido"}; {
-                    if(user.senha != user.confirmar_senha) return { error: "As senhas não combinam"}; {
-                        if(!user.senha?.match(/^(?=.*[A-Z])(?=.*[!#@$%&])(?=.*[0-9])(?=.*[a-z]).{8,15}$/)) return { error: "Senha inválida"};{
+                        if(user.senha != user.confirmar_senha) return { error: "As senhas não combinam"}; {
+                            if(!user.senha?.match(/^(?=.*[A-Z])(?=.*[!#@$%&])(?=.*[0-9])(?=.*[a-z]).{8,15}$/)) return { error: "Senha inválida"};{
 
-                            const State = {
-                                nome_estado : user.estado
-                            }
-
-                            const StateCompany = await UserCompanyModel.createState(State)
-
-                            const StateID = StateCompany.id
-
-                            
-                            const CityCreate = {
-                                   nome_cidade: user.nome_cidade,
-                                   id_estado: StateID
-                            }
-
-                            try {
-                                    
-                                const newCity = await UserCompanyModel.createCity(CityCreate)
-                               
-                                const CityId = newCity.id
-                                
-                                const CompanyAdress = {
-                                    bairro: user.bairro,
-                                    logradouro: user.logradouro,
-                                    numero_rua: user.numero_rua,
-                                    complemento: user.complemento,
-                                    cep: user.cep,
-                                    id_cidade: CityId,
+                                const State = {
+                                    nome_estado : user.estado
                                 }
-                             
+
+                                const StateCompany = await UserCompanyModel.createState(State)
+
+                                const StateID = StateCompany.id
+
+                                
+                                const CityCreate = {
+                                    nome_cidade: user.nome_cidade,
+                                    id_estado: StateID
+                                }
+
                                 try {
-                                  const Address =  await UserCompanyModel.createAdress(CompanyAdress)
-
-                                  const AddressID = Address.id
-
-                                    const CompanyUser = {
-                                        nome_fantasia : user.nome_fantasia,
-                                        cnpj: user.cnpj,
-                                        email: user.email,
-                                        idEndereco: AddressID
-                                    }
-                         
-                            try {
-                               const newCompany = await UserCompanyModel.create(CompanyUser)
+                                        
+                                    const newCity = await UserCompanyModel.createCity(CityCreate)
                                 
-                               const companyID = newCompany.id
-
-                                const CompanyPhone = {
-                                    ddd: user.ddd,
-                                    numero_telefone: user.numero_telefone,
-                                    id_empresa: companyID
+                                    const CityId = newCity.id
                                     
-                                };
+                                    const CompanyAdress = {
+                                        bairro: user.bairro,
+                                        logradouro: user.logradouro,
+                                        numero_rua: user.numero_rua,
+                                        complemento: user.complemento,
+                                        cep: user.cep,
+                                        id_cidade: CityId,
+                                    }
                                 
-                        
-                                await UserCompanyModel.createPhone(CompanyPhone)
+                                    try {
+                                    const Address =  await UserCompanyModel.createAdress(CompanyAdress)
 
-                                const hashPassword = await bcrypt.hash(user.senha, 10);
-                                
-                                const createLogin = {
+                                    const AddressID = Address.id
 
-                                    senha: hashPassword,
-                                    id_empresa: companyID
-
-                                }
-
-                                await UserCompanyModel.Login(createLogin)
+                                        const CompanyUser = {
+                                            nome_fantasia : user.nome_fantasia,
+                                            cnpj: user.cnpj,
+                                            email: user.email,
+                                            idEndereco: AddressID
+                                        }
                             
-                                
-                
-                                return "Registro inserido com sucesso"
+                                try {
+                                const newCompany = await UserCompanyModel.create(CompanyUser)
+                                    
+                                const companyID = newCompany.id
 
+                                    const CompanyPhone = {
+                                        ddd: user.ddd,
+                                        numero_telefone: user.numero_telefone,
+                                        id_empresa: companyID
+                                        
+                                    };
+                                    
+                            
+                                    await UserCompanyModel.createPhone(CompanyPhone)
+
+                                    const hashPassword = await bcrypt.hash(user.senha, 10);
+                                    
+                                    const createLogin = {
+
+                                        senha: hashPassword,
+                                        id_empresa: companyID
+
+                                    }
+
+                                    await UserCompanyModel.Login(createLogin)
+                                
+                                    
+                    
+                                    return "Registro inserido com sucesso"
+
+                                } catch (error: any) {
+                                    console.error(error)
+                                }
+                                        
                             } catch (error: any) {
                                 console.error(error)
                             }
                                     
-                           } catch (error: any) {
-                            console.error(error)
-                           }
                                 
-                               
-                                
-                          } catch (error) {
-                                    console.error(error)                                
-                         }
-                 
+                                    
+                            } catch (error) {
+                                        console.error(error)                                
+                            }
+                    
+                            }
                         }
-                    }
-            }
+                }
             }
        }
     }
@@ -239,85 +239,34 @@ export default class CompanyService {
             
         return result
     }*/
-   static async updateProfileCompany(
-    idEmpresa: any, 
-    nome_fantasia: any,
-    biografia: string,
-    email: any, 
-    cnpj: string,
-    logo: string,
-    senha: any,
-    numero: string,
-    ddd: any,
-    foto: string,
-    legenda: any,
-    logradouro: any,
-    numero_rua: string,
-    complemento: string,
-    cep: string,
-    bairro: string
-    ){
-        //buscando empresa pelo id
-        const companyById = await UserCompanyModel.findCompanyByID(idEmpresa)
-        /*try {
-            const companyExists = await UserCompanyModel.updateProfileCompany(
-                email,
-                nome_fantasia,
-                biografia,
-                cnpj,
-                logo,
-                idEmpresa
-                )
-            } catch (error) {
-                console.log("caiu no perfil")
-                console.error(error)
-            }*/
-                try {
-                    const updatePassword = await UserCompanyModel.updatePasswordCompany(
-                        senha,
-                        idEmpresa
-                    )
-                    
-                } catch (error)     {
-                    console.error(error)
-                    console.log("caiu na senha")
-                    
-                }
-                //atualizando o telefone
-                try {
-                    const updatePhone = await UserCompanyModel.updatePhoneCompany(
-                        ddd,
-                        numero,
-                        idEmpresa
-                    )
-                } catch (error) {
-                    console.log("caiu no numero do celular")
-                }
-                try {
-                    //atualizando fotos
-                    const updatePhotos = await UserCompanyModel.updatPhotosCompany(
-                        legenda,
-                        foto,
-                        idEmpresa
-                    )
-                } catch (error) {
-                    console.log("caiu nas fotos")
-                }
-                try{
-                    //atualizando endereco da empresa
-                    const updateAddress = await UserCompanyModel.updateAddresCompany(
-                        logradouro,
-                        numero_rua,
-                        complemento,
-                        cep,
-                        bairro,
-                        idEmpresa
-                    )
-                }
-                catch(error){
-                    console.log("caiu no enderendero")
-                }
+//    static async updateProfileCompany(user: CompanyUpdate){
+
+//     const findCompanyByID = await UserCompanyModel.findCompanyByID(user.cnpj) 
+
+//         if(findCompanyByID){
+//               if(user.estado != null, user.nome_fantasia != null, user.cnpj != null, user.bairro != null,
+//                      user.cep != null, user.complemento != null, user.logradouro != null, user.nome_cidade != null, 
+//                      user.numero_rua != null, user.numero_rua != null, user.estado != null){
+
+
+//                         const updateAddress = {
+//                             logradouro : user.logradouro,
+//                             numero_rua: user.numero_rua,
+//                             complemento: user.complemento,
+//                             cep: user.cep,
+//                             bairro: user.bairro
+//                         }
+
+//                        const Address = await UserCompanyModel.updateAddresCompany(updateAddress)
+
+                        
+
+//               }
+//         }
+
+    
+//    }
+// }
+
       
-        
-   }
 }

@@ -18,7 +18,6 @@ export default interface CompanyData {
     complemento?: string,
     cep: string
 
-    idEndereco: number
-    
+  
 }
 

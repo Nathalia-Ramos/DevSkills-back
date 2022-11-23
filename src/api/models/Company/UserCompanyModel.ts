@@ -1,4 +1,4 @@
-import { Empresa, EmpresaTelefone, EnderecoEmpresa, FotosAmbiente, LoginEmpresa, prisma, ProvaAndamento } from "@prisma/client";
+import { Cidade, Empresa, EmpresaTelefone, EnderecoEmpresa, Estado, FotosAmbiente, LoginEmpresa, prisma, ProvaAndamento } from "@prisma/client";
 import { prismaClient } from "../../../database/prismaClient";
 import AddressData from "../../interfaces/Company/Address";
 import CityData from "../../interfaces/Company/City";
@@ -466,7 +466,8 @@ export default class UserCompanyModel {
     numero_rua: string,
     complemento: string,
     cep: string,
-    bairro: string
+    bairro: string,
+    idCidade: number
   ) :  Promise <EnderecoEmpresa> {
     return await prismaClient.enderecoEmpresa.update({
       data:{
@@ -474,7 +475,12 @@ export default class UserCompanyModel {
         cep: cep,
         numero: numero_rua,
         complemento: complemento,
-        logradouro: logradouro
+        logradouro: logradouro,
+        cidade:{
+          connect:{
+            id: idCidade
+          }
+        }
       },
       where:{
         id:idEmpresa
@@ -545,6 +551,34 @@ export default class UserCompanyModel {
       }
     })
   }
+  static async updateCity(
+    nome_cidade: string,
+    id_estado: number,
+    id: number
+  ) : Promise <Cidade> {
+    return await prismaClient.cidade.update({
+      data:{
+        nome: nome_cidade,
+        idEstado: id_estado
+      },
+      where:{
+        id: id
+      }
+    })
+  }
+  static async updateState(
+    nome: string,
+    idEstado: number
+  ) : Promise <Estado> {
+    return await prismaClient.estado.update({
+      data:{
+        nome
+      },
+      where:{ 
+        id: idEstado
+      }
+    })
+  }
   static async findCompanyByID(
     idEmpresa: number
   ) : Promise <Empresa | any> {
@@ -555,4 +589,14 @@ export default class UserCompanyModel {
 
     })
   }
+  static async findStateById(
+    id: number
+  ) : Promise <Estado | any> {
+    return await prismaClient.estado.findFirst({
+      where:{
+        id: id
+      }
+    })
+  }
+  
 }
