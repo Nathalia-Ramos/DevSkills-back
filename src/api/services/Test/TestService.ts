@@ -1,7 +1,7 @@
 import ReturnMessages from "../../../config/ReturnMessages";
 import { ErrorReturn } from "../../interfaces/ReturnPattern/Returns";
 import filter from "../../interfaces/Test/AdminFilter";
-import correctAnswer from "../../interfaces/Test/Answer";
+import {correctAnswer, testCorrection} from "../../interfaces/Test/Answer";
 import TestProgress from "../../interfaces/Test/TestProgress";
 import { TestData } from "../../interfaces/Test/Tests";
 import TokenData from "../../interfaces/Token/Token";
@@ -466,61 +466,117 @@ export default class TestService {
     return result;
   }
 
-  static async correctionAnswer(correctAnswer: correctAnswer) {
+  static async correctionAnswer(correctTest: testCorrection, id_prova_andamento: number) {
     
-    if (Object.keys(correctAnswer).length > 0) {
+    if (Object.keys(correctTest).length > 0) {
 
-      if (correctAnswer.id_questao && correctAnswer.id_prova_usuario && correctAnswer.correta != undefined) {
+      const testExist = await TestModel.findTestProgress(id_prova_andamento)
+
+      if(testExist) {
+
+        const userTestExist = await TestModel.findUserTestByID(correctTest.id_prova_usuario)
+
+        if(userTestExist) {
+          if(!userTestExist.finalizada) {
+            return {
+              error: "Não é possível corrigir uma prova que ainda não foi finalizada.",
+              statusCode: 400
+            }
+          }
+        } else {
+          return {
+            error: "Prova usuário com o ID especificado não encontrada. ID: " + correctTest.id_prova_usuario,
+            statusCode: 404
+          }
+        }
+
+        const correctAnswer = correctTest.questoesCorrigidas
         
-        if (typeof correctAnswer.id_questao === "number" && typeof correctAnswer.id_prova_usuario === "number") {
-          
-          if (typeof correctAnswer.correta === "boolean") {
-            const answerExist = await TestModel.findAnswer(
-              correctAnswer.id_questao
-            );
+        const allTextQuestions = await TestModel.findTextQuestions(testExist.idProva)
 
-            if (answerExist) {
-              try {
-                const updatedAnswer = await TestModel.correctAnswer(
-                  answerExist.id,
-                  correctAnswer.correta
-                );
-                console.log(updatedAnswer);
-              } catch (error) {
+        if(allTextQuestions.length != correctAnswer.length) {
+          return {
+            error: "Faltam questões para serem corrigidas.",
+            statusCode: 400
+          }
+        }
+
+        if(userTestExist.pontuacao) {
+          return {
+            error: "Prova já corrigida.",
+            statusCode: 400
+          }
+        } 
+
+        for(let i = 0; i < correctAnswer.length; i++) {
+          
+          const correctQuestion = correctAnswer[i]
+
+          if (correctQuestion.id_questao && correctQuestion.correta != undefined) {
+            
+            if (typeof correctQuestion.id_questao === "number") {
+              
+              if (typeof correctQuestion.correta === "boolean") {
+                const answerExist = await TestModel.findAnswer(correctQuestion.id_questao, userTestExist.id);
+    
+                if (!answerExist) {
+                  return {
+                    error: "Não foi encontrada uma resposta para uma questão DISSERTATIVA com o ID especificado. ID: " + correctQuestion.id_questao,
+                    statusCode: 404,
+                  };
+                }
+
+              } else {
                 return {
-                  error: error,
-                  statusCode: 500,
+                  error: "Correta deve ser do tipo booleana.",
+                  statusCode: 400,
                 };
               }
-
-              return {
-                message: "Resposta corrigida com sucesso!",
-                statusCode: 200,
-              };
             } else {
               return {
-                error:
-                  "Não foi encontrada uma resposta para a questão com o ID especificado. ID: " +
-                  correctAnswer.id_questao,
-                statusCode: 404,
+                error: "IDs devem ser números.",
+                statusCode: 400,
               };
             }
           } else {
             return {
-              error: "Correta deve ser do tipo booleana.",
+              error: ReturnMessages.MissingFields,
               statusCode: 400,
             };
           }
-        } else {
-          return {
-            error: "IDs devem ser números.",
-            statusCode: 400,
-          };
         }
+
+        for (let i = 0; i < correctAnswer.length; i++) {
+
+          const correctQuestion = correctAnswer[i]
+
+          const answerExist = await TestModel.findAnswer(correctQuestion.id_questao, userTestExist.id);
+
+          if (answerExist) {
+            try {
+              const updatedAnswer = await TestModel.correctAnswer(
+                answerExist.id,
+                correctQuestion.correta);
+                
+              console.log(updatedAnswer);
+            } catch (error) {
+              return {
+                error: error,
+                statusCode: 500,
+              };
+            }
+          }       
+        }
+
+        return {
+          message: "Respostas corrigidas com sucesso!",
+          statusCode: 200,
+        };
+        
       } else {
         return {
-          error: ReturnMessages.MissingFields,
-          statusCode: 400,
+          error: "Prova com o ID especificado não encontrada.",
+          statusCode: 404,
         };
       }
     } else {
