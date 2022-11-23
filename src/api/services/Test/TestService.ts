@@ -9,6 +9,7 @@ import AnswerTestModel from "../../models/AnswerTestModel";
 import TestModel from "../../models/Test/TestModel";
 import isEmpty from "../../utils/isEmpty";
 import QuestionService from "./QuestionService";
+import { answerData, testAnswers, questionAnswer, questionTest }   from "../../interfaces/Test/TestUserAnswers"
 // import jwt_decode from "jwt-decode";
 
 export default class TestService {
@@ -169,13 +170,124 @@ export default class TestService {
 
       if(testExist) {
 
+        const questionData : questionTest[] = []
+        const userData : testAnswers[] = []
+        
         const usersAnswers = await TestModel.findUsersAnswers(id_prova_andamento)
 
-        return {
-          data: {
-            totalResults: usersAnswers.length - 1,
-            result: usersAnswers[take]},
-          statusCode: 200
+        if(usersAnswers) {
+          
+          console.log(usersAnswers)
+          const userAnswer = usersAnswers[take - 1]
+
+          if(!userAnswer) {
+            return {
+              error: "Candidato não encontrado.",
+              statusCode: 404
+            }
+          }
+
+          console.log(userAnswer)
+
+          const userInfo = userAnswer.usuario.usuarioProva
+
+            const allQuestions = userInfo[0].provaAndamento.prova.provasTodasQuestoes
+
+            const optionAnswers = userInfo[0]?.respostaAlternativaProva
+            
+            const textAnswers = userInfo[0]?.respostaQuestaoProva
+            
+            const textQuestionIDS = textAnswers.map((value) => value.idQuestaoProva)
+  
+              allQuestions.forEach((userQuestion: any) => {
+              
+                if(userQuestion.questaoProva.questaoProvaTipo.tipo === 'DISSERTATIVA') {
+      
+                  if(textQuestionIDS.includes(userQuestion.idQuestaoProva)) {
+                    
+                    const userAnswer = textAnswers.find((value) => value.idQuestaoProva == userQuestion.idQuestaoProva)
+  
+                    if(userAnswer) {
+                      const question = {
+                        id: userQuestion.id,
+                        enunciado: userQuestion.questaoProva.enunciado,
+                        tipo: userQuestion.questaoProva.questaoProvaTipo.tipo,
+                        resposta: {
+                          id: userAnswer.id,
+                          texto: userAnswer.resposta
+                        }
+                      }
+                      
+                      questionData.push(question)
+                      console.log('adicionou'+ question.id)
+                    }
+  
+                  }
+      
+                } else {
+      
+                  const options : questionAnswer[] = []
+      
+                  optionAnswers.forEach((value: any) =>{
+                      
+                      options.push({
+                        id: value.id,
+                        texto: value.alternativaProva.opcao,
+                        correta: value.alternativaProva.correta,
+                        selecionada: value.alternativaProva.idQuestaoProva === userQuestion.idQuestaoProva ? true : false
+                      })
+                    
+                  })
+    
+                    const question = {
+                      id: userQuestion.id,
+                      enunciado: userQuestion.questaoProva.enunciado,
+                      tipo: userQuestion.questaoProva.questaoProvaTipo.tipo,
+                      acertou: userQuestion.questaoProva.alternativaProva.correta,
+                      alternativas: options
+                    }
+    
+                    questionData.push(question)
+                    console.log('adicionou'+ question.id)
+                  
+                }
+                
+              })
+              console.log(questionData)
+            
+              const userTest = userAnswer.usuario.usuarioProva[0]
+              const user = userAnswer.usuario
+    
+              const userInfos = {
+                id: user.id,
+                idProvaUsuario: userTest.id,
+                nome: user.nome,
+                tempo: '01:05:00',
+                corrigida: userTest.pontuacao ? true : false,
+                pontuacao: userTest.pontuacao,
+                questoes: questionData
+              }
+    
+            userData.push(userInfos)
+            
+            const answerData : answerData = {
+              idProvaAndamento: id_prova_andamento,
+              candidato: userData
+            }
+    
+            return {
+              data: {
+                totalResults: usersAnswers.length,
+                result: answerData
+              },
+                statusCode: 200
+            }
+
+        } else {
+          return {
+            error: "Não foram encontradas respostas para a prova especificada.",
+            statusCode: 404
+          }
         }
 
       } else {

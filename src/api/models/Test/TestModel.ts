@@ -144,9 +144,9 @@ export default class TestModel {
   static async findUsersAnswers(
     id: number
   ) {
-    console.log(id)
     return await prismaClient.usuarioProva.findMany({
       where:{
+        idProvaAndamento: id,
         finalizada: {
           equals: true
         }
@@ -172,14 +172,30 @@ export default class TestModel {
                       include: {
                         provasTodasQuestoes: {
                           include: {
-                            questaoProva: true
+                            questaoProva: {
+                              include:{
+                                questaoProvaTipo: true,
+                                alternativaProva: true,
+                                respostaQuestaoProva: true
+                              }
+                            }
                           }
                         }
                       }
                     }
                   }
                 },
-                respostaAlternativaProva: true,
+                respostaAlternativaProva: {
+                  include:{
+                    alternativaProva:{
+                      select:{
+                        opcao: true,
+                        correta: true,
+                        idQuestaoProva: true
+                      }
+                    }
+                  }
+                },
                 respostaQuestaoProva: true,
               }
             }
@@ -241,7 +257,18 @@ export default class TestModel {
         id: id_prova_usuario,
       },
       include: {
-        respostaAlternativaProva: true,
+        respostaAlternativaProva: {
+          select:{
+            alternativaProva: {
+              select:{
+                idQuestaoProva: true
+              }
+            },
+            idAlternativaProva: true,
+            idUsuarioProva: true,
+            id: true
+          }
+        },
         respostaQuestaoProva: true,
         provaAndamento: {
           include: {
