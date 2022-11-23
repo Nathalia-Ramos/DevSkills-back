@@ -380,9 +380,7 @@ export default class UserCompanyModel {
             },
           },
         },
-      },
-      take: 20,
-      skip: pagina * 20,
+      }
     });
   }
   static async listCompanyNumber() {

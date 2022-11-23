@@ -536,9 +536,7 @@ export default class TestModel {
             },
           },
         },
-      },
-      take: 20,
-      skip: pagina * 20,
+      }
     });
   }
 
