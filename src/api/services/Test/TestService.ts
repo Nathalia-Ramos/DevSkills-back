@@ -145,6 +145,41 @@ export default class TestService {
     }
     
   }
+
+  static async listTestDetails(id_prova: number) {
+    
+      const testExist = await TestModel.findDetails(id_prova);
+      
+      if (testExist) {
+
+        const testData = {
+          titulo: testExist.prova.titulo,
+          descricao: testExist.prova.descricao,
+          duracao: testExist.duracao || null,
+          dataFim: testExist.data_fim.toISOString().split('T')[0],
+          empresa: {
+            id: testExist.empresa.id,
+            logo: testExist.empresa.logo,
+            nome: testExist.empresa.nome_fantasia,
+          },
+          tecnologias: testExist.prova.provaHabilidade,
+          stacks: testExist.prova.provaStack,
+        }
+
+        return {
+            data: testData,
+            statusCode: 200,
+        };
+
+      } else {
+        return {
+          error: "Prova com o ID especificado não encontrada.",
+          statusCode: 404,
+        };
+      }
+
+    
+  }
   
   static async listOverview(id_prova: number) {
     const test = await TestModel.findUsersAnswers(id_prova);

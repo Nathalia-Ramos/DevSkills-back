@@ -215,6 +215,53 @@ export default class TestModel {
     })    
   }
 
+  static async findDetails(
+    id_prova_andamento: number
+  ) {
+    return prismaClient.provaAndamento.findFirst({
+      where: {
+        id: id_prova_andamento
+      },
+      include:{
+        empresa:{
+          select:{
+            nome_fantasia: true,
+            logo: true,
+            id: true
+          }
+        },
+        prova:{
+          select:{
+            titulo: true,
+            descricao: true,
+            link_repositorio: true,
+            provaHabilidade: {
+              select:{
+                habilidade:{
+                  select:{
+                    id: true,
+                    icone: true,
+                    nome: true,
+                  }
+                }
+              }
+            },
+            provaStack:{
+              select:{
+                stack:{
+                  select:{
+                    id: true,
+                    nome: true,
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    })    
+  }
+
   static async updateUserTest(
     data_entrega: string,
     finalizada: boolean,
