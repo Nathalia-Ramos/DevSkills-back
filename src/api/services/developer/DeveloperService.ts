@@ -164,7 +164,7 @@ export default class DeveloperService {
 
       if (developerLogin) {
         if (await bcrypt.compare(senha, developerLogin?.senha)) {
-          const token = Jwt.sign({id: userExist.id}, 'secret', {expiresIn: '1d'})
+          const token = Jwt.sign({id: userExist.id}, 'secret', {expiresIn: '7d'})
           
           return {
             message: message.UserAuthorized,
