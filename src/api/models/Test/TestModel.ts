@@ -61,8 +61,28 @@ export default class TestModel {
             return await prismaClient.provasTodasQuestoes.findMany({
                 where:{
                     idProva: id_prova
+                },
+                include:{
+                  questaoProva: {
+                    include:{
+                      questaoProvaTipo: true
+                    }
+                  }
                 }
             })
+  }
+
+  static async findTextQuestions(id_prova: number) {
+    return await prismaClient.provasTodasQuestoes.findMany({
+      where:{
+        idProva: id_prova,
+        questaoProva:{
+          questaoProvaTipo:{
+            tipo: "DISSERTATIVA"
+          }
+        }
+      }
+    })
   }
 
   static async findQuestion (id: number) {
@@ -447,10 +467,11 @@ export default class TestModel {
     });
   }
 
-  static async findAnswer(id: number): Promise<RespostaQuestaoProva | null> {
+  static async findAnswer(id_questao: number, id_prova_usuario: number): Promise<RespostaQuestaoProva | null> {
     return await prismaClient.respostaQuestaoProva.findFirst({
       where: {
-        idQuestaoProva: id
+        idQuestaoProva: id_questao,
+        idUsuarioProva: id_prova_usuario
       },
     });
   }
