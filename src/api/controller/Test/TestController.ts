@@ -33,6 +33,15 @@ export default class TestController {
 
     }  
 
+    static async listTestDetails(req: Request, res: Response) {
+
+        const { id } = req.params
+
+        const result = await TestService.listTestDetails(parseInt(id))
+
+        return res.status(result.statusCode).json(result.error ? {error: result.error} : {data: result.data})
+
+    }  
     static async findAdminTestByID(req: Request, res: Response) {
 
         const { id } = req.params
