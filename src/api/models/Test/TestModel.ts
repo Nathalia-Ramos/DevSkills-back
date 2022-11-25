@@ -640,7 +640,7 @@ export default class TestModel {
   static async findAdminTestByID(id_prova: number) {
     return await prismaClient.administradorProvas.findFirst({
       where: {
-        id: id_prova,
+        idProva: id_prova
       },
       include: {
         provas: {
