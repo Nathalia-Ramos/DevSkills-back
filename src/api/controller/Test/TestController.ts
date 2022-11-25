@@ -8,7 +8,7 @@ import TestModel from "../../models/Test/TestModel"
 import TestService from "../../services/Test/TestService"
 import { userAnswer, userTest, testAnswer } from "../../interfaces/Test/AnswerTest"
 import AnswerTestService from "../../services/Test/AnswerTestService"
-import correctAnswer from "../../interfaces/Test/Answer"
+import {correctAnswer, testCorrection} from "../../interfaces/Test/Answer"
 import queryTestFilter from './../../utils/queryTestFilter';
 
 export default class TestController {
@@ -33,6 +33,15 @@ export default class TestController {
 
     }  
 
+    static async listTestDetails(req: Request, res: Response) {
+
+        const { id } = req.params
+
+        const result = await TestService.listTestDetails(parseInt(id))
+
+        return res.status(result.statusCode).json(result.error ? {error: result.error} : {data: result.data})
+
+    }  
     static async findAdminTestByID(req: Request, res: Response) {
 
         const { id } = req.params
@@ -148,9 +157,10 @@ export default class TestController {
 
     static async updateCorrectAnswer(req: Request, res: Response) {
 
-        const data : correctAnswer = req.body
+        const data : testCorrection = req.body
+        const { id } = req.params
 
-        const answer = await TestService.correctionAnswer(data)
+        const answer = await TestService.correctionAnswer(data, parseInt(id))
 
         return res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {message: answer.message})
 

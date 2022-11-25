@@ -61,8 +61,28 @@ export default class TestModel {
             return await prismaClient.provasTodasQuestoes.findMany({
                 where:{
                     idProva: id_prova
+                },
+                include:{
+                  questaoProva: {
+                    include:{
+                      questaoProvaTipo: true
+                    }
+                  }
                 }
             })
+  }
+
+  static async findTextQuestions(id_prova: number) {
+    return await prismaClient.provasTodasQuestoes.findMany({
+      where:{
+        idProva: id_prova,
+        questaoProva:{
+          questaoProvaTipo:{
+            tipo: "DISSERTATIVA"
+          }
+        }
+      }
+    })
   }
 
   static async findQuestion (id: number) {
@@ -211,6 +231,53 @@ export default class TestModel {
     return prismaClient.provaAndamento.findFirst({
       where: {
         id: id_prova_andamento
+      }
+    })    
+  }
+
+  static async findDetails(
+    id_prova_andamento: number
+  ) {
+    return prismaClient.provaAndamento.findFirst({
+      where: {
+        id: id_prova_andamento
+      },
+      include:{
+        empresa:{
+          select:{
+            nome_fantasia: true,
+            logo: true,
+            id: true
+          }
+        },
+        prova:{
+          select:{
+            titulo: true,
+            descricao: true,
+            link_repositorio: true,
+            provaHabilidade: {
+              select:{
+                habilidade:{
+                  select:{
+                    id: true,
+                    icone: true,
+                    nome: true,
+                  }
+                }
+              }
+            },
+            provaStack:{
+              select:{
+                stack:{
+                  select:{
+                    id: true,
+                    nome: true,
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     })    
   }
@@ -400,10 +467,11 @@ export default class TestModel {
     });
   }
 
-  static async findAnswer(id: number): Promise<RespostaQuestaoProva | null> {
+  static async findAnswer(id_questao: number, id_prova_usuario: number): Promise<RespostaQuestaoProva | null> {
     return await prismaClient.respostaQuestaoProva.findFirst({
       where: {
-        idQuestaoProva: id
+        idQuestaoProva: id_questao,
+        idUsuarioProva: id_prova_usuario
       },
     });
   }
@@ -572,7 +640,7 @@ export default class TestModel {
   static async findAdminTestByID(id_prova: number) {
     return await prismaClient.administradorProvas.findFirst({
       where: {
-        id: id_prova,
+        idProva: id_prova
       },
       include: {
         provas: {
