@@ -637,6 +637,26 @@ export default class TestModel {
     });
   }
 
+  static async findCandidates(id_prova_andamento: number) {
+    return await prismaClient.usuarioProva.findMany({
+      where:{
+        idProvaAndamento: id_prova_andamento,
+        finalizada: true,
+      },
+      include:{
+        usuario:{
+          select:{
+            id: true,
+            nome: true,
+            email: true,
+            foto_perfil: true,
+            data_nascimento: true,
+          }
+        }
+      }
+    })
+  }
+
   static async findAdminTestByID(id_prova: number) {
     return await prismaClient.administradorProvas.findFirst({
       where: {

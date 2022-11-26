@@ -109,6 +109,82 @@ export default class TestService {
     }
   }
 
+  static async findCandidates(id_prova_andamento: number) {
+
+    interface candidate {
+      id_prova_usuario: number,
+      id_prova_andamento: number,
+      data_inicio: Date,
+      data_entrega: Date,
+      finalizada: boolean,
+      pontuacao: number,  
+      candidato: {
+        id: number;
+        nome: string;
+        email: string;
+        foto_perfil: string | null;
+        idade: number;
+    };
+    }
+
+    if(typeof id_prova_andamento === 'number') {
+      const candidates = await TestModel.findCandidates(id_prova_andamento)
+
+      if(candidates) {
+
+        const totalCandidates : candidate[] = []
+
+        candidates.forEach((userCandidate) => {
+
+          const currentDate = new Date()
+
+          if(userCandidate.data_entrega && userCandidate.pontuacao) {
+
+            console.log('entrooo')
+
+            const candidateData : candidate = { 
+              id_prova_usuario: userCandidate.id,
+              id_prova_andamento: userCandidate.idProvaAndamento,
+              data_entrega: userCandidate.data_entrega,
+              data_inicio: userCandidate.data_inicio,
+              finalizada: userCandidate.finalizada,
+              pontuacao: userCandidate.pontuacao,
+              candidato: {
+                id: userCandidate.idUsuario,
+                nome: userCandidate.usuario.nome,
+                email: userCandidate.usuario.email,
+                foto_perfil: userCandidate.usuario.foto_perfil,
+                idade: currentDate.getFullYear() - userCandidate.usuario.data_nascimento.getFullYear(),
+              }
+            }
+
+            totalCandidates.push(candidateData)
+            
+          }
+          
+        })
+
+        return {
+          data: totalCandidates,
+          statusCode: 200
+        }
+
+      } else {
+        return {
+          error: "Nenhum candidato encontrado.",
+          statusCode: 404
+        }
+      }
+
+    } else {
+      return {
+        error: "IDs devem ser números.",
+        statusCode: 400,
+      };
+    }
+
+  }
+
   static async findTest(id_prova: number, tokenValidate: TokenData | ErrorReturn) {
     
     if('id' in tokenValidate) {
@@ -119,19 +195,17 @@ export default class TestService {
 
         const userTestExist = await TestModel.findUserTest(id_prova, tokenValidate.id)
 
-        if(userTestExist) {
-          if(userTestExist.finalizada) {
+        if(userTestExist && userTestExist.finalizada) {
             return {
               error: "Prova já respondida.",
               statusCode: 400
             }
+          } else {
+            return {
+              data: test,
+              statusCode: 200,
+            };
           }
-        } else {
-          return {
-            data: test,
-            statusCode: 200,
-          };
-        }
 
       } else {
         return {
