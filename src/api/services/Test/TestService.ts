@@ -121,7 +121,6 @@ export default class TestService {
 
         if(userTestExist) {
           if( userTestExist.finalizada){
-
             return {
               error: "Prova já respondida.",
               statusCode: 400
