@@ -120,9 +120,11 @@ export default class TestService {
         const userTestExist = await TestModel.findUserTest(id_prova, tokenValidate.id)
 
         if(userTestExist) {
-          return {
-            error: "Prova já respondida.",
-            statusCode: 400
+          if(userTestExist.finalizada) {
+            return {
+              error: "Prova já respondida.",
+              statusCode: 400
+            }
           }
         } else {
           return {
