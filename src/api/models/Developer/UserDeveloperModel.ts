@@ -10,6 +10,7 @@ import { prismaClient } from "../../../database/prismaClient";
 const prisma = new PrismaClient();
 
 export default class UserDeveloperModel {
+
   static async create({
     nome,
     email,
@@ -46,23 +47,76 @@ export default class UserDeveloperModel {
 
   }
 
+  static async updateUserInfo(
+    biografia: string,
+    senha: string,
+
+    id_usuario: number,
+    id_usuario_telefone: number,
+    id_tipo_telefone: number,
+    id_login: number,
+    id_genero: number,
+
+    ddd_telefone: string,
+    numero_telefone: string,
+
+    nome: string,
+    email: string,
+    foto_perfil: string,
+    link_github: string,
+    link_portfolio: string,
+    permissao_email: boolean,
+  ) {
+    return await prisma.usuario.update({
+      where:{
+        id: id_usuario
+      },
+      data:{
+        nome: nome,
+        email: email,
+        foto_perfil: foto_perfil,
+        link_github: link_github,
+        link_portfolio: link_portfolio,
+        permissao_email: permissao_email,
+        biografia: biografia,
+        idGenero: id_genero,
+        LoginUsuario:{
+          update:{
+            where:{
+              id: id_login
+            },
+            data:{
+              senha: senha
+            }
+          }
+        },
+        UsuarioTelefone:{
+          upsert:{
+            where:{
+              id: id_usuario_telefone
+            },
+            update:{
+              numero: numero_telefone,
+              ddd: ddd_telefone,
+              idTipoTelefone: id_tipo_telefone
+            },
+            create:{
+              numero: numero_telefone,
+              ddd: ddd_telefone,
+              idTipoTelefone: id_tipo_telefone
+            }
+          }
+        }
+      }
+    })
+  }
+
   static async getUserInfo(id: number) {
     return await prisma.usuario.findFirst({
       where: {
         id: id
       },
-      select:{
-        id: true,
-        nome: true,
-        foto_perfil: true,
-        email: true,
-        cpf: true,
-        biografia: true,
-        pontuacao_plataforma: true,
-        tag: true,
-        data_nascimento: true,
-        link_github: true,
-        link_portfolio: true,
+      include:{
         usuarioStack: {
           select:{
             stack:{
