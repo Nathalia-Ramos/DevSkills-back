@@ -5,9 +5,7 @@ import generator from "generate-password"
 import nodemailer from "nodemailer"
 import filter from './../../interfaces/Test/AdminFilter';
 import { ErrorReturn } from "../../interfaces/ReturnPattern/Returns";
-import { SuccessReturn } from "../../interfaces/ReturnPattern/Returns";
 import TokenData from "../../interfaces/Token/Token";
-import tokenValidate from "../../controller/Company/UserCompanyController"
 
 export default class CompanyService {
   
@@ -285,27 +283,21 @@ export default class CompanyService {
         
    }
    static async getProfileCompany( 
-    tokenValidate: TokenData | ErrorReturn){
-   
-        if('id' in tokenValidate) {
+    tokenValidate: TokenData | ErrorReturn, id: number  ){
+
+      
+      if('id' in tokenValidate) {
+        if(tokenValidate.type === "DEVELOPER"){
+          console.log("sfsd")
+          
+          const data = await UserCompanyModel.getProfileCompany(tokenValidate.id)
+              console.log(data)
+  
+              return data
+          
+          } 
                                 
-
-
-        const data = await UserCompanyModel.getProfileCompany(
-            tokenValidate.id, 
-             
-            )
-            console.log(data)
-
-            return data
-    
-
-      } else {
-        return {
-          error: tokenValidate.error,
-          statusCode: tokenValidate.statusCode
-        }
-      }
+      } 
         
    }
 }

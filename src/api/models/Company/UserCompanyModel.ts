@@ -504,6 +504,7 @@ export default class UserCompanyModel {
         id: id
       },
       select:{
+        id: true,
         nome_fantasia: true,
         logo: true,
         biografia: true,
@@ -582,4 +583,11 @@ export default class UserCompanyModel {
     })
 
   }
+  /*static async teste(){
+    return await prismaClient.usuario.findMany({
+      select:{
+        
+      }
+    })
+  }*/
 }

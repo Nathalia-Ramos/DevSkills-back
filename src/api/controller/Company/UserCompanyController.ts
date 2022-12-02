@@ -12,7 +12,6 @@ export default class UserCompanyController {
 
     const users = await CompanyService.createCompany(user);
 
-    console.log("sfsdfs")
 
     return res.status(201).json({ message: "Usuário criado com sucesso!" });
   }
@@ -59,6 +58,7 @@ export default class UserCompanyController {
   }
   static async teste(req: Request, res: Response){
     
+      const {id} = req.params
       const tokenValidate = await authGuard(req)
    
       const { 
@@ -84,6 +84,7 @@ export default class UserCompanyController {
   
        
       const result = await CompanyService.update(
+          //parseInt(id),
           tokenValidate,
           idTelefone,
           idLogin,
@@ -104,17 +105,22 @@ export default class UserCompanyController {
           nome_estado,
           nome_cidade);
 
-       
 
          return res.status(result.statusCode).json(result.error ? { error: result.error } : { data: result });
    
-
   }
   static async getProfileCompany(req: Request, res: Response){
 
-    const tokenValidate = await authGuard(req)
+    const {id} = req.params
 
-    const result = await CompanyService.getProfileCompany(tokenValidate)
+    const tokenValidate = await authGuard(req)
+    console.log(tokenValidate)
+
+    console.log("n,fnfnas,dfdsf")
+    if(tokenValidate.type === "DEVELOPER"){
+    }
+
+    const result = await CompanyService.getProfileCompany(tokenValidate, parseInt(id))
 
     return res.status(200).json({ data: result });
   }
