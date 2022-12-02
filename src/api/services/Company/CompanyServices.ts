@@ -5,6 +5,7 @@ import generator from "generate-password"
 import nodemailer from "nodemailer"
 import filter from './../../interfaces/Test/AdminFilter';
 import { ErrorReturn } from "../../interfaces/ReturnPattern/Returns";
+import { SuccessReturn } from "../../interfaces/ReturnPattern/Returns";
 import TokenData from "../../interfaces/Token/Token";
 import tokenValidate from "../../controller/Company/UserCompanyController"
 
@@ -221,33 +222,39 @@ export default class CompanyService {
         return result
     }
    static async teste( 
-    tokenValidate: any,
-    idTelefone: number,
-    idLogin: number,
-    idCidade: number,
-    cnpj: string,
-    senha: string,
-    email: string,
-    nome_fantasia: string,
-    biografia: string, 
-    logo: string,
-    ddd:string,
-    numero_telefone: string,
-    logradouro: string, 
-    bairro: string,
-    numero_rua: string,
-    cep: string,
-    complemento: string,
-    nome_estado: string,
-    nome_cidade: string ){
+    tokenValidate: TokenData | ErrorReturn,
+    idTelefone?: number | undefined,
+    idLogin?: number  | undefined,
+    idCidade?: number  | undefined,
+    cnpj?: string  | undefined,
+    senha?: any  | undefined,
+    email?: string  | undefined,
+    nome_fantasia?: string  | undefined,
+    biografia?: string  | undefined, 
+    logo?: string  | undefined,
+    ddd?:string  | undefined,
+    numero_telefone?: string  | undefined,
+    logradouro?: string  | undefined, 
+    bairro?: string  | undefined,
+    numero_rua?: string  | undefined,
+    cep?: string  | undefined,
+    complemento?: string  | undefined,
+    nome_estado?: string  | undefined,
+    nome_cidade?: string  | undefined){
    
         if('id' in tokenValidate) {
 
-        const totalResults = await UserCompanyModel.updateProfileCompany(tokenValidate,  idTelefone,
+
+          const hashPassword = await bcrypt.hash(senha, 10);
+                                
+
+        const data = await UserCompanyModel.updateProfileCompany(
+            tokenValidate.id,  
+            idTelefone,
             idLogin,
             idCidade,
             cnpj,
-            senha,
+            hashPassword,
             email,
             nome_fantasia,
             biografia, 
@@ -261,7 +268,12 @@ export default class CompanyService {
             complemento,
             nome_estado,
             nome_cidade )
-
+            
+              return {
+                message: "Usuário atualizado com sucesso",
+                statusCode:  200
+              }
+            
        
         
       } else {
