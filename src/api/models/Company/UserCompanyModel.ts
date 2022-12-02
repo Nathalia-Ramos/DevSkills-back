@@ -1,4 +1,4 @@
-import { Empresa, LoginEmpresa, ProvaAndamento } from "@prisma/client";
+import { Empresa, EmpresaTelefone, LoginEmpresa, prisma, ProvaAndamento } from "@prisma/client";
 import { prismaClient } from "../../../database/prismaClient";
 import AddressData from "../../interfaces/Company/Address";
 import CityData from "../../interfaces/Company/City";
@@ -193,7 +193,7 @@ export default class UserCompanyModel {
   static async findEmailCompany(email: string): Promise<Empresa | null> {
     return await prismaClient.empresa.findFirst({
       where: {
-        email,
+        email
       },
     });
   }
@@ -232,6 +232,12 @@ export default class UserCompanyModel {
                   nome: true
                 }
               }
+            }
+          },
+          empresaTelefone:{
+            select:{
+              ddd: true,
+              numero: true
             }
           }
         }
@@ -404,5 +410,94 @@ export default class UserCompanyModel {
         }
       }
     });
+  }
+  static async getCompanyById(
+    id_empresa: number
+  ) : Promise  <Empresa | null>{
+    return await prismaClient.empresa.findUniqueOrThrow({
+      where: {
+        id: 2
+      }
+    })
+  } 
+  static async updateProfileCompany(
+    idEmpresa: number,
+    idTelefone: number,
+    idLogin: number,
+    idCidade: number,
+    cnpj: string,
+    senha: string,
+    email: string,
+    nome_fantasia: string,
+    biografia: string, 
+    logo: string,
+    ddd: string,
+    numero_telefone: string,
+    logradouro: string, 
+    bairro: string,
+    numero_rua: string,
+    cep: string,
+    complemento: string,
+    nome_estado: string,
+    ///companyData: any,
+    //addressData: any,
+    //phoneData: any,
+    
+    nome_cidade: string,
+  ): Promise <Empresa | any > {
+    return await prismaClient.empresa.update({
+      where:{
+        id: idEmpresa
+      },
+      data: {
+        cnpj: cnpj,
+        email: email,
+        nome_fantasia: nome_fantasia,
+        biografia: biografia,
+        logo: logo,
+        enderecoEmpresa:{
+          update:{
+            bairro: bairro,
+            cep: cep,
+            logradouro: logradouro,
+            numero: numero_rua,
+            complemento: complemento,
+            cidade:{
+              update:{
+                nome:  nome_cidade,
+                estado:{
+                  update:{
+                    nome: nome_estado,
+                  },
+                  
+                }
+              }
+            }
+          }
+        },
+        empresaTelefone:{
+          update:{
+            where:{
+              id: idTelefone
+            },
+            data:{
+              ddd: ddd,
+              numero: numero_telefone
+            }
+          }
+        },
+        LoginEmpresa:{
+          update:{
+            where:{
+              id: idLogin,
+            },
+            data:{
+              senha: senha
+            }
+          }
+        }
+      },
+      
+    })
   }
 }

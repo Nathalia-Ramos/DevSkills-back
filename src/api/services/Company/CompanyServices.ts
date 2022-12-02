@@ -1,14 +1,15 @@
 import CompanyUser from "../../interfaces/Company/CompanyUser";
 import UserCompanyModel from "../../models/Company/UserCompanyModel";
 import bcrypt, { compare } from "bcrypt"
-import { prismaClient } from "../../../database/prismaClient";
 import generator from "generate-password"
 import nodemailer from "nodemailer"
 import filter from './../../interfaces/Test/AdminFilter';
 import { ErrorReturn } from "../../interfaces/ReturnPattern/Returns";
 import TokenData from "../../interfaces/Token/Token";
+import tokenValidate from "../../controller/Company/UserCompanyController"
 
 export default class CompanyService {
+  
     static async createCompany (user: CompanyUser ){
     
         const userExist = await UserCompanyModel.findCompanyCnpj(user.cnpj)
@@ -219,6 +220,57 @@ export default class CompanyService {
 
         return result
     }
- 
-  
+   static async teste( 
+    tokenValidate: any,
+    idTelefone: number,
+    idLogin: number,
+    idCidade: number,
+    cnpj: string,
+    senha: string,
+    email: string,
+    nome_fantasia: string,
+    biografia: string, 
+    logo: string,
+    ddd:string,
+    numero_telefone: string,
+    logradouro: string, 
+    bairro: string,
+    numero_rua: string,
+    cep: string,
+    complemento: string,
+    nome_estado: string,
+    nome_cidade: string ){
+   
+        if('id' in tokenValidate) {
+
+        const totalResults = await UserCompanyModel.updateProfileCompany(tokenValidate,  idTelefone,
+            idLogin,
+            idCidade,
+            cnpj,
+            senha,
+            email,
+            nome_fantasia,
+            biografia, 
+            logo,
+            ddd,
+            numero_telefone,
+            logradouro, 
+            bairro,
+            numero_rua,
+            cep,
+            complemento,
+            nome_estado,
+            nome_cidade )
+
+       
+        
+      } else {
+        return {
+          error: tokenValidate.error,
+          statusCode: tokenValidate.statusCode
+        }
+      }
+        
+    }
 }
+  

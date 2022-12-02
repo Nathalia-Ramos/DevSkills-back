@@ -1,16 +1,18 @@
 import { Request, Response } from "express";
 import UserCompanyModel from "../../models/Company/UserCompanyModel";
-import bcrypt, { compare } from "bcrypt";
 import CompanyData from "../../interfaces/Company/Company";
 import CompanyService from "../../services/Company/CompanyServices";
 import authGuard from './../../../middlewares/auth';
 import queryTestFilter from './../../utils/queryTestFilter';
+
 
 export default class UserCompanyController {
   static async execute(req: Request, res: Response) {
     const user: CompanyData = req.body;
 
     const users = await CompanyService.createCompany(user);
+
+    console.log("sfsdfs")
 
     return res.status(201).json({ message: "Usuário criado com sucesso!" });
   }
@@ -38,8 +40,6 @@ export default class UserCompanyController {
 
     return res.status(200).json({ data: result });
   }
-
-  
   static async listTestCompany(req: Request, res: Response) {
 
     const tokenValidate = await authGuard(req)
@@ -52,12 +52,57 @@ export default class UserCompanyController {
     return res.status(result.statusCode).json(result.error ? { error: result.error } : { data: result.data });
 
   }
-
-
-
   static async listCompany(req: Request, res: Response) {
     const result = await CompanyService.listCompany();
 
     return res.status(200).json({ data: result });
+  }
+  static async teste(req: Request, res: Response){
+    
+    const tokenValidate = await authGuard(req)
+ 
+    const { 
+      idTelefone,
+      idLogin,
+      idCidade,
+      cnpj,
+      senha,
+      email,
+      nome_fantasia,
+      biografia, 
+      logo,
+      ddd,
+      numero_telefone,
+      logradouro, 
+      bairro,
+      numero_rua,
+      cep,
+      complemento,
+      nome_estado,
+      nome_cidade} = req.body
+
+
+     const data = await CompanyService.teste(
+      tokenValidate,
+      idTelefone,
+      idLogin,
+      idCidade,
+      cnpj,
+      senha,
+      email,
+      nome_fantasia,
+      biografia, 
+      logo,
+      ddd,
+      numero_telefone,
+      logradouro, 
+      bairro,
+      numero_rua,
+      cep,
+      complemento,
+      nome_estado,
+      nome_cidade)
+    //console.log(users, "aqui")
+    return res.status(201).json({ message: "Usuário atualizado com sucesso!", data});
   }
 }
