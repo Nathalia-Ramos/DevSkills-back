@@ -59,50 +59,55 @@ export default class UserCompanyController {
   }
   static async teste(req: Request, res: Response){
     
-    const tokenValidate = await authGuard(req)
- 
-    const { 
-      idTelefone,
-      idLogin,
-      idCidade,
-      cnpj,
-      senha,
-      email,
-      nome_fantasia,
-      biografia, 
-      logo,
-      ddd,
-      numero_telefone,
-      logradouro, 
-      bairro,
-      numero_rua,
-      cep,
-      complemento,
-      nome_estado,
-      nome_cidade} = req.body
+      const tokenValidate = await authGuard(req)
+   
+      const { 
+        idTelefone,
+        idLogin,
+        idCidade,
+        cnpj,
+        senha,
+        email,
+        nome_fantasia,
+        biografia, 
+        logo,
+        ddd,
+        numero_telefone,
+        logradouro, 
+        bairro,
+        numero_rua,
+        cep,
+        complemento,
+        nome_estado,
+        nome_cidade} = req.body
+  
+  
+       
+      const result = await CompanyService.teste(
+          tokenValidate,
+          idTelefone,
+          idLogin,
+          idCidade,
+          cnpj,
+          senha,
+          email,
+          nome_fantasia,
+          biografia, 
+          logo,
+          ddd,
+          numero_telefone,
+          logradouro, 
+          bairro,
+          numero_rua,
+          cep,
+          complemento,
+          nome_estado,
+          nome_cidade);
 
+       
 
-     const data = await CompanyService.teste(
-      tokenValidate,
-      idTelefone,
-      idLogin,
-      idCidade,
-      cnpj,
-      senha,
-      email,
-      nome_fantasia,
-      biografia, 
-      logo,
-      ddd,
-      numero_telefone,
-      logradouro, 
-      bairro,
-      numero_rua,
-      cep,
-      complemento,
-      nome_estado,
-      nome_cidade)
-    //console.log(users, "aqui")
-    return res.status(201).json({ message: "Usuário atualizado com sucesso!", data});
+         return res.status(result.statusCode).json(result.error ? { error: result.error } : { data: result });
+   
+
   }
 }
