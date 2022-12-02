@@ -112,6 +112,7 @@ export default class UserCompanyController {
   static async getProfileCompany(req: Request, res: Response){
 
     const {id} = req.params
+    console.log(id)
 
     const tokenValidate = await authGuard(req)
     console.log(tokenValidate)
