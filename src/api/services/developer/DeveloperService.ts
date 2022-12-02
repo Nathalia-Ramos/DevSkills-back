@@ -262,7 +262,6 @@ export default class DeveloperService {
     }
     
 }
-
 static async stack(search: string){
   const stack = await DeveloperModel.testSearch(search);
  
@@ -299,6 +298,11 @@ static async listUserProfile(tokenValidate: TokenData | ErrorReturn) {
     }
   }
 
+}
+static async getUsers(){
+  const result = await DeveloperModel.getAllUsers()
+
+  return result
 }
 
 

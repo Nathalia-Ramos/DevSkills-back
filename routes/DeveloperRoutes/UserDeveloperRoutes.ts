@@ -22,5 +22,7 @@ router.get('/userTest/:id/answers', TestController.listUserAnswers)
 router.get('/test/:id', TestController.findTest)
 router.get('/testSearch/:search', UserDeveloperController.userSearch)
 router.get('/testList/:search', UserDeveloperController.userSearch)
+router.get('/getAllUsers', UserDeveloperController.getAllUsers)
+
 
 export default router
