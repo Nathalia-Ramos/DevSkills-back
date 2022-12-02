@@ -83,7 +83,7 @@ export default class UserCompanyController {
   
   
        
-      const result = await CompanyService.teste(
+      const result = await CompanyService.update(
           tokenValidate,
           idTelefone,
           idLogin,

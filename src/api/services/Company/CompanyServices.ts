@@ -221,7 +221,7 @@ export default class CompanyService {
 
         return result
     }
-   static async teste( 
+   static async update( 
     tokenValidate: TokenData | ErrorReturn,
     idTelefone?: number | undefined,
     idLogin?: number  | undefined,
