@@ -110,4 +110,12 @@ export default class UserCompanyController {
    
 
   }
+  static async getProfileCompany(req: Request, res: Response){
+
+    const tokenValidate = await authGuard(req)
+
+    const result = await CompanyService.getProfileCompany(tokenValidate)
+
+    return res.status(200).json({ data: result });
+  }
 }

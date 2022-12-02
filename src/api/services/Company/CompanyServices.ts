@@ -283,6 +283,30 @@ export default class CompanyService {
         }
       }
         
-    }
+   }
+   static async getProfileCompany( 
+    tokenValidate: TokenData | ErrorReturn){
+   
+        if('id' in tokenValidate) {
+                                
+
+
+        const data = await UserCompanyModel.getProfileCompany(
+            tokenValidate.id, 
+             
+            )
+            console.log(data)
+
+            return data
+    
+
+      } else {
+        return {
+          error: tokenValidate.error,
+          statusCode: tokenValidate.statusCode
+        }
+      }
+        
+   }
 }
   
