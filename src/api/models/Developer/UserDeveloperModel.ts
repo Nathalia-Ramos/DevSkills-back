@@ -5,6 +5,7 @@ import DeveloperData from "../../interfaces/Developer/Developer";
 import PhoneData from "../../interfaces/Developer/DeveloperPhone";
 import DeveloperStacks from "../../interfaces/Developer/DeveloperStacks";
 import DeveloperSkills from "../../interfaces/Developer/DeveloperSkills";
+import {updateAddress, updateDev, updatePhone, updateLogin} from "../../interfaces/Developer/DeveloperProfile"
 import { prismaClient } from "../../../database/prismaClient";
 
 const prisma = new PrismaClient();
@@ -47,26 +48,17 @@ export default class UserDeveloperModel {
 
   }
 
-  static async updateUserInfo(
-    biografia: string,
-    senha: string,
-
-    id_usuario: number,
-    id_usuario_telefone: number,
-    id_tipo_telefone: number,
-    id_login: number,
-    id_genero: number,
-
-    ddd_telefone: string,
-    numero_telefone: string,
-
-    nome: string,
-    email: string,
-    foto_perfil: string,
-    link_github: string,
-    link_portfolio: string,
-    permissao_email: boolean,
-  ) {
+  static async updateDevInfo({
+    biografia,
+    nome,
+    email,
+    foto_perfil,
+    link_github,
+    link_portfolio,
+    permissao_email,
+    id_usuario,
+    id_genero
+  } : updateDev) {
     return await prisma.usuario.update({
       where:{
         id: id_usuario
@@ -80,33 +72,139 @@ export default class UserDeveloperModel {
         permissao_email: permissao_email,
         biografia: biografia,
         idGenero: id_genero,
-        LoginUsuario:{
-          update:{
-            where:{
-              id: id_login
-            },
-            data:{
-              senha: senha
-            }
+      }
+    })
+  }
+
+  static async updateDevLogin({
+    senha,
+    id_login,
+    id_usuario,
+  } : updateLogin) {
+    return prisma.loginUsuario.update({
+      data:{
+        senha: senha,
+        usuario:{
+          connect:{
+            id: id_usuario
           }
+        }
+      },
+      where:{
+        id: id_login
+      }
+    })
+  }
+
+  static async updateDevPhone({
+    ddd_telefone,
+    numero_telefone,
+
+    id_usuario_telefone,
+    id_usuario,
+    id_tipo_telefone} : updatePhone) {
+      return await prisma.usuarioTelefone.upsert({
+        update:{
+          numero: numero_telefone,
+          ddd: ddd_telefone,
+          idTipoTelefone: id_tipo_telefone
         },
-        UsuarioTelefone:{
-          upsert:{
-            where:{
-              id: id_usuario_telefone
-            },
-            update:{
-              numero: numero_telefone,
-              ddd: ddd_telefone,
-              idTipoTelefone: id_tipo_telefone
-            },
+        create:{
+          numero: numero_telefone,
+          ddd: ddd_telefone,
+          idTipoTelefone: id_tipo_telefone,
+          idUsuario: id_usuario
+        },
+        where:{
+          id: id_usuario_telefone
+        }
+      })
+  }
+
+  static async updateDevAddress({
+    bairro,
+    cep,
+    cidade,
+    estado,
+    id_cidade,
+    id_usuario,
+    id_estado,
+    id_usuario_endereco,
+    logradouro,
+    numero_rua,
+    complemento,
+  } : updateAddress) {
+    return await prisma.enderecoUsuario.upsert({
+      create:{
+        usuario:{
+           connect:{
+            id: id_usuario
+           }
+        },
+        bairro: bairro,
+        numero: numero_rua,
+        logradouro: logradouro,
+        cep: cep,
+        complemento: complemento || null,
+        cidade:{
+          // connect:{
+          //   id: id_cidade
+          // },
+          // create:{
+          //   nome: cidade,
+          //   estado:{
+          //     connect: {
+          //       id: id_estado
+          //     },
+          //     create: {
+          //       nome: estado
+          //     }
+          //   }
+          // }
+          connectOrCreate:{
             create:{
-              numero: numero_telefone,
-              ddd: ddd_telefone,
-              idTipoTelefone: id_tipo_telefone
+              nome: cidade,
+              estado:{
+                create:{
+                  nome: estado
+                }
+              }
+            },
+            where:{
+              id: id_cidade
             }
           }
         }
+      },
+      update:{
+        cidade:{
+          connectOrCreate:{
+            create:{
+              nome: cidade,
+              estado:{
+                connectOrCreate:{
+                  create:{
+                    nome: estado
+                  },
+                  where:{
+                    id: id_estado
+                  }
+                }
+              }
+            },
+            where:{
+              id: id_cidade
+            }
+          }
+        },
+        bairro: bairro,
+        numero: numero_rua,
+        logradouro: logradouro,
+        cep: cep,
+        complemento: complemento || null
+      },
+      where:{
+        id: id_usuario_endereco
       }
     })
   }
