@@ -496,4 +496,98 @@ export default class UserCompanyModel {
       
     })
   }
+  static async getProfileCompany(
+   id: number
+  ): Promise <Empresa | any> {
+    return await prismaClient.empresa.findFirst({
+      where:{
+        id: id
+      },
+      select:{
+        id: true,
+        nome_fantasia: true,
+        logo: true,
+        biografia: true,
+        empresaTelefone:{
+          select:{
+            numero: true,
+            ddd: true
+          }
+        },
+        enderecoEmpresa:{
+          select:{
+            logradouro: true,
+            bairro: true,
+            cep: true,
+            complemento: true,
+            numero: true,
+            cidade:{
+              select:{
+                nome: true,
+                estado:{
+                  select:{
+                    nome: true
+                  }
+                }
+              }
+            }
+          }
+        },
+        empresaAvaliacao:{
+          select:{
+            comentario: true,
+            estrelas: true,
+          }
+        },
+        provaAndamento:{
+          select:{
+            prova: {
+              select:{
+                id: true,
+                titulo: true,
+                descricao: true,
+                provaHabilidade:{
+                  select:{
+                    habilidade:{
+                      select:{
+                        id: true,
+                        nome: true,
+                        icone: true,
+                        ativo: true,
+                        stack:{
+                          select:{
+                            id: true,
+                            nome:true
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+      fotosAmbiente:{
+        select:{
+          foto: true,
+          legenda: true
+        }
+      },
+      Seguidores:{
+        select:{
+          usuario: true
+        } 
+      },
+    }
+    })
+
+  }
+  /*static async teste(){
+    return await prismaClient.usuario.findMany({
+      select:{
+        
+      }
+    })
+  }*/
 }

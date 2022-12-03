@@ -4,6 +4,7 @@ import CompanyData from "../../interfaces/Company/Company";
 import CompanyService from "../../services/Company/CompanyServices";
 import authGuard from './../../../middlewares/auth';
 import queryTestFilter from './../../utils/queryTestFilter';
+import { isConstructorDeclaration } from "typescript";
 
 
 export default class UserCompanyController {
@@ -12,7 +13,6 @@ export default class UserCompanyController {
 
     const users = await CompanyService.createCompany(user);
 
-    console.log("sfsdfs")
 
     return res.status(201).json({ message: "Usuário criado com sucesso!" });
   }
@@ -57,8 +57,9 @@ export default class UserCompanyController {
 
     return res.status(200).json({ data: result });
   }
-  static async teste(req: Request, res: Response){
+  static async update(req: Request, res: Response){
     
+      const {id} = req.params
       const tokenValidate = await authGuard(req)
    
       const { 
@@ -84,6 +85,7 @@ export default class UserCompanyController {
   
        
       const result = await CompanyService.update(
+          //parseInt(id),
           tokenValidate,
           idTelefone,
           idLogin,
@@ -104,10 +106,18 @@ export default class UserCompanyController {
           nome_estado,
           nome_cidade);
 
-       
-
          return res.status(result.statusCode).json(result.error ? { error: result.error } : { data: result });
    
+  }
+  static async getProfileCompany(req: Request, res: Response){
 
+    const {id} = req.params
+
+    const tokenValidate = await authGuard(req)
+
+    const result = await CompanyService.getProfileCompany(tokenValidate, parseInt(id))
+
+      //console.log(result)
+      return res.status(200).json({ data: result });
   }
 }

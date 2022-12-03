@@ -5,9 +5,7 @@ import generator from "generate-password"
 import nodemailer from "nodemailer"
 import filter from './../../interfaces/Test/AdminFilter';
 import { ErrorReturn } from "../../interfaces/ReturnPattern/Returns";
-import { SuccessReturn } from "../../interfaces/ReturnPattern/Returns";
 import TokenData from "../../interfaces/Token/Token";
-import tokenValidate from "../../controller/Company/UserCompanyController"
 
 export default class CompanyService {
   
@@ -283,6 +281,34 @@ export default class CompanyService {
         }
       }
         
+   }
+   static async getProfileCompany( 
+    tokenValidate: TokenData | ErrorReturn, id: number){
+      
+     if('id' in tokenValidate) {
+        console.log("service", tokenValidate)
+
+
+       if(tokenValidate.type === "DEVELOPER"){
+          
+          const data = await UserCompanyModel.getProfileCompany(id)
+              console.log(data)
+  
+              return data
+          
+        }else{
+          if(tokenValidate.id !== id){
+            return {
+              error: "id não correspondente!",
+              statusCode: 404,
+          }
+          }else{
+            const data = await UserCompanyModel.getProfileCompany(id)
+            return data
+          }
+          
+        } 
     }
+   }
 }
   
