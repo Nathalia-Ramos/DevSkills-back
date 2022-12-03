@@ -1,5 +1,5 @@
 export default interface TokenData {
-    id: number,
-    type: string,
-    token: string
+    id: any,
+    type: any,
+    token: any
 }

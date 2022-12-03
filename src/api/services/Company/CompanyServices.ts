@@ -283,22 +283,32 @@ export default class CompanyService {
         
    }
    static async getProfileCompany( 
-    tokenValidate: TokenData | ErrorReturn, id: number  ){
-
+    tokenValidate: TokenData | ErrorReturn, id: number){
       
-      if('id' in tokenValidate) {
-        if(tokenValidate.type === "DEVELOPER"){
-          console.log("sfsd")
+     if('id' in tokenValidate) {
+        console.log("service", tokenValidate)
+
+
+       if(tokenValidate.type === "DEVELOPER"){
           
-          const data = await UserCompanyModel.getProfileCompany(tokenValidate.id)
+          const data = await UserCompanyModel.getProfileCompany(id)
               console.log(data)
   
               return data
           
-          } 
-                                
-      } 
-        
+        }else{
+          if(tokenValidate.id !== id){
+            return {
+              error: "id não correspondente!",
+              statusCode: 404,
+          }
+          }else{
+            const data = await UserCompanyModel.getProfileCompany(id)
+            return data
+          }
+          
+        } 
+    }
    }
 }
   
