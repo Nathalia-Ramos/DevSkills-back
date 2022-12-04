@@ -1183,5 +1183,18 @@ model GrupoUsuario {
   usuario   Usuario @relation(fields: [idUsuario], references: [id])
   idUsuario Int     @map("id_usuario") @db.Int
 
+  conviteStatus ConviteStatus @relation(fields: [idConvite], references: [id])
+  idConvite Int @map("id_convite") @db.Int
+
   @@map("tblgrupo_usuario")
 }
+model ConviteStatus{
+  id Int @id @unique @default(autoincrement()) @db.Int
+  status    String  @db.VarChar(50)
+
+  grupoUsuario GrupoUsuario[]
+
+  @@map("tblconvite_status")
+
+}
+

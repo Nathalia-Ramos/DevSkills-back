@@ -1,6 +1,7 @@
 export default interface Grupo {
+    id?: any
     nome: string,
-    status: boolean
+    status?: any | undefined
     descricao: string
  }
   

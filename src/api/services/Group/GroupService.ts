@@ -1,6 +1,6 @@
 import UserCompanyModel from "../../models/Company/UserCompanyModel";
 import {Grupos} from "../../interfaces/Groups/groups"
-import TestModel from "../../models/Test/TestModel";
+import GroupsModel from "../../models/Group/GroupsModel";
 
 export default class createGroup{
     static async createGroup(group: Grupos){
@@ -12,7 +12,7 @@ export default class createGroup{
                    nome: group.nome,   
                    descricao: group.descricao,
                 }
-                const executeGroup = await UserCompanyModel.createGroup(create)
+                const executeGroup = await GroupsModel.createGroup(create)
                 const groupId = executeGroup.id
                 //console.log(create)
                 
@@ -20,8 +20,8 @@ export default class createGroup{
                 //relacionamento grupoProva
                 try {
                     group.candidatos.forEach(async (idUsuario) => {
-                    const aa = await UserCompanyModel.createGroupUser(groupId, idUsuario);
-                    console.log(aa, "aaaaaa")
+                     await GroupsModel.createGroupUser(groupId, idUsuario, idConvite);
+                    
                 })
                 } catch (error: any) {
                     console.error("teste",error)
@@ -29,7 +29,7 @@ export default class createGroup{
                
             try{
                 group.id_prova_andamento.forEach(async(value: any)=>{
-                   const teste =  await UserCompanyModel.createTestGroup( value, groupId)
+                   const teste =  await  GroupsModel.createTestGroup( value, groupId)
                    console.log(teste)
                 })
             }

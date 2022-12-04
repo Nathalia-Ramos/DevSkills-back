@@ -1,18 +1,20 @@
 interface Grupos {
+    id: number,
     nome: string,
     status: boolean
     descricao: string,
     candidatos: UsuarioGrupo[],
-    idProvaAndamento?: ProvasGrupos[]
+    id_prova_andamento?: ProvasGrupos[] | any
  }
  interface UsuarioGrupo{
-    idGrupo: number[]
-    idUsuario: number[]
+    idGrupo: number[] | any
+    idUsuario: number[] |any
  }
  interface ProvasGrupos{
-    idProvandamento?: number[]
-    idGrupo: number[]
+    idProvaAndamento?: number[] | any
+    idGrupo?: number[] | any
  }
+ 
  export {Grupos, UsuarioGrupo, ProvasGrupos}
 
   

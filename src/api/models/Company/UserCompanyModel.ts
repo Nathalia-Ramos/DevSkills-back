@@ -1,4 +1,4 @@
-import { Empresa, EmpresaTelefone, GrupoUsuario, LoginEmpresa, prisma, ProvaAndamento } from "@prisma/client";
+import { Empresa, EmpresaTelefone, GrupoUsuario, LoginEmpresa, prisma, ProvaAndamento, ProvaGrupo } from "@prisma/client";
 import { prismaClient } from "../../../database/prismaClient";
 import AddressData from "../../interfaces/Company/Address";
 import CityData from "../../interfaces/Company/City";
@@ -8,7 +8,7 @@ import LoginData from "../../interfaces/Company/Login";
 import StateData from "../../interfaces/Company/State";
 import Group from "../../interfaces/Groups/group";
 import filter from "./../../interfaces/Test/AdminFilter";
-import {ProvasGrupos} from "../../interfaces/Groups/groups"
+import {ProvasGrupos, UsuarioGrupo} from "../../interfaces/Groups/groups"
 import testGroup from "../../interfaces/Groups/testGroup"
 
 
@@ -587,41 +587,5 @@ export default class UserCompanyModel {
     })
 
   }
-  static async createGroup({
-    nome,
-    descricao,
-    status
-  }: Group) : Promise <Group> {
-    return await prismaClient.grupo.create({
-      data:{
-        nome,
-        descricao,
-        status
-      }
-    })
-  }
-  static async createGroupUser({
-    idGrupo,
-    idUsuario
-  } : GrupoUsuario) : Promise <GrupoUsuario| any> {
-    return await prismaClient.grupoUsuario.create({
-      data:{
-        idGrupo,
-        idUsuario
-      }
-    })
-  }
 
- static async createTestGroup({
-  idProvaAndamento,
-  idGrupo
- } : testGroup) : Promise <ProvasGrupos> {
-  return await prismaClient.provaGrupo.create({
-    data:{
-      idProvaAndamento,
-      idGrupo
-    }
-  })
- }
-  
 }

@@ -27,6 +27,7 @@ import UserCompanyController from "../routes/CompanyRoutes/find"
 import AuthRoutes from "../routes/CompanyRoutes/AuthRoutes"
 import AdminRoutes from "../routes/AdminRoutes/UserAdminRoutes"
 import Test from "../routes/TestRoutes/TestRouter"
+import Group from "../routes/Group/GroupRoutes"
 
 app.use('/company', UserRoutes)
 app.use('/user', UserRoutes)
@@ -42,6 +43,7 @@ app.use('/phone', PhoneRoutes)
 app.use('/find', UserCompanyController)
 app.use('/auth', AuthRoutes)
 app.use('/admin', AdminRoutes)
+app.use('/group', Group)
 
 app.listen(process.env.PORT || 4041, () => {
     console.log("Server running")
