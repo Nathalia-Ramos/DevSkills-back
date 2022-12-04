@@ -364,7 +364,7 @@ export default class DeveloperService {
               }
             } else {
               return {
-                error: "Não foi possível atualizar os dados base de usuario. (Nome, email, biografia, foto de perfil, redes sociais e permissao para email em massa.).",
+                error: "Não foi possível atualizar os dados base de usuario. (Nome, email, biografia, foto de perfil, redes sociais ou permissao de email.).",
                 statusCode: 400
               }
             }
