@@ -11,6 +11,7 @@ import { compare } from "bcrypt";
 import nodemailer from "nodemailer";
 import generator from "generate-password";
 import TokenData from "../../interfaces/Token/Token";
+import { type } from "os";
 
 export default class DeveloperService {
   static async create(userInfo: RegisterDeveloperData) {
@@ -164,7 +165,8 @@ export default class DeveloperService {
 
       if (developerLogin) {
         if (await bcrypt.compare(senha, developerLogin?.senha)) {
-          const token = Jwt.sign({id: userExist.id}, 'secret', {expiresIn: '7d'})
+          const token = Jwt.sign({id: userExist.id, type:"DEVELOPER"}, 'secret',{expiresIn: '7d'})
+        
           
           return {
             message: message.UserAuthorized,
@@ -262,7 +264,6 @@ export default class DeveloperService {
     }
     
 }
-
 static async stack(search: string){
   const stack = await DeveloperModel.testSearch(search);
  
@@ -299,6 +300,11 @@ static async listUserProfile(tokenValidate: TokenData | ErrorReturn) {
     }
   }
 
+}
+static async getUsers(){
+  const result = await DeveloperModel.getAllUsers()
+
+  return result
 }
 
 
