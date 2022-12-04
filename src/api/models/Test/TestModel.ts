@@ -641,7 +641,6 @@ export default class TestModel {
     return await prismaClient.usuarioProva.findMany({
       where:{
         idProvaAndamento: id_prova_andamento,
-        finalizada: true,
       },
       include:{
         usuario:{
