@@ -1,10 +1,9 @@
 interface candidateData {
     id_prova_usuario: number,
     id_prova_andamento: number,
-    data_inicio?: Date,
-    data_entrega?: Date,
+    duracao: string,
     finalizada: boolean,
-    pontuacao?: number,  
+    pontuacao: number,  
     candidato: {
       id: number;
       nome: string;

@@ -7,7 +7,7 @@ import { TestData } from "../../interfaces/Test/Tests";
 import TokenData from "../../interfaces/Token/Token";
 import AnswerTestModel from "../../models/AnswerTestModel";
 import TestModel from "../../models/Test/TestModel";
-import isEmpty from "../../utils/isEmpty";
+import {candidateData} from "../../interfaces/Test/TestCandidate";
 import QuestionService from "./QuestionService";
 import { answerData, testAnswers, questionAnswer, questionTest }   from "../../interfaces/Test/TestUserAnswers"
 // import jwt_decode from "jwt-decode";
@@ -111,43 +111,43 @@ export default class TestService {
 
   static async findCandidates(id_prova_andamento: number) {
 
-    interface candidate {
-      id_prova_usuario: number,
-      id_prova_andamento: number,
-      data_inicio: Date,
-      data_entrega: Date,
-      finalizada: boolean,
-      pontuacao: number,  
-      candidato: {
-        id: number;
-        nome: string;
-        email: string;
-        foto_perfil: string | null;
-        idade: number;
-    };
-    }
-
     if(typeof id_prova_andamento === 'number') {
       const candidates = await TestModel.findCandidates(id_prova_andamento)
 
       if(candidates) {
 
-        const totalCandidates : candidate[] = []
+        const totalCandidates : candidateData[] = []
 
         candidates.forEach((userCandidate) => {
 
           const currentDate = new Date()
+          // const time = (userCandidate.data_entrega.getTime() - userCandidate.data_inicio.getTime())
+          
+          // console.log(time)
+          if(userCandidate.data_entrega && userCandidate.data_inicio && userCandidate.pontuacao) {
 
-          if(userCandidate.data_entrega && userCandidate.pontuacao) {
+            const candidateHours = {
+              hours: '00',
+              minutes: '00',
+              seconds: '00'
+            }
 
-            console.log('entrooo')
+            const totalSecondsDiff = (userCandidate.data_entrega.getTime() - userCandidate.data_inicio.getTime()) / 1000
+            const minutesDiff = totalSecondsDiff / 60
+            candidateHours.minutes = minutesDiff.toString().padStart(2, '0')
 
-            const candidateData : candidate = { 
+            const secondsDiff = minutesDiff % 60
+            candidateHours.seconds = secondsDiff.toString().padStart(2, '0')
+
+            if (minutesDiff > 60) {
+              candidateHours.hours = (minutesDiff / 60).toString().padStart(2, '0')
+            }
+
+            const candidateData : candidateData = { 
               id_prova_usuario: userCandidate.id,
               id_prova_andamento: userCandidate.idProvaAndamento,
-              data_entrega: userCandidate.data_entrega,
-              data_inicio: userCandidate.data_inicio,
               finalizada: userCandidate.finalizada,
+              duracao: candidateHours.hours + ':' + candidateHours.minutes + ':' + candidateHours.seconds,
               pontuacao: userCandidate.pontuacao,
               candidato: {
                 id: userCandidate.idUsuario,
@@ -158,6 +158,7 @@ export default class TestService {
               }
             }
 
+            console.log(candidateData)
             totalCandidates.push(candidateData)
             
           }
