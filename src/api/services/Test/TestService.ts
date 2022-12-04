@@ -7,7 +7,7 @@ import { TestData } from "../../interfaces/Test/Tests";
 import TokenData from "../../interfaces/Token/Token";
 import AnswerTestModel from "../../models/AnswerTestModel";
 import TestModel from "../../models/Test/TestModel";
-import isEmpty from "../../utils/isEmpty";
+import {candidateData} from "../../interfaces/Test/TestCandidate";
 import QuestionService from "./QuestionService";
 import { answerData, testAnswers, questionAnswer, questionTest }   from "../../interfaces/Test/TestUserAnswers"
 // import jwt_decode from "jwt-decode";
@@ -109,6 +109,83 @@ export default class TestService {
     }
   }
 
+  static async findCandidates(id_prova_andamento: number) {
+
+    if(typeof id_prova_andamento === 'number') {
+      const candidates = await TestModel.findCandidates(id_prova_andamento)
+
+      if(candidates) {
+
+        const totalCandidates : candidateData[] = []
+
+        candidates.forEach((userCandidate) => {
+
+          const currentDate = new Date()
+          // const time = (userCandidate.data_entrega.getTime() - userCandidate.data_inicio.getTime())
+          
+          // console.log(time)
+          if(userCandidate.data_entrega && userCandidate.data_inicio && userCandidate.pontuacao) {
+
+            const candidateHours = {
+              hours: '00',
+              minutes: '00',
+              seconds: '00'
+            }
+
+            const totalSecondsDiff = (userCandidate.data_entrega.getTime() - userCandidate.data_inicio.getTime()) / 1000
+            const minutesDiff = totalSecondsDiff / 60
+            candidateHours.minutes = minutesDiff.toString().padStart(2, '0')
+
+            const secondsDiff = minutesDiff % 60
+            candidateHours.seconds = secondsDiff.toString().padStart(2, '0')
+
+            if (minutesDiff > 60) {
+              candidateHours.hours = (minutesDiff / 60).toString().padStart(2, '0')
+            }
+
+            const candidateData : candidateData = { 
+              id_prova_usuario: userCandidate.id,
+              id_prova_andamento: userCandidate.idProvaAndamento,
+              finalizada: userCandidate.finalizada,
+              duracao: candidateHours.hours + ':' + candidateHours.minutes + ':' + candidateHours.seconds,
+              pontuacao: userCandidate.pontuacao,
+              candidato: {
+                id: userCandidate.idUsuario,
+                nome: userCandidate.usuario.nome,
+                email: userCandidate.usuario.email,
+                foto_perfil: userCandidate.usuario.foto_perfil,
+                idade: currentDate.getFullYear() - userCandidate.usuario.data_nascimento.getFullYear(),
+              }
+            }
+
+            console.log(candidateData)
+            totalCandidates.push(candidateData)
+            
+          }
+          
+        })
+
+        return {
+          data: totalCandidates,
+          statusCode: 200
+        }
+
+      } else {
+        return {
+          error: "Nenhum candidato encontrado.",
+          statusCode: 404
+        }
+      }
+
+    } else {
+      return {
+        error: "IDs devem ser números.",
+        statusCode: 400,
+      };
+    }
+
+  }
+
   static async findTest(id_prova: number, tokenValidate: TokenData | ErrorReturn) {
     
     if('id' in tokenValidate) {
@@ -119,8 +196,8 @@ export default class TestService {
 
         const userTestExist = await TestModel.findUserTest(id_prova, tokenValidate.id)
 
-        if(userTestExist ){
-          if( userTestExist.finalizada){
+        if(userTestExist){
+          if(userTestExist.finalizada){
             return {
               error: "Prova já respondida.",
               statusCode: 400
