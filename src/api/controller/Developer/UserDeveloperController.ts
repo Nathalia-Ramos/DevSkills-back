@@ -22,6 +22,7 @@ export default class UserDeveloperController {
     static async updateProfile(req: Request, res: Response) {
         
     const data : devProfile = req.body
+    console.log('a')
 
     const tokenValidate = await tokenVerify(req)
 
@@ -68,8 +69,9 @@ export default class UserDeveloperController {
    static async userInfo(req: Request, res: Response) {
 
     const tokenValidate = await tokenVerify(req)
+    const {id} = req.params
 
-    const answer = await DeveloperService.listUserProfile(tokenValidate)
+    const answer = await DeveloperService.listUserProfile(tokenValidate, parseInt(id))
 
     return res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {data: answer.data})
 

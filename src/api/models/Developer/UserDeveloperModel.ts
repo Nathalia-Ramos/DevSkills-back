@@ -29,7 +29,7 @@ export default class UserDeveloperModel {
           ativo: true,
           pontuacao_plataforma: 0,
           permissao_email,
-          tag: "teste",
+          tag: "",
           genero: {
             connect: {
               id: id_genero,
@@ -48,17 +48,17 @@ export default class UserDeveloperModel {
 
   }
 
-  static async updateDevInfo({
-    biografia,
-    nome,
-    email,
-    foto_perfil,
-    link_github,
-    link_portfolio,
-    permissao_email,
-    id_usuario,
-    id_genero
-  } : updateDev) {
+  static async updateDevInfo(
+    biografia: string | undefined,
+    nome: string | undefined,
+    email: string | undefined,
+    foto_perfil: string | undefined,
+    link_github: string | undefined,
+    link_portfolio: string | undefined,
+    permissao_email: boolean | undefined,
+    id_usuario: number,
+    id_genero: number | undefined
+  ) {
     return await prisma.usuario.update({
       where:{
         id: id_usuario
@@ -76,11 +76,11 @@ export default class UserDeveloperModel {
     })
   }
 
-  static async updateDevLogin({
-    senha,
-    id_login,
-    id_usuario,
-  } : updateLogin) {
+  static async updateDevLogin(
+    senha: string | undefined,
+    id_login: number | undefined,
+    id_usuario: number,
+  ) {
     return prisma.loginUsuario.update({
       data:{
         senha: senha,
@@ -96,13 +96,14 @@ export default class UserDeveloperModel {
     })
   }
 
-  static async updateDevPhone({
-    ddd_telefone,
-    numero_telefone,
+  static async updateDevPhone(
+    ddd_telefone: string,
+    numero_telefone: string,
 
-    id_usuario_telefone,
-    id_usuario,
-    id_tipo_telefone} : updatePhone) {
+    id_usuario_telefone: number | undefined,
+    id_usuario: number,
+    id_tipo_telefone: number
+    ) {
       return await prisma.usuarioTelefone.upsert({
         update:{
           numero: numero_telefone,
@@ -121,19 +122,19 @@ export default class UserDeveloperModel {
       })
   }
 
-  static async updateDevAddress({
-    bairro,
-    cep,
-    cidade,
-    estado,
-    id_cidade,
-    id_usuario,
-    id_estado,
-    id_usuario_endereco,
-    logradouro,
-    numero_rua,
-    complemento,
-  } : updateAddress) {
+  static async updateDevAddress(
+    bairro: string,
+    cep: string,
+    cidade: string,
+    estado: string,
+    id_cidade: number | undefined,
+    id_usuario: number,
+    id_estado: number | undefined,
+    id_usuario_endereco: number | undefined,
+    logradouro: string,
+    numero_rua: string,
+    complemento: string | undefined,
+  ) {
     return await prisma.enderecoUsuario.upsert({
       create:{
         usuario:{
@@ -147,20 +148,6 @@ export default class UserDeveloperModel {
         cep: cep,
         complemento: complemento || null,
         cidade:{
-          // connect:{
-          //   id: id_cidade
-          // },
-          // create:{
-          //   nome: cidade,
-          //   estado:{
-          //     connect: {
-          //       id: id_estado
-          //     },
-          //     create: {
-          //       nome: estado
-          //     }
-          //   }
-          // }
           connectOrCreate:{
             create:{
               nome: cidade,
