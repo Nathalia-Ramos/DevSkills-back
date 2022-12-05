@@ -736,7 +736,8 @@ export default class TestService {
             error: "Prova já corrigida.",
             statusCode: 400
           }
-        } 
+        }
+
 
         for(let i = 0; i < correctAnswer.length; i++) {
           
@@ -787,16 +788,86 @@ export default class TestService {
               const updatedAnswer = await TestModel.correctAnswer(
                 answerExist.id,
                 correctQuestion.correta);
-                
+
               console.log(updatedAnswer);
+              
             } catch (error) {
               return {
                 error: error,
                 statusCode: 500,
               };
             }
+
           }       
         }
+        
+        const allQuestions = await TestModel.findAllQuestions(testExist.idProva)
+
+        const totalPoints = 100
+        const questionPoints = Math.floor(allQuestions.length / totalPoints)
+
+        allQuestions.forEach(async question => {
+          
+          const questionType = question.questaoProva.questaoProvaTipo.tipo
+
+          if(questionType == 'DISSERTATIVA') {
+            
+            const userAnswer = await TestModel.findTextAnswer(question.idQuestaoProva, userTestExist.id)
+
+            if(userAnswer) {
+              if(userAnswer?.correta) {
+                
+                const updatePoints = await TestModel.updateUserPoints(
+                userTestExist.id,
+                questionPoints)
+
+                console.log(updatePoints);
+
+              }
+            }
+
+          } else if (questionType == 'UNICA_ESCOLHA') {
+
+            const userAnswer = await TestModel.findChoiceAnswer(
+              question.idQuestaoProva,
+              userTestExist.id)
+
+            if(userAnswer) {
+              if(userAnswer[0].alternativaProva.correta) {
+
+                const updatePoints = await TestModel.updateUserPoints(
+                  userTestExist.id,
+                  questionPoints)
+  
+                  console.log(updatePoints);
+                  
+              }
+            }
+
+          } else {
+
+            const userAnswer = await TestModel.findChoiceAnswer(
+              question.idQuestaoProva,
+              userTestExist.id)
+
+              userAnswer.forEach(async answer => {
+
+                if(answer.alternativaProva.correta) {
+                  
+                  const updatePoints = await TestModel.updateUserPoints(
+                    userTestExist.id,
+                    questionPoints)
+    
+                    console.log(updatePoints);
+
+                }
+              });
+
+          }
+
+        })
+
+        console.log(await TestModel.findUserTestByID(userTestExist.id))
 
         return {
           message: "Respostas corrigidas com sucesso!",
