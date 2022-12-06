@@ -52,15 +52,19 @@ export default class createGroup{
        }
     }
     static async resposta ( idUsuario: number, status: string, idGrupo: number){
+        await GroupsModel.getGroup(idGrupo)
+            switch (status) {
+                case "ACEITO":
+                    await GroupsModel.createGroupUser(idGrupo, idUsuario) && await GroupsModel.updateGroupStatus(idUsuario, status);
+                    break;
+                case "NEGADO":
+                    await GroupsModel.updateGroupStatus(idUsuario, status)
+                }
+                if(status === "ACEITO"){
+                    const update = await GroupsModel.updateGroupStatus(idUsuario, status)
+                    console.log(update)
 
-        const getGroupID = await GroupsModel.getGroup(idGrupo)
-        switch (status) {
-            case "ACEITO":
-                await GroupsModel.createGroupUser(idGrupo, idUsuario);
-                break;
-        
-          
-        }
+                }
       
     }
 }

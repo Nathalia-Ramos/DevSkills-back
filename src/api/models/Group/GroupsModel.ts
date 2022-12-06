@@ -70,4 +70,14 @@ export default class UserCompanyModel {
     }
   })
  }
+ static async updateGroupStatus(idUsuario: number, status: string){
+  return await prismaClient.conviteStatus.update({
+    where:{
+      id: idUsuario
+    },
+    data:{
+      status
+    }
+  })
+ }
 }
