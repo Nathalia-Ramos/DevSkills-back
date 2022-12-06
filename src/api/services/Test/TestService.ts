@@ -443,7 +443,7 @@ export default class TestService {
 
                 const userPoints = userTest.pontuacao
 
-                userPercentage = Math.floor((userPoints * 100) / totalPoints)
+                userPercentage = Math.round((userPoints * 100) / totalPoints)
 
               }
               
@@ -456,16 +456,26 @@ export default class TestService {
               if(userTest.data_entrega) {  
     
                 const totalSecondsDiff = Math.abs((userTest.data_entrega.getTime() - userTest.data_inicio.getTime()) / 1000)
-                const minutesDiff = Math.ceil(totalSecondsDiff / 60)
+                
+                console.log('segundos totais: ' + totalSecondsDiff)
+                
+                const minutesDiff = Math.round(totalSecondsDiff / 60)
                 candidateHours.minutes = minutesDiff.toString().padStart(2, '0')
                 
-                const secondsDiff = Math.ceil(totalSecondsDiff % 60)
+                const secondsDiff = Math.round(totalSecondsDiff % 60)
                 candidateHours.seconds = secondsDiff.toString().padStart(2, '0')
                 
+                console.log('segundos restantes: ' + secondsDiff)
+
                 if (minutesDiff > 60) {
-                  candidateHours.hours = (Math.ceil(minutesDiff / 60)).toString().padStart(2, '0')
-                  candidateHours.minutes = (Math.ceil(minutesDiff % 60)).toString().padStart(2, '0')
+                  candidateHours.hours = (Math.round(minutesDiff / 60)).toString().padStart(2, '0')
+                  candidateHours.minutes = (Math.round(minutesDiff % 60)).toString().padStart(2, '0')
+                } else if(minutesDiff == 60) {
+                  candidateHours.hours = '01'
+                  candidateHours.minutes = '00'
                 }
+
+                console.log('minutos totais: ' + minutesDiff)
     
               }
 
@@ -767,13 +777,12 @@ export default class TestService {
           }
         }
 
-        // if(userTestExist.pontuacao) {
-        //   return {
-        //     error: "Prova já corrigida.",
-        //     statusCode: 400
-        //   }
-        // }
-
+        if(userTestExist.pontuacao) {
+          return {
+            error: "Prova já corrigida.",
+            statusCode: 400
+          }
+        }
 
         for(let i = 0; i < correctAnswer.length; i++) {
           
