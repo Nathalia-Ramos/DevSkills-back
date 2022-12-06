@@ -15,7 +15,6 @@ export default class createGroup{
             try {
                  group.candidatos.forEach(async (idUsuario) => {
                  await GroupsModel.createGroupConvite(groupId, idUsuario);
-
             })
             } catch (error: any) {console.error("teste", error)}       
            
