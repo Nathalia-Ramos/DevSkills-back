@@ -118,7 +118,7 @@ export default class TestService {
 
         const totalCandidates : candidateData[] = []
 
-        candidates.forEach((userCandidate) => {
+        candidates.forEach(async (userCandidate) => {
 
           const currentDate = new Date()
           // const time = (userCandidate.data_entrega.getTime() - userCandidate.data_inicio.getTime())
@@ -126,28 +126,15 @@ export default class TestService {
           // console.log(time)
           if(userCandidate.data_entrega && userCandidate.data_inicio && userCandidate.pontuacao) {
 
-            const candidateHours = {
-              hours: '00',
-              minutes: '00',
-              seconds: '00'
-            }
+            const timeDiff = await TestModel.getTimeDiff(userCandidate.data_entrega.toISOString(), userCandidate.data_inicio.toISOString())
 
-            const totalSecondsDiff = (userCandidate.data_entrega.getTime() - userCandidate.data_inicio.getTime()) / 1000
-            const minutesDiff = totalSecondsDiff / 60
-            candidateHours.minutes = minutesDiff.toString().padStart(2, '0')
-
-            const secondsDiff = minutesDiff % 60
-            candidateHours.seconds = secondsDiff.toString().padStart(2, '0')
-
-            if (minutesDiff > 60) {
-              candidateHours.hours = (minutesDiff / 60).toString().padStart(2, '0')
-            }
+            console.log(timeDiff)
 
             const candidateData : candidateData = { 
               id_prova_usuario: userCandidate.id,
               id_prova_andamento: userCandidate.idProvaAndamento,
               finalizada: userCandidate.finalizada,
-              duracao: candidateHours.hours + ':' + candidateHours.minutes + ':' + candidateHours.seconds,
+              duracao: '01:00:00',
               pontuacao: userCandidate.pontuacao,
               candidato: {
                 id: userCandidate.idUsuario,
@@ -158,7 +145,7 @@ export default class TestService {
               }
             }
 
-            console.log(candidateData)
+            // console.log(candidateData)
             totalCandidates.push(candidateData)
             
           }
@@ -296,7 +283,7 @@ export default class TestService {
 
         if(usersAnswers) {
           
-          console.log(usersAnswers)
+          // console.log(usersAnswers)
           const userAnswer = usersAnswers[take - 1]
 
           if(!userAnswer) {
@@ -306,7 +293,7 @@ export default class TestService {
             }
           }
 
-          console.log(userAnswer)
+          // console.log(userAnswer)
 
           const userInfo = userAnswer.usuario.usuarioProva
 
@@ -338,7 +325,7 @@ export default class TestService {
                       }
                       
                       questionData.push(question)
-                      console.log('adicionou'+ question.id)
+                      // console.log('adicionou'+ question.id)
                     }
   
                   }
@@ -367,16 +354,26 @@ export default class TestService {
                     }
     
                     questionData.push(question)
-                    console.log('adicionou'+ question.id)
+                    // console.log('adicionou'+ question.id)
                   
                 }
                 
               })
-              console.log(questionData)
+              // console.log(questionData)
             
               const userTest = userAnswer.usuario.usuarioProva[0]
               const user = userAnswer.usuario
     
+              if(userTest.data_entrega) {
+
+                const startDate = userTest.data_entrega.toISOString().split(/[\T\.]/)[0] + ' ' + userTest.data_entrega.toISOString().split(/[\T\.]/)[1]
+                const endDate = userTest.data_inicio.toISOString().split(/[\T\.]/)[0] + ' ' + userTest.data_inicio.toISOString().split(/[\T\.]/)[1]
+
+                const timeDiff = await TestModel.getTimeDiff(startDate, endDate)
+
+                console.log(timeDiff)
+              }
+
               const userInfos = {
                 id: user.id,
                 idProvaUsuario: userTest.id,

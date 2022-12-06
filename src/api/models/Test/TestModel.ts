@@ -56,6 +56,12 @@ export default class TestModel {
     });
   }
 
+  static async getTimeDiff(start_date: string, end_date: string) {
+    
+    return prismaClient.$queryRawUnsafe(`select timediff('${start_date}', '${end_date}')`)
+    
+  }
+
   static async findAllQuestions(
         id_prova: number) {
             return await prismaClient.provasTodasQuestoes.findMany({
