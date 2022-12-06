@@ -570,6 +570,7 @@ export default class UserCompanyModel {
         },
       fotosAmbiente:{
         select:{
+          id: true,
           foto: true,
           legenda: true
         }
