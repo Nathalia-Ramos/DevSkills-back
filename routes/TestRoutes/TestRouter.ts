@@ -14,7 +14,7 @@ router.put('/:id/correction', TestController.updateCorrectAnswer)
 router.get('/:id/candidates', TestController.findCandidates)
 router.get('/:id/answers/:take', TestController.findUserAnswers)
 router.get('/:id/overview', TestController.listOverview)
-router.get('/:id/details', TestController.listTestDetails)
+router.get('/:id/geral', TestController.listTestInfo)
 
 // router.get('/:id', TestController.findTest)
 

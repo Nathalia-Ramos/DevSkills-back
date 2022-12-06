@@ -287,16 +287,19 @@ export default class TestService {
     
   }
 
-  static async listTestDetails(id_prova: number) {
+  static async listTestDetails(id_prova_andamento: number) {
     
-      const testExist = await TestModel.findDetails(id_prova);
+      const testExist = await TestModel.findDetails(id_prova_andamento);
       
       if (testExist) {
+
+        const totalCandidates = await TestModel.findCandidates(id_prova_andamento)
 
         const testData = {
           titulo: testExist.prova.titulo,
           descricao: testExist.prova.descricao,
           duracao: testExist.duracao || null,
+          totalCandidatos: totalCandidates.length,
           dataFim: testExist.data_fim.toISOString().split('T')[0],
           empresa: {
             id: testExist.empresa.id,
@@ -305,6 +308,36 @@ export default class TestService {
           },
           tecnologias: testExist.prova.provaHabilidade,
           stacks: testExist.prova.provaStack,
+        }
+
+        return {
+            data: testData,
+            statusCode: 200,
+        };
+
+      } else {
+        return {
+          error: "Prova com o ID especificado não encontrada.",
+          statusCode: 404,
+        };
+      }
+
+    
+  }
+
+  static async listTestInfo(id_prova_andamento: number) {
+    
+      const testExist = await TestModel.findDetails(id_prova_andamento);
+      
+      if (testExist) {
+
+        const totalCandidates = await TestModel.findCandidates(id_prova_andamento)
+
+        const testData = {
+          id: id_prova_andamento, 
+          titulo: testExist.prova.titulo,
+          descricao: testExist.prova.descricao,
+          totalCandidatos: totalCandidates.length,
         }
 
         return {
