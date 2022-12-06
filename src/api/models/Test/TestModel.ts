@@ -80,7 +80,9 @@ export default class TestModel {
         id: id_prova_usuario
       },
       data:{
-        pontuacao: +points
+        pontuacao: {
+          increment: points
+        }
       }
     })
   }
@@ -94,6 +96,17 @@ export default class TestModel {
             tipo: "DISSERTATIVA"
           }
         }
+      }
+    })
+  }
+
+  static async updateTestPoint(id_usuario_prova: number, points: number) {
+    return await prismaClient.usuarioProva.update({
+      where:{
+        id: id_usuario_prova
+      },
+      data:{
+        pontuacao: points
       }
     })
   }

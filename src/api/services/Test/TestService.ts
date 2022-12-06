@@ -353,7 +353,7 @@ export default class TestService {
 
         if(usersAnswers) {
           
-          console.log(usersAnswers)
+          // console.log(usersAnswers)
           const userAnswer = usersAnswers[take - 1]
 
           if(!userAnswer) {
@@ -363,7 +363,7 @@ export default class TestService {
             }
           }
 
-          console.log(userAnswer)
+          // console.log(userAnswer)
 
           const userInfo = userAnswer.usuario.usuarioProva
 
@@ -395,7 +395,7 @@ export default class TestService {
                       }
                       
                       questionData.push(question)
-                      console.log('adicionou'+ question.id)
+                      // console.log('adicionou'+ question.id)
                     }
   
                   }
@@ -424,23 +424,59 @@ export default class TestService {
                     }
     
                     questionData.push(question)
-                    console.log('adicionou'+ question.id)
+                    // console.log('adicionou'+ question.id)
                   
                 }
                 
               })
-              console.log(questionData)
+              // console.log(questionData)
             
               const userTest = userAnswer.usuario.usuarioProva[0]
               const user = userAnswer.usuario
     
+              let userPercentage : number = 0
+              
+              // const totalQuestions = allQuestions.length
+              if(userTest.pontuacao) {
+
+                const totalPoints = 100
+
+                const userPoints = userTest.pontuacao
+
+                userPercentage = Math.floor((userPoints * 100) / totalPoints)
+
+              }
+              
+              const candidateHours = {
+                hours: '00',
+                minutes: '00',
+                seconds: '00'
+              }
+              
+              if(userTest.data_entrega) {  
+    
+                const totalSecondsDiff = Math.abs((userTest.data_entrega.getTime() - userTest.data_inicio.getTime()) / 1000)
+                const minutesDiff = Math.ceil(totalSecondsDiff / 60)
+                candidateHours.minutes = minutesDiff.toString().padStart(2, '0')
+                
+                const secondsDiff = Math.ceil(totalSecondsDiff % 60)
+                candidateHours.seconds = secondsDiff.toString().padStart(2, '0')
+                
+                if (minutesDiff > 60) {
+                  candidateHours.hours = (Math.ceil(minutesDiff / 60)).toString().padStart(2, '0')
+                  candidateHours.minutes = (Math.ceil(minutesDiff % 60)).toString().padStart(2, '0')
+                }
+    
+              }
+
               const userInfos = {
                 id: user.id,
                 idProvaUsuario: userTest.id,
                 nome: user.nome,
-                tempo: '01:05:00',
+                tempo: candidateHours.hours + ':' + candidateHours.minutes + ':' + candidateHours.seconds,
                 corrigida: userTest.pontuacao ? true : false,
                 pontuacao: userTest.pontuacao,
+                porcentagemAcertos: userPercentage,
                 questoes: questionData
               }
     
@@ -731,12 +767,12 @@ export default class TestService {
           }
         }
 
-        if(userTestExist.pontuacao) {
-          return {
-            error: "Prova já corrigida.",
-            statusCode: 400
-          }
-        }
+        // if(userTestExist.pontuacao) {
+        //   return {
+        //     error: "Prova já corrigida.",
+        //     statusCode: 400
+        //   }
+        // }
 
 
         for(let i = 0; i < correctAnswer.length; i++) {
@@ -804,8 +840,14 @@ export default class TestService {
         const allQuestions = await TestModel.findAllQuestions(testExist.idProva)
 
         const totalPoints = 100
-        const questionPoints = Math.floor(allQuestions.length / totalPoints)
+        const questionPoints = Math.floor(totalPoints / allQuestions.length)
+        let totalChecks : number = 0
 
+        console.log("cada questao vale: " + questionPoints)
+
+        // definindo pontuacao como 0
+        await TestModel.updateTestPoint(userTestExist.id, 0)
+        
         allQuestions.forEach(async question => {
           
           const questionType = question.questaoProva.questaoProvaTipo.tipo
@@ -821,8 +863,11 @@ export default class TestService {
                 userTestExist.id,
                 questionPoints)
 
-                console.log(updatePoints);
-
+                totalChecks++
+                
+                console.log(totalChecks)
+                console.log('corrigiu a ' + question.idQuestaoProva);
+                
               }
             }
 
@@ -834,40 +879,46 @@ export default class TestService {
 
             if(userAnswer) {
               if(userAnswer[0].alternativaProva.correta) {
-
+                
                 const updatePoints = await TestModel.updateUserPoints(
                   userTestExist.id,
                   questionPoints)
-  
-                  console.log(updatePoints);
                   
+                  totalChecks++
+                  console.log('corrigiu a ' + question.idQuestaoProva);
+                  
+                }
               }
-            }
-
-          } else {
-
-            const userAnswer = await TestModel.findChoiceAnswer(
-              question.idQuestaoProva,
-              userTestExist.id)
-
-              userAnswer.forEach(async answer => {
-
-                if(answer.alternativaProva.correta) {
+              
+            } else {
+              
+              const userAnswer = await TestModel.findChoiceAnswer(
+                question.idQuestaoProva,
+                userTestExist.id)
+                
+                userAnswer.forEach(async answer => {
                   
-                  const updatePoints = await TestModel.updateUserPoints(
-                    userTestExist.id,
-                    questionPoints)
-    
-                    console.log(updatePoints);
-
+                  if(answer.alternativaProva.correta) {
+                    
+                    const updatePoints = await TestModel.updateUserPoints(
+                      userTestExist.id,
+                      questionPoints)
+                      
+                    totalChecks++
+                    console.log('corrigiu a ' + question.idQuestaoProva);
+              
                 }
               });
 
           }
 
+          if(totalChecks == allQuestions.length) {
+            await TestModel.updateTestPoint(userTestExist.id, 100)
+          }
+
         })
 
-        console.log(await TestModel.findUserTestByID(userTestExist.id))
+        // console.log(await TestModel.findUserTestByID(userTestExist.id))
 
         return {
           message: "Respostas corrigidas com sucesso!",
