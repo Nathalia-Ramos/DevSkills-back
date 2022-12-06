@@ -1,4 +1,4 @@
-import { Empresa, EmpresaTelefone, GrupoUsuario, LoginEmpresa, prisma, ProvaAndamento, ProvaGrupo } from "@prisma/client";
+import { ConviteStatus, Empresa, EmpresaTelefone, GrupoUsuario, LoginEmpresa, prisma, ProvaAndamento, ProvaGrupo } from "@prisma/client";
 import { prismaClient } from "../../../database/prismaClient";
 import AddressData from "../../interfaces/Company/Address";
 import CityData from "../../interfaces/Company/City";
@@ -30,13 +30,11 @@ export default class UserCompanyModel {
   static async createGroupUser(
     idGrupo: any,
     idUsuario: any,
-    idConvite: any
    ) : Promise <GrupoUsuario> {
     return await prismaClient.grupoUsuario.create({
       data:{
         idGrupo,
-        idUsuario,
-        idConvite
+        idUsuario                        
       }
     })
   }
@@ -49,6 +47,26 @@ export default class UserCompanyModel {
     data:{
       idProvaAndamento,
       idGrupo
+    }
+  })
+ }
+ static async createGroupConvite(
+  idGrupo: number,
+  idUsuario: any,
+  status: string
+ ): Promise <ConviteStatus>{
+  return await prismaClient.conviteStatus.create({
+    data:{
+      idGrupo:idGrupo,
+      idUsuario: idUsuario,
+      status
+    }
+  })
+ }
+ static async getGroup(id: number){
+  return await prismaClient.grupo.findFirst({
+    where:{
+      id: id
     }
   })
  }
