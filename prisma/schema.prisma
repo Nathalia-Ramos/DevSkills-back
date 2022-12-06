@@ -29,7 +29,7 @@ model Usuario {
   usuarioTesteComportamental UsuarioTesteComportamental[]
   LoginUsuario               LoginUsuario[]
 
-  conviteStatus ConviteStatus[]
+  convite Convite[]
   // Relacionando com a tabela de Gênero
   genero        Genero          @relation(fields: [idGenero], references: [id])
   idGenero      Int             @map("id_genero") @db.Int
@@ -1155,7 +1155,7 @@ model Grupo {
   provaGrupo               ProvaGrupo[]
   grupoUsuario             GrupoUsuario[]
   TesteComportamentalGrupo TesteComportamentalGrupo[]
-  conviteStatus            ConviteStatus[]
+  grupo    Convite[]
 
   @@map("tblgrupo")
 }
@@ -1188,11 +1188,22 @@ model ConviteStatus {
   id     Int    @id @unique @default(autoincrement()) @db.Int
   status String @db.VarChar(50)
 
+  convite Convite[]
+
+  @@map("tblconvite_status")
+}
+model Convite {
+  id     Int    @id @unique @default(autoincrement()) @db.Int
+  
+  conviteStatus ConviteStatus @relation(fields: [idConviteStatus], references: [id])
+  idConviteStatus Int @map("id_convite_status") @db.Int
+
   usuario   Usuario @relation(fields: [idUsuario], references: [id])
   idUsuario Int     @map("id_usuario") @db.Int
 
   grupo   Grupo @relation(fields: [idGrupo], references: [id])
   idGrupo Int   @map("id_grupo") @db.Int
 
-  @@map("tblconvite_status")
+  @@map("tblconvite")
 }
+

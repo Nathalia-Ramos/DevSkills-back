@@ -3,30 +3,6 @@ import {Grupos} from "../../interfaces/Groups/groups"
 import GroupsModel from "../../models/Group/GroupsModel";
 
 export default class createGroup{
-/*    static async createGroup(group: Grupos){
-        if(group.nome, group.descricao, group.candidatos,group.id_prova_andamento, group.idConvite){
-                const create = {
-                   nome: group.nome,   
-                   descricao: group.descricao,
-                }
-                const executeGroup = await GroupsModel.createGroup(create)
-                const groupId = executeGroup.id
-                                  
-                //relacionamento grupoUsuario
-                try {
-                    group.candidatos.forEach(async (idUsuario) => {
-                     await GroupsModel.createGroupUser(groupId, idUsuario);
-                })
-                } catch (error: any) {console.error("teste",error)}       
-               
-            try{
-                group.id_prova_andamento.forEach(async(value: any)=>{
-                  await  GroupsModel.createTestGroup(value, groupId)
-                })
-            }
-            catch(error: any){console.error(error)}
-        }
-    }*/
     static async teste(group: Grupos) {
         if(group.nome, group.descricao, group.candidatos,group.id_prova_andamento, group.convite, group.candidatos){
             const create = {
@@ -35,13 +11,13 @@ export default class createGroup{
             }
             const executeGroup = await GroupsModel.createGroup(create)
             const groupId = executeGroup.id
-                              
-            //relacionamento grupoUsuario
+
             try {
-                group.candidatos.forEach(async (idUsuario) => {
-                 await GroupsModel.createGroupConvite(groupId, idUsuario, group.status);
+                 group.candidatos.forEach(async (idUsuario) => {
+                 await GroupsModel.createGroupConvite(groupId, idUsuario);
+
             })
-            } catch (error: any) {console.error("teste",error)}       
+            } catch (error: any) {console.error("teste", error)}       
            
             try{
                 group.id_prova_andamento.forEach(async(value: any)=>{
@@ -59,12 +35,6 @@ export default class createGroup{
                     break;
                 case "NEGADO":
                     await GroupsModel.updateGroupStatus(idUsuario, status)
-                }
-                if(status === "ACEITO"){
-                    const update = await GroupsModel.updateGroupStatus(idUsuario, status)
-                    console.log(update)
-
-                }
-      
+            }
     }
 }

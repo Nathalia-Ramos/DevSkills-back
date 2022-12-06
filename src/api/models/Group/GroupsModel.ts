@@ -1,15 +1,6 @@
-import { ConviteStatus, Empresa, EmpresaTelefone, GrupoUsuario, LoginEmpresa, prisma, ProvaAndamento, ProvaGrupo } from "@prisma/client";
+import { ConviteStatus, Empresa, EmpresaTelefone, GrupoUsuario, ProvaGrupo } from "@prisma/client";
 import { prismaClient } from "../../../database/prismaClient";
-import AddressData from "../../interfaces/Company/Address";
-import CityData from "../../interfaces/Company/City";
-import CompanyPhoneData from "../../interfaces/Company/CompanyPhone";
-import CompanyUser from "../../interfaces/Company/CompanyUser";
-import LoginData from "../../interfaces/Company/Login";
-import StateData from "../../interfaces/Company/State";
 import Group from "../../interfaces/Groups/group";
-import filter from "./../../interfaces/Test/AdminFilter";
-import {ProvasGrupos, UsuarioGrupo} from "../../interfaces/Groups/groups"
-import testGroup from "../../interfaces/Groups/testGroup"
 
 
 export default class UserCompanyModel {
@@ -51,15 +42,10 @@ export default class UserCompanyModel {
   })
  }
  static async createGroupConvite(
-  idGrupo: number,
-  idUsuario: any,
-  status: string
  ): Promise <ConviteStatus>{
   return await prismaClient.conviteStatus.create({
     data:{
-      idGrupo:idGrupo,
-      idUsuario: idUsuario,
-      status
+      status:  "PENDENTE"
     }
   })
  }
@@ -73,7 +59,7 @@ export default class UserCompanyModel {
  static async updateGroupStatus(idUsuario: number, status: string){
   return await prismaClient.conviteStatus.update({
     where:{
-      id: idUsuario
+       id: idUsuario
     },
     data:{
       status
