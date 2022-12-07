@@ -112,6 +112,7 @@ export default class TestService {
   static async findCandidates(id_prova_andamento: number) {
 
     if(typeof id_prova_andamento === 'number') {
+
       const candidates = await TestModel.findCandidates(id_prova_andamento)
 
       if(candidates) {
@@ -120,21 +121,31 @@ export default class TestService {
 
         candidates.forEach(async (userCandidate) => {
 
+          console.log(userCandidate.id)
+
           const currentDate = new Date()
-          // const time = (userCandidate.data_entrega.getTime() - userCandidate.data_inicio.getTime())
-          
-          // console.log(time)
-          if(userCandidate.data_entrega && userCandidate.data_inicio && userCandidate.pontuacao) {
+        
+          let userTime : string = ''
 
-            // const timeDiff = await TestModel.getTimeDiff(userCandidate.data_entrega.toISOString(), userCandidate.data_inicio.toISOString())
+          if(userCandidate.data_entrega) {
 
-            // console.log(timeDiff)
+            const startDate = userCandidate.data_entrega.toISOString().split(/[\T\.]/)[0] + ' ' + userCandidate.data_entrega.toISOString().split(/[\T\.]/)[1]
+            const endDate = userCandidate.data_inicio.toISOString().split(/[\T\.]/)[0] + ' ' + userCandidate.data_inicio.toISOString().split(/[\T\.]/)[1]
+
+            console.log('morre no ' + userCandidate.id)
+            const resultDiff : Object = await TestModel.getTimeDiff(startDate, endDate)
+            
+            const timeDiff : string = Object.values(resultDiff)[0].duracao.toISOString()
+
+            userTime = timeDiff.split(/[/T/.]/)[1]
+
+          }
 
             const candidateData : candidateData = { 
               id_prova_usuario: userCandidate.id,
               id_prova_andamento: userCandidate.idProvaAndamento,
               finalizada: userCandidate.finalizada,
-              duracao: '01:00:00',
+              duracao: userTime ? userTime : null,
               pontuacao: userCandidate.pontuacao,
               candidato: {
                 id: userCandidate.idUsuario,
@@ -148,15 +159,13 @@ export default class TestService {
             // console.log(candidateData)
             totalCandidates.push(candidateData)
             
+          })
+
+          return {
+            data: totalCandidates,
+            statusCode: 200
           }
           
-        })
-
-        return {
-          data: totalCandidates,
-          statusCode: 200
-        }
-
       } else {
         return {
           error: "Nenhum candidato encontrado.",
