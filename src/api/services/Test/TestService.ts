@@ -126,9 +126,9 @@ export default class TestService {
           // console.log(time)
           if(userCandidate.data_entrega && userCandidate.data_inicio && userCandidate.pontuacao) {
 
-            const timeDiff = await TestModel.getTimeDiff(userCandidate.data_entrega.toISOString(), userCandidate.data_inicio.toISOString())
+            // const timeDiff = await TestModel.getTimeDiff(userCandidate.data_entrega.toISOString(), userCandidate.data_inicio.toISOString())
 
-            console.log(timeDiff)
+            // console.log(timeDiff)
 
             const candidateData : candidateData = { 
               id_prova_usuario: userCandidate.id,
@@ -272,7 +272,7 @@ export default class TestService {
 
     if(typeof id_prova_andamento === 'number') {
 
-      const testExist = await TestModel.findTest(id_prova_andamento)
+      const testExist = await TestModel.findTestProgress(id_prova_andamento)
 
       if(testExist) {
 
@@ -363,22 +363,29 @@ export default class TestService {
             
               const userTest = userAnswer.usuario.usuarioProva[0]
               const user = userAnswer.usuario
-    
+              let userTime : string = ''
+
               if(userTest.data_entrega) {
 
                 const startDate = userTest.data_entrega.toISOString().split(/[\T\.]/)[0] + ' ' + userTest.data_entrega.toISOString().split(/[\T\.]/)[1]
                 const endDate = userTest.data_inicio.toISOString().split(/[\T\.]/)[0] + ' ' + userTest.data_inicio.toISOString().split(/[\T\.]/)[1]
 
-                const timeDiff = await TestModel.getTimeDiff(startDate, endDate)
+                console.log('entrega ' + startDate)
+                console.log('inicio ' + endDate)
 
-                console.log(timeDiff)
+                const resultDiff : Object = await TestModel.getTimeDiff(startDate, endDate)
+                
+                const timeDiff : string = Object.values(resultDiff)[0].duracao.toISOString()
+
+                userTime = timeDiff.split(/[/T/.]/)[1]
+
               }
 
               const userInfos = {
                 id: user.id,
                 idProvaUsuario: userTest.id,
                 nome: user.nome,
-                tempo: '01:05:00',
+                tempo: userTime,
                 corrigida: userTest.pontuacao ? true : false,
                 pontuacao: userTest.pontuacao,
                 questoes: questionData

@@ -13,7 +13,8 @@ import {
     UsuarioProva,
     AlternativaProva,
     RespostaAlternativaProva,
-    Usuario
+    Usuario,
+    Prisma
 } from "@prisma/client";
 import { prismaClient } from "../../../database/prismaClient";
 import { userTest } from "../../interfaces/Test/AnswerTest";
@@ -56,9 +57,9 @@ export default class TestModel {
     });
   }
 
-  static async getTimeDiff(start_date: string, end_date: string) {
+  static async getTimeDiff(start_date: string, end_date: string) : Promise<Object> {
     
-    return prismaClient.$queryRawUnsafe(`select timediff('${start_date}', '${end_date}')`)
+    return await prismaClient.$queryRaw(Prisma.sql`select timediff(${start_date}, ${end_date}) as duracao;`)
     
   }
 
