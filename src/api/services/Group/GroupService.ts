@@ -15,17 +15,16 @@ export default class createGroup{
 
             const getConvitStatus = await GroupsModel.GetStatusConvite(group.id)
             const getIdConvite = getConvitStatus.id
-            
+
             try {
                 group.candidatos.forEach(async (idUsuario: any ) => {
-                    console.log("entrou aqui")
                     console.error(await GroupsModel.createGroupStatus(getIdConvite, groupId, idUsuario ))
             })
             } catch (error: any) {console.error("teste", error)}       
            
             try{
                 group.id_prova_andamento.forEach(async(value: any)=>{
-                await  GroupsModel.createTestGroup(value, groupId)
+                await GroupsModel.createTestGroup(value, groupId)
                 })
             }
             catch(error: any){console.error(error)}
@@ -35,7 +34,7 @@ export default class createGroup{
         await GroupsModel.getGroup(idGrupo)
         switch (status) {
             case "ACEITO":
-                await GroupsModel.createGroupUser(idGrupo, idUsuario) && console.error(await GroupsModel.updateGroupStatus(idUsuario, status, idConviteStatus)) ;
+                await GroupsModel.createGroupUser(idGrupo, idUsuario) && console.error(await GroupsModel.updateGroupStatus(idUsuario, status, idConviteStatus));
                     break;
             case "NEGADO":
                 await GroupsModel.updateGroupStatus(idUsuario, status, idConviteStatus)

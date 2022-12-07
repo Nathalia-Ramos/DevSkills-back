@@ -530,6 +530,7 @@ export default class UserCompanyModel {
                 nome: true,
                 estado:{
                   select:{
+                    id: true,
                     nome: true
                   }
                 }
@@ -567,7 +568,7 @@ export default class UserCompanyModel {
                       }
                     }
                   }
-                }
+                },
               }
             }
           }
