@@ -154,7 +154,8 @@ export default class TestService {
                 foto_perfil: userCandidate.usuario.foto_perfil,
                 idade: currentDate.getFullYear() - userCandidate.usuario.data_nascimento.getFullYear(),
               }
-
+            }
+            
             // console.log(candidateData)
             totalCandidates.push(candidateData)
             
