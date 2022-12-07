@@ -12,9 +12,9 @@ export default class GroupController {
         return res.status(201).json({message: "Grupo cadastrado com sucesso!"})
     }
     static async resposta(req: Request, res: Response){
-        const {status, idUsuario, idGrupo} = req.body
+        const {status, idUsuario, idGrupo, idConviteStatus} = req.body
 
-        const teste = await GroupService.resposta(idUsuario, status,idGrupo)
+        const teste = await GroupService.resposta(idUsuario, status,idGrupo, idConviteStatus)
        // console.log(teste)
 
         return res.status(201).json({message: "Resposta enviada!"})
