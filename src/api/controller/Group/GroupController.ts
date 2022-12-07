@@ -15,7 +15,7 @@ export default class GroupController {
         const {status, idUsuario, idGrupo} = req.body
 
         const teste = await GroupService.resposta(idUsuario, status,idGrupo)
-        console.log(teste)
+       // console.log(teste)
 
         return res.status(201).json({message: "Resposta enviada!"})
 
