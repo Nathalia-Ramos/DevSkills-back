@@ -331,31 +331,31 @@ export default class TestModel {
         id: id_prova_usuario,
       },
       include: {
-        respostaAlternativaProva: {
-          select:{
-            alternativaProva: {
-              select:{
-                idQuestaoProva: true
-              }
-            },
-            idAlternativaProva: true,
-            idUsuarioProva: true,
-            id: true
-          }
-        },
-        respostaQuestaoProva: true,
         provaAndamento: {
           include: {
             prova: {
               include: {
                 provasTodasQuestoes: {
-                  include: {
+                  select: {
                     questaoProva: {
-                      include: {
-                        alternativaProva: true,
+                      select:{
+                        id: true,
+                        enunciado: true,
+                        foto: true,
+                        alternativaProva: {
+                          select: {
+                            id: true,
+                            correta: false,
+                            idQuestaoProva: true,
+                            opcao: true,
+                            questaoProva: false,
+                            respostaAlternativaProva: false,
+                          }
+                        },
+                        questaoProvaTipo: true,
+                      },
                       },
                     },
-                  },
                 },
               },
             },

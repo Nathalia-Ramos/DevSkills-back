@@ -154,7 +154,6 @@ export default class TestService {
                 foto_perfil: userCandidate.usuario.foto_perfil,
                 idade: currentDate.getFullYear() - userCandidate.usuario.data_nascimento.getFullYear(),
               }
-            }
 
             // console.log(candidateData)
             totalCandidates.push(candidateData)
@@ -168,7 +167,7 @@ export default class TestService {
           
       } else {
         return {
-          error: "Nenhum candidato encontrado.",
+          error: "Prova com o ID especificado não encontrada.",
           statusCode: 404
         }
       }
@@ -580,10 +579,64 @@ export default class TestService {
     const test = await TestModel.findUserTestByID(id_prova_usuario);
 
     if (test) {
+
+      if(test.provaAndamento.duracao) {
+
+        const candidateHours = {
+          hours: '00',
+          minutes: '00',
+          seconds: '00'
+        }
+  
+        const testDuration = test.provaAndamento.duracao?.split(':')
+        // const userDate = test.data_inicio.toISOString().split(/[\-\:\.\T\Z]/)
+        const userDate = test.data_inicio
+  
+        const diffMilliseconds = Math.abs(new Date().getTime() - userDate.getTime())
+  
+        const totalSecondsDiff = Math.floor(diffMilliseconds / 1000)
+        const minutesDiff = Math.floor(totalSecondsDiff / 60)
+        
+        const secondsDiff = Math.floor(totalSecondsDiff % 60)
+        candidateHours.seconds = secondsDiff.toString().padStart(2, '0')
+        
+        if (minutesDiff > 60) {
+          const hoursDiff = Math.floor(minutesDiff / 60)
+  
+          candidateHours.hours = hoursDiff.toString().padStart(2, '0')
+          
+          candidateHours.minutes = (Math.floor(minutesDiff % 60)).toString().padStart(2, '0')
+        } else {
+          candidateHours.minutes = minutesDiff.toString().padStart(2, '0')
+        }
+
+        // if(candidateHours.hours > testDuration[0]) {
+        //   return {
+        //     error: "Não é mais possível realizar essa prova pois o tempo limite de resposta foi ultrapassado.",
+        //     statusCode: 400
+        //   }
+        // }
+
+        const hoursLeft =  parseInt(testDuration[0]) - parseInt(candidateHours.hours)
+        const minutesLeft = parseInt(testDuration[1]) - parseInt(candidateHours.minutes)
+        const secondsLeft = parseInt(testDuration[2]) - parseInt(candidateHours.hours)
+
+        if(hoursLeft < 0 && minutesLeft < 0 && secondsLeft < 0) {
+          return {
+                error: "Não é mais possível realizar essa prova pois o tempo limite de resposta foi ultrapassado.",
+                statusCode: 400
+              }
+        } else {
+          test.provaAndamento.duracao = hoursLeft + ':' + minutesLeft + ':' + secondsLeft
+        }
+
+      }
+
       return {
         data: test,
         statusCode: 200,
       };
+      
     } else {
       return {
         error: "Prova com o ID especificado não encontrada.",

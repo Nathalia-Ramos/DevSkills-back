@@ -53,12 +53,22 @@ export default class AnswerTestModel {
                   include: {
                     questaoProva: {
                       include: {
-                        alternativaProva: {
-                          include: {
-                            respostaAlternativaProva: true,
-                          },
+                        questaoProvaTipo: {
+                          select:{
+                            id: true,
+                            tipo: true
+                          }
                         },
-                        respostaQuestaoProva: true,
+                        alternativaProva: {
+                            select: {
+                                correta: false,
+                                id: true,
+                                idQuestaoProva: true,
+                                opcao: true,
+                                questaoProva: false,
+                                respostaAlternativaProva: false,
+                            }
+                        },
                       },
                     },
                   },
@@ -70,6 +80,7 @@ export default class AnswerTestModel {
       },
     });
   }
+
 
   static async findTest(id_prova: number) {
     return await prisma.provaAndamento.findFirst({

@@ -46,3 +46,18 @@ app.use('/admin', AdminRoutes)
 app.listen(process.env.PORT || 4041, () => {
     console.log("Server running")
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
