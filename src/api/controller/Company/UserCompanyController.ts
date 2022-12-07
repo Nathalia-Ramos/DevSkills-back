@@ -1,16 +1,18 @@
 import { Request, Response } from "express";
 import UserCompanyModel from "../../models/Company/UserCompanyModel";
-import bcrypt, { compare } from "bcrypt";
 import CompanyData from "../../interfaces/Company/Company";
 import CompanyService from "../../services/Company/CompanyServices";
 import authGuard from './../../../middlewares/auth';
 import queryTestFilter from './../../utils/queryTestFilter';
+import { isConstructorDeclaration } from "typescript";
+
 
 export default class UserCompanyController {
   static async execute(req: Request, res: Response) {
     const user: CompanyData = req.body;
 
     const users = await CompanyService.createCompany(user);
+
 
     return res.status(201).json({ message: "Usuário criado com sucesso!" });
   }
@@ -38,8 +40,6 @@ export default class UserCompanyController {
 
     return res.status(200).json({ data: result });
   }
-
-  
   static async listTestCompany(req: Request, res: Response) {
 
     const tokenValidate = await authGuard(req)
@@ -52,12 +52,72 @@ export default class UserCompanyController {
     return res.status(result.statusCode).json(result.error ? { error: result.error } : { data: result.data });
 
   }
-
-
-
   static async listCompany(req: Request, res: Response) {
     const result = await CompanyService.listCompany();
 
     return res.status(200).json({ data: result });
+  }
+  static async update(req: Request, res: Response){
+    
+      const {id} = req.params
+      const tokenValidate = await authGuard(req)
+   
+      const { 
+        idTelefone,
+        idLogin,
+        idCidade,
+        cnpj,
+        senha,
+        email,
+        nome_fantasia,
+        biografia, 
+        logo,
+        ddd,
+        numero_telefone,
+        logradouro, 
+        bairro,
+        numero_rua,
+        cep,
+        complemento,
+        nome_estado,
+        nome_cidade} = req.body
+  
+  
+       
+      const result = await CompanyService.update(
+          //parseInt(id),
+          tokenValidate,
+          idTelefone,
+          idLogin,
+          idCidade,
+          cnpj,
+          senha,
+          email,
+          nome_fantasia,
+          biografia, 
+          logo,
+          ddd,
+          numero_telefone,
+          logradouro, 
+          bairro,
+          numero_rua,
+          cep,
+          complemento,
+          nome_estado,
+          nome_cidade);
+
+         return res.status(result.statusCode).json(result.error ? { error: result.error } : { data: result });
+   
+  }
+  static async getProfileCompany(req: Request, res: Response){
+
+    const {id} = req.params
+
+    const tokenValidate = await authGuard(req)
+
+    const result = await CompanyService.getProfileCompany(tokenValidate, parseInt(id))
+
+      //console.log(result)
+      return res.status(200).json({ data: result });
   }
 }

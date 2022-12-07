@@ -7,7 +7,7 @@ import { TestData } from "../../interfaces/Test/Tests";
 import TokenData from "../../interfaces/Token/Token";
 import AnswerTestModel from "../../models/AnswerTestModel";
 import TestModel from "../../models/Test/TestModel";
-import isEmpty from "../../utils/isEmpty";
+import {candidateData} from "../../interfaces/Test/TestCandidate";
 import QuestionService from "./QuestionService";
 import { answerData, testAnswers, questionAnswer, questionTest }   from "../../interfaces/Test/TestUserAnswers"
 // import jwt_decode from "jwt-decode";
@@ -109,6 +109,140 @@ export default class TestService {
     }
   }
 
+  static async findCandidates(id_prova_andamento: number) {
+
+    if(typeof id_prova_andamento === 'number') {
+
+      const testExist = await TestModel.findTestProgress(id_prova_andamento)
+
+      if(testExist) {
+        
+        const candidates = await TestModel.findCandidates(id_prova_andamento)
+  
+        if(candidates) {
+  
+          const totalCandidates : candidateData[] = []
+  
+          candidates.forEach((userCandidate) => {
+            
+            const currentDate = new Date()
+
+            if(testExist.duracao != null) {
+            
+              // const time = (userCandidate.data_entrega.getTime() - userCandidate.data_inicio.getTime())
+              
+              // console.log(time)
+              if(userCandidate.data_entrega && userCandidate.data_inicio) {
+    
+                const candidateHours = {
+                  hours: '00',
+                  minutes: '00',
+                  seconds: '00'
+                }
+    
+                const totalSecondsDiff = (userCandidate.data_entrega.getTime() - userCandidate.data_inicio.getTime()) / 1000
+                const minutesDiff = Math.floor(totalSecondsDiff / 60)
+    
+                const secondsDiff = Math.floor(minutesDiff % 60)
+                candidateHours.seconds = secondsDiff.toString().padStart(2, '0')
+    
+                if (minutesDiff > 60) {
+                  const hoursDiff = Math.floor(minutesDiff / 60)
+                  
+                  candidateHours.hours = hoursDiff.toString().padStart(2, '0')
+
+                  candidateHours.minutes = (Math.floor(minutesDiff % 60)).toString().padStart(2, '0')
+                } else {
+                  candidateHours.minutes = minutesDiff.toString().padStart(2, '0')
+                }
+    
+                const candidateData : candidateData = { 
+                  id_prova_usuario: userCandidate.id,
+                  id_prova_andamento: userCandidate.idProvaAndamento,
+                  finalizada: true,
+                  duracao: candidateHours.hours + ':' + candidateHours.minutes + ':' + candidateHours.seconds,
+                  pontuacao: userCandidate.pontuacao || 0,
+                  candidato: {
+                    id: userCandidate.idUsuario,
+                    nome: userCandidate.usuario.nome,
+                    email: userCandidate.usuario.email,
+                    foto_perfil: userCandidate.usuario.foto_perfil,
+                    idade: currentDate.getFullYear() - userCandidate.usuario.data_nascimento.getFullYear(),
+                  }
+                }
+    
+                // console.log(candidateData)
+                totalCandidates.push(candidateData)
+                
+              } else {
+                const candidateData : candidateData = { 
+                  id_prova_usuario: userCandidate.id,
+                  id_prova_andamento: userCandidate.idProvaAndamento,
+                  finalizada: false,
+                  pontuacao: userCandidate.pontuacao ? userCandidate.pontuacao : 0,
+                  candidato: {
+                    id: userCandidate.idUsuario,
+                    nome: userCandidate.usuario.nome,
+                    email: userCandidate.usuario.email,
+                    foto_perfil: userCandidate.usuario.foto_perfil,
+                    idade: currentDate.getFullYear() - userCandidate.usuario.data_nascimento.getFullYear(),
+                  }
+                }
+
+                totalCandidates.push(candidateData)
+
+            }
+
+            } else {
+              
+              const candidateData : candidateData = { 
+                id_prova_usuario: userCandidate.id,
+                id_prova_andamento: userCandidate.idProvaAndamento,
+                finalizada: userCandidate.finalizada,
+                pontuacao: userCandidate.pontuacao ? userCandidate.pontuacao : 0,
+                candidato: {
+                  id: userCandidate.idUsuario,
+                  nome: userCandidate.usuario.nome,
+                  email: userCandidate.usuario.email,
+                  foto_perfil: userCandidate.usuario.foto_perfil,
+                  idade: currentDate.getFullYear() - userCandidate.usuario.data_nascimento.getFullYear(),
+                }
+              }
+
+              totalCandidates.push(candidateData)
+            
+            }
+  
+          })
+  
+          return {
+            data: totalCandidates,
+            statusCode: 200
+          }
+  
+        } else {
+          return {
+            error: "Nenhum candidato encontrado.",
+            statusCode: 404
+          }
+        }
+
+      } else {
+        return {
+          error: "Prova com o ID especificado não encontrada.",
+          statusCode: 404
+        }
+      }
+
+    } else {
+      return {
+        error: "IDs devem ser números.",
+        statusCode: 400,
+      };
+    }
+
+  }
+
   static async findTest(id_prova: number, tokenValidate: TokenData | ErrorReturn) {
     
     if('id' in tokenValidate) {
@@ -119,11 +253,18 @@ export default class TestService {
 
         const userTestExist = await TestModel.findUserTest(id_prova, tokenValidate.id)
 
-        if(userTestExist && userTestExist.finalizada) {
+        if(userTestExist){
+          if(userTestExist.finalizada){
             return {
               error: "Prova já respondida.",
               statusCode: 400
             }
+          }else{
+            return {
+              data: test,
+              statusCode: 200
+            }
+          }
           } else {
             return {
               data: test,
@@ -483,10 +624,64 @@ export default class TestService {
     const test = await TestModel.findUserTestByID(id_prova_usuario);
 
     if (test) {
+
+      if(test.provaAndamento.duracao) {
+
+        const candidateHours = {
+          hours: '00',
+          minutes: '00',
+          seconds: '00'
+        }
+  
+        const testDuration = test.provaAndamento.duracao?.split(':')
+        // const userDate = test.data_inicio.toISOString().split(/[\-\:\.\T\Z]/)
+        const userDate = test.data_inicio
+  
+        const diffMilliseconds = Math.abs(new Date().getTime() - userDate.getTime())
+  
+        const totalSecondsDiff = Math.floor(diffMilliseconds / 1000)
+        const minutesDiff = Math.floor(totalSecondsDiff / 60)
+        
+        const secondsDiff = Math.floor(totalSecondsDiff % 60)
+        candidateHours.seconds = secondsDiff.toString().padStart(2, '0')
+        
+        if (minutesDiff > 60) {
+          const hoursDiff = Math.floor(minutesDiff / 60)
+  
+          candidateHours.hours = hoursDiff.toString().padStart(2, '0')
+          
+          candidateHours.minutes = (Math.floor(minutesDiff % 60)).toString().padStart(2, '0')
+        } else {
+          candidateHours.minutes = minutesDiff.toString().padStart(2, '0')
+        }
+
+        // if(candidateHours.hours > testDuration[0]) {
+        //   return {
+        //     error: "Não é mais possível realizar essa prova pois o tempo limite de resposta foi ultrapassado.",
+        //     statusCode: 400
+        //   }
+        // }
+
+        const hoursLeft =  parseInt(testDuration[0]) - parseInt(candidateHours.hours)
+        const minutesLeft = parseInt(testDuration[1]) - parseInt(candidateHours.minutes)
+        const secondsLeft = parseInt(testDuration[2]) - parseInt(candidateHours.hours)
+
+        if(hoursLeft < 0 && minutesLeft < 0 && secondsLeft < 0) {
+          return {
+                error: "Não é mais possível realizar essa prova pois o tempo limite de resposta foi ultrapassado.",
+                statusCode: 400
+              }
+        } else {
+          test.provaAndamento.duracao = hoursLeft + ':' + minutesLeft + ':' + secondsLeft
+        }
+
+      }
+
       return {
         data: test,
         statusCode: 200,
       };
+      
     } else {
       return {
         error: "Prova com o ID especificado não encontrada.",

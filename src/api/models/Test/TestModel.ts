@@ -324,31 +324,31 @@ export default class TestModel {
         id: id_prova_usuario,
       },
       include: {
-        respostaAlternativaProva: {
-          select:{
-            alternativaProva: {
-              select:{
-                idQuestaoProva: true
-              }
-            },
-            idAlternativaProva: true,
-            idUsuarioProva: true,
-            id: true
-          }
-        },
-        respostaQuestaoProva: true,
         provaAndamento: {
           include: {
             prova: {
               include: {
                 provasTodasQuestoes: {
-                  include: {
+                  select: {
                     questaoProva: {
-                      include: {
-                        alternativaProva: true,
+                      select:{
+                        id: true,
+                        enunciado: true,
+                        foto: true,
+                        alternativaProva: {
+                          select: {
+                            id: true,
+                            correta: false,
+                            idQuestaoProva: true,
+                            opcao: true,
+                            questaoProva: false,
+                            respostaAlternativaProva: false,
+                          }
+                        },
+                        questaoProvaTipo: true,
+                      },
                       },
                     },
-                  },
                 },
               },
             },
@@ -635,6 +635,26 @@ export default class TestModel {
         },
       }
     });
+  }
+
+  static async findCandidates(id_prova_andamento: number) {
+    // {pontuacao: number, data_entrega: Date, data_inicio: Date, id: number, idUsuario: number, idProvaAndamento: number, usuario: { id: number, nome: string, email: string, foto_perfil: string | null, data_nascimento: Date }
+    return await prismaClient.usuarioProva.findMany({
+      where:{
+        idProvaAndamento: id_prova_andamento,
+      },
+      include:{
+        usuario:{
+          select:{
+            id: true,
+            nome: true,
+            email: true,
+            foto_perfil: true,
+            data_nascimento: true,
+          }
+        }
+      }
+    })
   }
 
   static async findAdminTestByID(id_prova: number) {

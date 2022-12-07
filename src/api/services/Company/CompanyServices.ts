@@ -1,7 +1,6 @@
 import CompanyUser from "../../interfaces/Company/CompanyUser";
 import UserCompanyModel from "../../models/Company/UserCompanyModel";
 import bcrypt, { compare } from "bcrypt"
-import { prismaClient } from "../../../database/prismaClient";
 import generator from "generate-password"
 import nodemailer from "nodemailer"
 import filter from './../../interfaces/Test/AdminFilter';
@@ -9,6 +8,7 @@ import { ErrorReturn } from "../../interfaces/ReturnPattern/Returns";
 import TokenData from "../../interfaces/Token/Token";
 
 export default class CompanyService {
+  
     static async createCompany (user: CompanyUser ){
     
         const userExist = await UserCompanyModel.findCompanyCnpj(user.cnpj)
@@ -219,6 +219,96 @@ export default class CompanyService {
 
         return result
     }
- 
+   static async update( 
+    tokenValidate: TokenData | ErrorReturn,
+    idTelefone?: number | undefined,
+    idLogin?: number  | undefined,
+    idCidade?: number  | undefined,
+    cnpj?: string  | undefined,
+    senha?: any  | undefined,
+    email?: string  | undefined,
+    nome_fantasia?: string  | undefined,
+    biografia?: string  | undefined, 
+    logo?: string  | undefined,
+    ddd?:string  | undefined,
+    numero_telefone?: string  | undefined,
+    logradouro?: string  | undefined, 
+    bairro?: string  | undefined,
+    numero_rua?: string  | undefined,
+    cep?: string  | undefined,
+    complemento?: string  | undefined,
+    nome_estado?: string  | undefined,
+    nome_cidade?: string  | undefined){
+   
+        if('id' in tokenValidate) {
+
+
+          const hashPassword = await bcrypt.hash(senha, 10);
+                                
+
+        const data = await UserCompanyModel.updateProfileCompany(
+            tokenValidate.id,  
+            idTelefone,
+            idLogin,
+            idCidade,
+            cnpj,
+            hashPassword,
+            email,
+            nome_fantasia,
+            biografia, 
+            logo,
+            ddd,
+            numero_telefone,
+            logradouro, 
+            bairro,
+            numero_rua,
+            cep,
+            complemento,
+            nome_estado,
+            nome_cidade )
+            
+              return {
+                message: "Usuário atualizado com sucesso",
+                statusCode:  200
+              }
+            
+       
+        
+      } else {
+        return {
+          error: tokenValidate.error,
+          statusCode: tokenValidate.statusCode
+        }
+      }
+        
+   }
+   static async getProfileCompany( 
+    tokenValidate: TokenData | ErrorReturn, id: number){
+      
+     if('id' in tokenValidate) {
+        console.log("service", tokenValidate)
+
+
+       if(tokenValidate.type === "DEVELOPER"){
+          
+          const data = await UserCompanyModel.getProfileCompany(id)
+              console.log(data)
   
+              return data
+          
+        }else{
+          if(tokenValidate.id !== id){
+            return {
+              error: "id não correspondente!",
+              statusCode: 404,
+          }
+          }else{
+            const data = await UserCompanyModel.getProfileCompany(id)
+            return data
+          }
+          
+        } 
+    }
+   }
 }
+  

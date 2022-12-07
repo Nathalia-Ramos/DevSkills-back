@@ -1,11 +1,12 @@
 interface ErrorReturn {
     error: string,
     statusCode: number,
+    type?: string
 }
 
 interface SuccessReturn {
     message: string,
-    statusCode: number
+    statusCode: number,
 }
 
 export { ErrorReturn, SuccessReturn };

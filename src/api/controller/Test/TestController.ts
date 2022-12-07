@@ -130,6 +130,19 @@ export default class TestController {
         const tokenValidate = await tokenVerify(req)
 
         const answer = await TestService.findTest(parseInt(id), tokenValidate)
+   
+        res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data })
+
+      
+    }
+
+    static async findCandidates(req: Request, res: Response) {
+
+        const { id } = req.params
+
+        // const tokenValidate = await tokenVerify(req)
+
+        const answer = await TestService.findCandidates(parseInt(id))
 
         res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data })
 

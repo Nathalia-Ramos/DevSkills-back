@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import { type } from "os";
 import UserCompanyModel from "../../models/Company/UserCompanyModel";
 
 const jwtSecret = process.env.JWT_PASS;
@@ -23,11 +24,11 @@ export default class AuthController {
             idEmpresa: userExist.id,
             type: "EMPRESA",
           };
-          const token = jwt.sign({ id: userExist?.id }, jwtSecret!, {
+          const token = jwt.sign({ id: userExist?.id, type: type}, jwtSecret!, {
             expiresIn: "7d",
           });
 
-          return res.json({ data, token });
+          return res.json({ data, type, token });
         }else{
           return res.status(400).json({error: "Usuario ou senha inválido!"})
       }
