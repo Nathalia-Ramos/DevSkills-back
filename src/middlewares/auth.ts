@@ -15,12 +15,12 @@ const authGuard = async (req: Request) : Promise<TokenData | ErrorReturn> => {
 
   try {
 
-    const { id, type, token }: any = jwt.verify(userToken, jwtSecret!);
-
+    const { id, type } : any = jwt.verify(userToken, jwtSecret!);
+    
     return {
       id: id,
       type: type,
-      token: token
+      token: userToken
     };
 
   } catch (error) {

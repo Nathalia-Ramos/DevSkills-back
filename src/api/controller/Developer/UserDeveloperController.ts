@@ -22,8 +22,7 @@ export default class UserDeveloperController {
     static async updateProfile(req: Request, res: Response) {
         
     const data : devProfile = req.body
-    console.log('a')
-
+    
     const tokenValidate = await tokenVerify(req)
 
     const answer = await DeveloperService.updateDevProfile(data, tokenValidate)

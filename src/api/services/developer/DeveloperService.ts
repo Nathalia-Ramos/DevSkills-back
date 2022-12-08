@@ -166,7 +166,8 @@ export default class DeveloperService {
 
       if (developerLogin) {
         if (await bcrypt.compare(senha, developerLogin?.senha)) {
-          const token = Jwt.sign({id: userExist.id}, 'secret', {expiresIn: '7d'})
+          const userType = 'DEVELOPER'
+          const token = Jwt.sign({id: userExist.id, type: userType}, 'secret', {expiresIn: '7d'})
           
           return {
             message: message.UserAuthorized,
@@ -270,42 +271,182 @@ export default class DeveloperService {
     if(Object.keys(devProfile).length > 0) {
 
       if('id' in tokenValidate) {
-  
-        if(tokenValidate.type == 'Developer') {
-    
-            const devUpdated = await UserDeveloperModel.updateDevInfo(
-              devProfile.biografia,
-              devProfile.nome,
-              devProfile.email,
-              devProfile.foto_perfil,
-              devProfile.link_github,
-              devProfile.link_portfolio,
-              devProfile.permissao_email,
-          
-              devProfile.id_usuario,
-              devProfile.id_genero,
-            )
+        if(tokenValidate.type === 'DEVELOPER') {
+
+          const userID = tokenValidate.id
+
+          const devInfo = {
+            biografia: devProfile.biografia,
+            nome: devProfile.nome,
+            email: devProfile.email,
+            foto_perfil: devProfile.foto_perfil,
+            link_github: devProfile.link_github,
+            link_portfolio: devProfile.link_portfolio,
+            permissao_email: devProfile.permissao_email,
+        
+            id_usuario: userID,
+            id_genero: devProfile.id_genero,
+          }
+
+            const devUpdated = await UserDeveloperModel.updateDevInfo(devInfo)
             
             if (!devUpdated) {
               return {
                 error: "Não foi possível atualizar os dados base de usuario. (Nome, email, biografia, foto de perfil, redes sociais ou permissao de email.).",
-                statusCode: 400
+                statusCode: 500
               }
             }
 
-            const loginUpdated = await UserDeveloperModel.updateDevLogin(
-              devProfile.senha,
-              devProfile.id_login,
-              devProfile.id_usuario
-            ) 
-
-            if(devProfile.senha && !loginUpdated) {
-              return {
-                error: "Não foi possivel atualizar o login do usuario.",
-                statusCode: 400
+            if(devProfile.id_login) {
+              
+              if(devProfile.senha) devProfile.senha = await bcrypt.hash(devProfile.senha, 10)
+              
+              const loginUpdated = await UserDeveloperModel.updateDevLogin(
+                devProfile.senha,
+                devProfile.id_login,
+                userID
+              ) 
+              
+              if(!loginUpdated) {
+                return {
+                  error: "Não foi possivel atualizar o login do usuario.",
+                  statusCode: 500
+                }
               }
+
+            } 
+
+            if(devProfile.id_usuario_telefone) {
+
+              if(devProfile.ddd_telefone && devProfile.numero_telefone && devProfile.id_tipo_telefone) {
+
+                const phoneUpdated = await UserDeveloperModel.updateDevPhone(
+                  devProfile.ddd_telefone,
+                  devProfile.numero_telefone,
+                  devProfile.id_usuario_telefone,
+                  devProfile.id_tipo_telefone,
+                  userID,
+                )
+
+                if(!phoneUpdated) {
+                  return {
+                    error: "Não foi possivel atualizar o telefone do usuario.",
+                    statusCode: 500
+                  }
+                }
+
+              }
+
+            } else {
+
+              if(devProfile.ddd_telefone && devProfile.numero_telefone && devProfile.id_tipo_telefone) {
+                const newPhone = await UserDeveloperModel.createDevPhone(
+                  devProfile.ddd_telefone,
+                  devProfile.numero_telefone,
+                  devProfile.id_tipo_telefone,
+                  userID
+                )
+
+                if(!newPhone) {
+                  return {
+                    error: "Não foi possivel cadastrar o novo telefone do usuario.",
+                    statusCode: 500
+                  }
+                }
+
+              }
+
             }
 
+            if(devProfile.id_usuario_endereco) {
+  
+              if(devProfile.bairro && devProfile.cep && devProfile.cidade && devProfile.estado && devProfile.logradouro && devProfile.numero_rua) {
+                
+                const cityExist = await UserDeveloperModel.findCity(devProfile.cidade)
+                const stateExist = await UserDeveloperModel.findState(devProfile.estado)
+                
+                if(!cityExist) devProfile.id_cidade = 0 
+                if(!stateExist) devProfile.id_estado = 0 
+
+                const addressUpdated = await UserDeveloperModel.updateDevAddress(
+                  devProfile.bairro,
+                  devProfile.cep,
+                  devProfile.cidade,
+                  devProfile.estado,
+                  devProfile.logradouro,
+                  devProfile.numero_rua,
+                  devProfile.complemento,
+                  devProfile.id_cidade,
+                  devProfile.id_estado,
+                  devProfile.id_usuario_endereco,
+                )
+    
+                if(!addressUpdated) {
+                  return {
+                    error: "Não foi possivel atualizar o endereço de usuario.",
+                    statusCode: 500
+                  }
+                }
+              }
+
+            } else {
+
+              if(devProfile.bairro && devProfile.cep && devProfile.cidade && devProfile.estado && devProfile.logradouro && devProfile.numero_rua) {
+                const newAddress = await UserDeveloperModel.createDevAddress(
+                  devProfile.bairro,
+                  devProfile.cep,
+                  devProfile.cidade,
+                  devProfile.estado,
+                  devProfile.logradouro,
+                  devProfile.numero_rua,
+                  devProfile.complemento,
+                  userID,
+                  devProfile.id_cidade =0,
+                  devProfile.id_estado =0,
+                )
+    
+                if(!newAddress) {
+                  return {
+                    error: "Não foi possivel atualizar o endereço de usuario.",
+                    statusCode: 500
+                  }
+                }
+              }
+
+            }
+
+            if(devProfile.ids_habilidades) {
+              const deleteSkills = await UserDeveloperModel.deleteSkills(userID)
+
+              if(deleteSkills) {
+                devProfile.ids_habilidades.forEach(skillID => {
+                  UserDeveloperModel.relateSkills({id_usuario: userID, id_habilidade: skillID})  
+                });
+              } else {
+                return {
+                  error: "Não foi possivel atualizar as habilidades do usuario.",
+                  statusCode: 500
+                }
+              }
+
+            }
+
+            if(devProfile.ids_stacks) {
+              const deleteStacks = await UserDeveloperModel.deleteStacks(userID)
+
+              if(deleteStacks) {
+                devProfile.ids_stacks.forEach(stackID => {
+                  UserDeveloperModel.relateStacks({id_usuario: userID, id_stack: stackID})  
+                });
+              } else {
+                return {
+                  error: "Não foi possivel atualizar as stacks do usuario.",
+                  statusCode: 500
+                }
+              }
+
+            }
+            
             return {
               message: "Dados atualizados com sucesso.",
               statusCode: 200
@@ -313,7 +454,7 @@ export default class DeveloperService {
   
         } else {
           return {
-            error: "Acesso negado.",
+            error: "Acesso sjddj.",
             statusCode: 401
           }
         }
