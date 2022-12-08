@@ -1,4 +1,4 @@
-import { Convite, ConviteStatus, Empresa, EmpresaTelefone, GrupoUsuario, ProvaGrupo } from "@prisma/client";
+import { Convite, ConviteStatus, Empresa, EmpresaTelefone, GrupoUsuario, prisma, ProvaGrupo, Usuario } from "@prisma/client";
 import { prismaClient } from "../../../database/prismaClient";
 import Group from "../../interfaces/Groups/group";
 
@@ -52,11 +52,11 @@ export default class UserCompanyModel {
   })
  }
  static async GetStatusConvite(
-  id: number
+  status: any
  ) : Promise <ConviteStatus | any>{
    return await prismaClient.conviteStatus.findFirst({
      where:{
-       id: id
+      status: status
      }
    })
  }
@@ -77,19 +77,19 @@ export default class UserCompanyModel {
   })
  }
 
- static async updateGroupStatus( idUsuario: number, statusID: number, status: string, ) : Promise <Convite>{
+ static async updateGroupStatus( idUsuario: number, statusID: number, status: string ) : Promise <Convite>{
+  console.log("model", idUsuario,statusID)
   return await prismaClient.convite.update({
      where:{
-       id: idUsuario       
+        id: idUsuario
      },
      data:{
-        idConviteStatus: {
-          set : statusID
-        }
-     },
-   //  include: { conviteStatus: true }
-   })
- }
+       idConviteStatus: statusID
+       
+      },
+      //  include: { conviteStatus: true }
+    })
+  }
  static async createGroupStatus(
    id_convite_status: any,
    idGrupo: any,
@@ -103,5 +103,110 @@ export default class UserCompanyModel {
         idUsuario: idUsuario
      }
    })
+ }
+ static async getUsers(
+  idUsuario: number
+ ) : Promise <Usuario | any>{
+  return await prismaClient.usuario.findFirst({
+    where:{
+      id: idUsuario
+    }
+  })
+ }
+ static async getGroupsCompany(
+  tokenValidate: any
+ ): Promise <Empresa| any>{
+  return await prismaClient.empresa.findFirst({
+    select:{
+      provaAndamento:{
+        select:{
+          prova:{
+            select: {
+              id: true,
+              titulo: true,
+              ativo: true,
+              provaHabilidade:{
+                select:{
+                  habilidade: {
+                    select:{
+                      id: true,
+                      nome: true,
+                      icone: true
+                    }
+                  }
+                }
+              },
+              provaStack:{
+                select:{
+                  stack: {
+                    select:{
+                      id: true,
+                      nome: true
+                    }
+                  }
+                }
+              }
+            }
+          },
+  
+          provaGrupo:{
+            select:{
+              grupo:{
+                select:{
+                  id: true,
+                  nome: true,
+                  descricao: true,
+                  status: true,
+                  grupoUsuario:{
+                    select:{
+                       usuario:{
+                        select:{
+                          id: true,
+                          nome: true,
+                          email: true,
+                          ativo: true,
+                          EnderecoUsuario:{
+                            select:{
+                              cidade:{
+                                select:{
+                                  id: true,
+                                  nome: true,
+                                  estado:{
+                                    select:{
+                                      id: true,
+                                      nome: true
+                                    }
+                                  }
+                                },
+                              },
+                            }
+                          }
+                        }
+                       },
+
+                    }
+                  },
+                  _count:{
+                    select:{
+                      grupoUsuario: true
+                    }
+                  }
+
+                }
+              }
+            }
+          },
+          empresa: {
+            select:{
+              id: true,
+              nome_fantasia:true
+            }
+          }
+        }
+
+      }
+
+    }
+  })
  }
 }

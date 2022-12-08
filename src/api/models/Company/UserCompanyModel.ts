@@ -1,13 +1,6 @@
 
-import { Empresa, EmpresaTelefone, GrupoUsuario, LoginEmpresa, prisma, ProvaAndamento, ProvaGrupo } from "@prisma/client";
-
 
 import { Empresa, EmpresaTelefone, FotosAmbiente, LoginEmpresa, prisma, ProvaAndamento } from "@prisma/client";
-
-import {
-  Empresa, LoginEmpresa, ProvaAndamento
-} from "@prisma/client";
-
 
 import { prismaClient } from "../../../database/prismaClient";
 import AddressData from "../../interfaces/Company/Address";
@@ -18,8 +11,6 @@ import LoginData from "../../interfaces/Company/Login";
 import StateData from "../../interfaces/Company/State";
 import Group from "../../interfaces/Groups/group";
 import filter from "./../../interfaces/Test/AdminFilter";
-import {ProvasGrupos, UsuarioGrupo} from "../../interfaces/Groups/groups"
-import testGroup from "../../interfaces/Groups/testGroup"
 
 
 export default class UserCompanyModel {
@@ -188,6 +179,13 @@ export default class UserCompanyModel {
           senha,
           idEmpresa: id_empresa,
         },
+        select:{
+          empresa:{
+            select:{
+              logo: true
+            }
+          }
+        } 
       });
 
       prismaClient.$disconnect;
@@ -508,117 +506,7 @@ export default class UserCompanyModel {
       },
     });
   }
-  static async getProfileCompany(id: number): Promise<Empresa | any> {
-    return await prismaClient.empresa.findFirst({
-      where: {
-        id: id,
-      },
-      select: {
-        id: true,
-        nome_fantasia: true,
-        logo: true,
-        biografia: true,
-        email: true,
-        empresaTelefone: {
-          select: {
-            id: true,
-            numero: true,
-            ddd: true,
-          },
-        },
-        enderecoEmpresa: {
-          select: {
-            id: true,
-            logradouro: true,
-            bairro: true,
-            cep: true,
-            complemento: true,
-            numero: true,
-            cidade: {
-              select: {
-                nome: true,
-
-                estado:{
-                  select:{
-                    id: true,
-                    nome: true
-                  }
-                }
-              }
-            }
-          }
-
-                estado: {
-                  select: {
-                    nome: true,
-                  },
-                },
-              },
-            },
-          },
-
-        },
-        empresaAvaliacao: {
-          select: {
-            comentario: true,
-            estrelas: true,
-          },
-        },
-        provaAndamento: {
-          select: {
-            prova: {
-              select: {
-                id: true,
-                titulo: true,
-                descricao: true,
-                provaHabilidade: {
-                  select: {
-                    habilidade: {
-                      select: {
-                        id: true,
-                        nome: true,
-                        icone: true,
-                        ativo: true
-                      },
-                    },
-                  },
-                },
-                provaStack: {
-                  select: {
-                    stack: {
-                      select: {
-                        nome: true,
-                      }
-                    }
-
-                  }
-                },
-              }
-            }
-          }
-
-                  },
-                },
-              },
-            },
-          },
-        },
-        fotosAmbiente: {
-          select: {
-            id: true,
-            foto: true,
-            legenda: true,
-          },
-        },
-        Seguidores: {
-          select: {
-            usuario: true,
-          },
-
-        },
-      },
-    });
-  }
+ 
   static async photosCompany(
     idEmpresa: number,
     foto: string, 
@@ -635,7 +523,98 @@ export default class UserCompanyModel {
       }
     })
   }
-
+  static async getProfileCompany(id: number): Promise <Empresa | any>{
+    return await prismaClient.empresa.findFirst({
+      where: {
+        id: id
+      },
+      select:{
+        id: true,
+        logo: true,
+        biografia: true,
+        email: true,
+        empresaTelefone: {
+          select:{
+            numero: true,
+            ddd: true
+          }
+        },
+        enderecoEmpresa:{
+          select:{
+            id: true,
+            logradouro: true,
+            bairro: true,
+            cep: true,
+            complemento: true,
+            numero: true,
+            cidade:{
+              select:{
+                nome: true,
+                estado:{
+                  select:{
+                    id: true,
+                    nome: true
+                  }
+                }
+              }
+            }
+          },
+          
+        },
+        empresaAvaliacao:{
+          select:{
+            comentario: true,
+            estrelas: true,
+          }
+        },
+        provaAndamento:{
+          select:{
+            prova:{
+              select:{
+                id: true,
+                titulo: true,
+                descricao: true,
+                provaHabilidade: {
+                  select: {
+                    habilidade: {
+                      select: {
+                        id: true,
+                        nome: true,
+                        icone: true,
+                        ativo: true
+                      }
+                    }
+                  }
+                },
+                provaStack:{
+                  select:{
+                    stack:{
+                      select:{
+                        nome: true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        fotosAmbiente:{
+          select:{
+            id: true,
+            foto: true,
+            legenda: true
+          }
+        },
+        Seguidores:{
+          select:{
+            usuario: true
+          }
+        }
+      },
+       
+    })
+  }
 
 
   static async deletePhoto(
@@ -649,3 +628,5 @@ export default class UserCompanyModel {
   }
 
 }
+
+      
