@@ -30,14 +30,19 @@ export default class createGroup{
             catch(error: any){console.error(error)}
        }
     }
-    static async resposta (idUsuario: number, status: any, idGrupo: number, idConviteStatus: number){
+    static async resposta (idUsuario: any, status: any, idGrupo: number, id_convite_status: any){
         await GroupsModel.getGroup(idGrupo)
+        
+       const getStatus =  await GroupsModel.statusGet(status)
+       const statusID = getStatus.id
+
+        console.log(statusID)
         switch (status) {
             case "ACEITO":
-                await GroupsModel.createGroupUser(idGrupo, idUsuario) && console.error(await GroupsModel.updateGroupStatus(idUsuario, status, idConviteStatus));
+                await GroupsModel.createGroupUser(idGrupo, idUsuario) && console.error(await GroupsModel.updateGroupStatus(idUsuario, statusID,status));
                     break;
             case "NEGADO":
-                await GroupsModel.updateGroupStatus(idUsuario, status, idConviteStatus)
+                await GroupsModel.updateGroupStatus(idUsuario, statusID, status )
                 break;
             }   
     }

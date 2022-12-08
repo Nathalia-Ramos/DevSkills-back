@@ -60,6 +60,15 @@ export default class UserCompanyModel {
      }
    })
  }
+ static async statusGet(
+  status: string
+ ): Promise <ConviteStatus | any>{
+  return await prismaClient.conviteStatus.findFirst({
+    where:{
+      status: status
+    }
+  })
+ }
  static async getGroup(id: number){
   return await prismaClient.grupo.findFirst({
     where:{
@@ -68,22 +77,19 @@ export default class UserCompanyModel {
   })
  }
 
- static async updateGroupStatus(id: number, status: string, id_convite_status: any) : Promise <Convite>{
+ static async updateGroupStatus( idUsuario: number, statusID: number, status: string, ) : Promise <Convite>{
   return await prismaClient.convite.update({
      where:{
-       id: id_convite_status       
+       id: idUsuario       
      },
      data:{
-       conviteStatus:{
-         update:{
-           status
-         }
-       }
+        idConviteStatus: {
+          set : statusID
+        }
      },
-     include: { conviteStatus: true }
+   //  include: { conviteStatus: true }
    })
  }
-
  static async createGroupStatus(
    id_convite_status: any,
    idGrupo: any,
