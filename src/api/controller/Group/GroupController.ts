@@ -1,23 +1,36 @@
 import GroupService from "../../services/Group/GroupService"
 import { Request, Response } from "express"
+import tokenVerify from "../../../middlewares/auth"
 import {Grupos} from "../../interfaces/Groups/groups"
+import authGuard from "../../../middlewares/auth"
 
 export default class GroupController {
     static async groupController(req: Request, res: Response){
         const group : Grupos = req.body
         
-        const tests = await GroupService.teste(group)
+        const tests = await GroupService.create(group)
        // console.log(tests)
         
         return res.status(201).json({message: "Grupo cadastrado com sucesso!"})
     }
     static async resposta(req: Request, res: Response){
-        const { idUsuario,status, idGrupo, id_convite_status} = req.body
+        const { idUsuario,status, idGrupo} = req.body
 
-        const teste = await GroupService.resposta(idUsuario, status,idGrupo, id_convite_status)
+        const teste = await GroupService.resposta(idUsuario, status,idGrupo)
        // console.log(teste)
 
         return res.status(201).json({message: "Resposta enviada!"})
 
+    }
+    static async getCompanyGroups(req: Request, res: Response) {
+
+        const tokenValidate = await authGuard(req)
+        //console.log(req)
+
+        const result = await GroupService.getGroupCompany(tokenValidate)
+   
+        res.status(200).json({ data: result })
+
+      
     }
 }

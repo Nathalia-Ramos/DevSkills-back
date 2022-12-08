@@ -282,8 +282,7 @@ export default class CompanyService {
       }
         
    }
-   static async getProfileCompany( 
-    tokenValidate: TokenData | ErrorReturn, id: number){
+   static async getProfileCompany(tokenValidate: TokenData | ErrorReturn, id: number){
       
      if('id' in tokenValidate) {
         console.log("service", tokenValidate)
