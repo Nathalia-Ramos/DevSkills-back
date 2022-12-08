@@ -273,6 +273,18 @@ export default class DeveloperService {
       if('id' in tokenValidate) {
         if(tokenValidate.type === 'DEVELOPER') {
 
+          if(devProfile.email) {
+            const emailExist = await DeveloperModel.findBy('email', devProfile.email);
+
+            if(!emailExist) {
+              return {
+                error: message.UserAlreadyExist,
+                statusCode: 400
+              }
+            }
+            
+          }
+
           const userID = tokenValidate.id
 
           const devInfo = {
@@ -299,8 +311,19 @@ export default class DeveloperService {
 
             if(devProfile.id_login) {
               
-              if(devProfile.senha) devProfile.senha = await bcrypt.hash(devProfile.senha, 10)
-              
+              if(devProfile.senha) {
+
+                if(validateRegex(devProfile.senha, "^(?=.*[A-Z])(?=.*[!#@$%&])(?=.*[0-9])(?=.*[a-z]).{8,15}$")) {
+                  devProfile.senha = await bcrypt.hash(devProfile.senha, 10)
+                } else {
+                  return {
+                    error: message.PasswordError,
+                    statusCode: 400,
+                  };
+                }
+
+              }
+
               const loginUpdated = await UserDeveloperModel.updateDevLogin(
                 devProfile.senha,
                 devProfile.id_login,
