@@ -1,6 +1,10 @@
+
+import { Empresa, EmpresaTelefone, FotosAmbiente, LoginEmpresa, prisma, ProvaAndamento } from "@prisma/client";
+
 import {
   Empresa, LoginEmpresa, ProvaAndamento
 } from "@prisma/client";
+
 import { prismaClient } from "../../../database/prismaClient";
 import AddressData from "../../interfaces/Company/Address";
 import CityData from "../../interfaces/Company/City";
@@ -587,11 +591,29 @@ export default class UserCompanyModel {
       },
     });
   }
-  /*static async teste(){
-    return await prismaClient.usuario.findMany({
-      select:{
-        
+  static async photosCompany(
+    idEmpresa: number,
+    foto: string, 
+    legenda: string,
+    
+  ) : Promise <FotosAmbiente> {
+    return await prismaClient.fotosAmbiente.create({
+      data:{
+        foto: foto,
+        legenda: legenda,
+        idEmpresa,
+        createdAt: new Date,
+        updatedAt: new Date
       }
     })
-  }*/
+  }
+  static async deletePhoto(
+    idEmpresa: number
+  ): Promise <FotosAmbiente> {
+    return await prismaClient.fotosAmbiente.delete({
+      where:{
+        id: idEmpresa
+      }
+    })
+  }
 }
