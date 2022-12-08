@@ -7,7 +7,7 @@ import { TestData } from "../../interfaces/Test/Tests";
 import TokenData from "../../interfaces/Token/Token";
 import AnswerTestModel from "../../models/AnswerTestModel";
 import TestModel from "../../models/Test/TestModel";
-import isEmpty from "../../utils/isEmpty";
+import {candidateData} from "../../interfaces/Test/TestCandidate";
 import QuestionService from "./QuestionService";
 import { answerData, testAnswers, questionAnswer, questionTest }   from "../../interfaces/Test/TestUserAnswers"
 // import jwt_decode from "jwt-decode";
@@ -109,6 +109,79 @@ export default class TestService {
     }
   }
 
+  static async findCandidates(id_prova_andamento: number) {
+
+    if(typeof id_prova_andamento === 'number') {
+
+      const candidates = await TestModel.findCandidates(id_prova_andamento)
+
+      if(candidates) {
+
+        const totalCandidates : candidateData[] = []
+
+        candidates.forEach(async (userCandidate) => {
+
+          console.log(userCandidate.id)
+
+          const currentDate = new Date()
+        
+          let userTime : string = ''
+
+          if(userCandidate.data_entrega) {
+
+            const startDate = userCandidate.data_entrega.toISOString().split(/[\T\.]/)[0] + ' ' + userCandidate.data_entrega.toISOString().split(/[\T\.]/)[1]
+            const endDate = userCandidate.data_inicio.toISOString().split(/[\T\.]/)[0] + ' ' + userCandidate.data_inicio.toISOString().split(/[\T\.]/)[1]
+
+            console.log('morre no ' + userCandidate.id)
+            const resultDiff : Object = await TestModel.getTimeDiff(startDate, endDate)
+            
+            const timeDiff : string = Object.values(resultDiff)[0].duracao.toISOString()
+
+            userTime = timeDiff.split(/[/T/.]/)[1]
+
+          }
+
+            const candidateData : candidateData = { 
+              id_prova_usuario: userCandidate.id,
+              id_prova_andamento: userCandidate.idProvaAndamento,
+              finalizada: userCandidate.finalizada,
+              duracao: userTime ? userTime : null,
+              pontuacao: userCandidate.pontuacao,
+              candidato: {
+                id: userCandidate.idUsuario,
+                nome: userCandidate.usuario.nome,
+                email: userCandidate.usuario.email,
+                foto_perfil: userCandidate.usuario.foto_perfil,
+                idade: currentDate.getFullYear() - userCandidate.usuario.data_nascimento.getFullYear(),
+              }
+            }
+            
+            // console.log(candidateData)
+            totalCandidates.push(candidateData)
+            
+          })
+
+          return {
+            data: totalCandidates,
+            statusCode: 200
+          }
+          
+      } else {
+        return {
+          error: "Prova com o ID especificado não encontrada.",
+          statusCode: 404
+        }
+      }
+
+    } else {
+      return {
+        error: "IDs devem ser números.",
+        statusCode: 400,
+      };
+    }
+
+  }
+
   static async findTest(id_prova: number, tokenValidate: TokenData | ErrorReturn) {
     
     if('id' in tokenValidate) {
@@ -119,8 +192,8 @@ export default class TestService {
 
         const userTestExist = await TestModel.findUserTest(id_prova, tokenValidate.id)
 
-        if(userTestExist ){
-          if( userTestExist.finalizada){
+        if(userTestExist){
+          if(userTestExist.finalizada){
             return {
               error: "Prova já respondida.",
               statusCode: 400
@@ -208,7 +281,7 @@ export default class TestService {
 
     if(typeof id_prova_andamento === 'number') {
 
-      const testExist = await TestModel.findTest(id_prova_andamento)
+      const testExist = await TestModel.findTestProgress(id_prova_andamento)
 
       if(testExist) {
 
@@ -219,7 +292,7 @@ export default class TestService {
 
         if(usersAnswers) {
           
-          console.log(usersAnswers)
+          // console.log(usersAnswers)
           const userAnswer = usersAnswers[take - 1]
 
           if(!userAnswer) {
@@ -229,7 +302,7 @@ export default class TestService {
             }
           }
 
-          console.log(userAnswer)
+          // console.log(userAnswer)
 
           const userInfo = userAnswer.usuario.usuarioProva
 
@@ -261,7 +334,7 @@ export default class TestService {
                       }
                       
                       questionData.push(question)
-                      console.log('adicionou'+ question.id)
+                      // console.log('adicionou'+ question.id)
                     }
   
                   }
@@ -290,21 +363,38 @@ export default class TestService {
                     }
     
                     questionData.push(question)
-                    console.log('adicionou'+ question.id)
+                    // console.log('adicionou'+ question.id)
                   
                 }
                 
               })
-              console.log(questionData)
+              // console.log(questionData)
             
               const userTest = userAnswer.usuario.usuarioProva[0]
               const user = userAnswer.usuario
-    
+              let userTime : string = ''
+
+              if(userTest.data_entrega) {
+
+                const startDate = userTest.data_entrega.toISOString().split(/[\T\.]/)[0] + ' ' + userTest.data_entrega.toISOString().split(/[\T\.]/)[1]
+                const endDate = userTest.data_inicio.toISOString().split(/[\T\.]/)[0] + ' ' + userTest.data_inicio.toISOString().split(/[\T\.]/)[1]
+
+                console.log('entrega ' + startDate)
+                console.log('inicio ' + endDate)
+
+                const resultDiff : Object = await TestModel.getTimeDiff(startDate, endDate)
+                
+                const timeDiff : string = Object.values(resultDiff)[0].duracao.toISOString()
+
+                userTime = timeDiff.split(/[/T/.]/)[1]
+
+              }
+
               const userInfos = {
                 id: user.id,
                 idProvaUsuario: userTest.id,
                 nome: user.nome,
-                tempo: '01:05:00',
+                tempo: userTime,
                 corrigida: userTest.pontuacao ? true : false,
                 pontuacao: userTest.pontuacao,
                 questoes: questionData
@@ -490,10 +580,64 @@ export default class TestService {
     const test = await TestModel.findUserTestByID(id_prova_usuario);
 
     if (test) {
+
+      if(test.provaAndamento.duracao) {
+
+        const candidateHours = {
+          hours: '00',
+          minutes: '00',
+          seconds: '00'
+        }
+  
+        const testDuration = test.provaAndamento.duracao?.split(':')
+        // const userDate = test.data_inicio.toISOString().split(/[\-\:\.\T\Z]/)
+        const userDate = test.data_inicio
+  
+        const diffMilliseconds = Math.abs(new Date().getTime() - userDate.getTime())
+  
+        const totalSecondsDiff = Math.floor(diffMilliseconds / 1000)
+        const minutesDiff = Math.floor(totalSecondsDiff / 60)
+        
+        const secondsDiff = Math.floor(totalSecondsDiff % 60)
+        candidateHours.seconds = secondsDiff.toString().padStart(2, '0')
+        
+        if (minutesDiff > 60) {
+          const hoursDiff = Math.floor(minutesDiff / 60)
+  
+          candidateHours.hours = hoursDiff.toString().padStart(2, '0')
+          
+          candidateHours.minutes = (Math.floor(minutesDiff % 60)).toString().padStart(2, '0')
+        } else {
+          candidateHours.minutes = minutesDiff.toString().padStart(2, '0')
+        }
+
+        // if(candidateHours.hours > testDuration[0]) {
+        //   return {
+        //     error: "Não é mais possível realizar essa prova pois o tempo limite de resposta foi ultrapassado.",
+        //     statusCode: 400
+        //   }
+        // }
+
+        const hoursLeft =  parseInt(testDuration[0]) - parseInt(candidateHours.hours)
+        const minutesLeft = parseInt(testDuration[1]) - parseInt(candidateHours.minutes)
+        const secondsLeft = parseInt(testDuration[2]) - parseInt(candidateHours.hours)
+
+        if(hoursLeft < 0 && minutesLeft < 0 && secondsLeft < 0) {
+          return {
+                error: "Não é mais possível realizar essa prova pois o tempo limite de resposta foi ultrapassado.",
+                statusCode: 400
+              }
+        } else {
+          test.provaAndamento.duracao = hoursLeft + ':' + minutesLeft + ':' + secondsLeft
+        }
+
+      }
+
       return {
         data: test,
         statusCode: 200,
       };
+      
     } else {
       return {
         error: "Prova com o ID especificado não encontrada.",
