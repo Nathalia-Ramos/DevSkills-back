@@ -114,11 +114,11 @@ export default class UserCompanyModel {
   })
  }
  static async getGroupsCompany(
-  tokenValidate: any
+  id: number
  ): Promise <Empresa| any>{
-  return await prismaClient.empresa.findFirst({
+  return await prismaClient.empresa.findUnique({
     where:{
-      id: tokenValidate
+      id: id
     },
     select:{
       provaAndamento:{
