@@ -1,9 +1,13 @@
 
+import { Empresa, EmpresaTelefone, GrupoUsuario, LoginEmpresa, prisma, ProvaAndamento, ProvaGrupo } from "@prisma/client";
+
+
 import { Empresa, EmpresaTelefone, FotosAmbiente, LoginEmpresa, prisma, ProvaAndamento } from "@prisma/client";
 
 import {
   Empresa, LoginEmpresa, ProvaAndamento
 } from "@prisma/client";
+
 
 import { prismaClient } from "../../../database/prismaClient";
 import AddressData from "../../interfaces/Company/Address";
@@ -12,7 +16,11 @@ import CompanyPhoneData from "../../interfaces/Company/CompanyPhone";
 import CompanyUser from "../../interfaces/Company/CompanyUser";
 import LoginData from "../../interfaces/Company/Login";
 import StateData from "../../interfaces/Company/State";
+import Group from "../../interfaces/Groups/group";
 import filter from "./../../interfaces/Test/AdminFilter";
+import {ProvasGrupos, UsuarioGrupo} from "../../interfaces/Groups/groups"
+import testGroup from "../../interfaces/Groups/testGroup"
+
 
 export default class UserCompanyModel {
   static async create({
@@ -529,6 +537,17 @@ export default class UserCompanyModel {
             cidade: {
               select: {
                 nome: true,
+
+                estado:{
+                  select:{
+                    id: true,
+                    nome: true
+                  }
+                }
+              }
+            }
+          }
+
                 estado: {
                   select: {
                     nome: true,
@@ -537,6 +556,7 @@ export default class UserCompanyModel {
               },
             },
           },
+
         },
         empresaAvaliacao: {
           select: {
@@ -570,6 +590,13 @@ export default class UserCompanyModel {
                         nome: true,
                       }
                     }
+
+                  }
+                },
+              }
+            }
+          }
+
                   },
                 },
               },
@@ -587,6 +614,7 @@ export default class UserCompanyModel {
           select: {
             usuario: true,
           },
+
         },
       },
     });
@@ -607,6 +635,9 @@ export default class UserCompanyModel {
       }
     })
   }
+
+
+
   static async deletePhoto(
     idEmpresa: number
   ): Promise <FotosAmbiente> {
@@ -616,4 +647,5 @@ export default class UserCompanyModel {
       }
     })
   }
+
 }

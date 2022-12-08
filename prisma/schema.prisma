@@ -1206,3 +1206,4 @@ model Convite {
 
   @@map("tblconvite")
 }
+
