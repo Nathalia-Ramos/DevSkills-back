@@ -25,6 +25,7 @@ export default class GroupController {
     static async getCompanyGroups(req: Request, res: Response) {
 
         const tokenValidate = await authGuard(req)
+        //console.log(req)
 
         const result = await GroupService.getGroupCompany(tokenValidate)
    

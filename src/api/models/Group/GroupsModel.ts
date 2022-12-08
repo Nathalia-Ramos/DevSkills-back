@@ -117,6 +117,9 @@ export default class UserCompanyModel {
   tokenValidate: any
  ): Promise <Empresa| any>{
   return await prismaClient.empresa.findFirst({
+    where:{
+      id: tokenValidate
+    },
     select:{
       provaAndamento:{
         select:{
