@@ -271,9 +271,11 @@ export default class DeveloperService {
     if(Object.keys(devProfile).length > 0) {
 
       if('id' in tokenValidate) {
+
         if(tokenValidate.type === 'DEVELOPER') {
 
           if(devProfile.email) {
+
             const emailExist = await DeveloperModel.findBy('email', devProfile.email);
 
             if(!emailExist) {
@@ -282,7 +284,7 @@ export default class DeveloperService {
                 statusCode: 400
               }
             }
-            
+
           }
 
           const userID = tokenValidate.id
@@ -319,7 +321,7 @@ export default class DeveloperService {
                   return {
                     error: message.PasswordError,
                     statusCode: 400,
-                  };
+                  }
                 }
 
               }
@@ -413,6 +415,16 @@ export default class DeveloperService {
               }
 
             } else {
+
+              if(devProfile.estado && devProfile.cidade) {
+
+                const cityExist = await UserDeveloperModel.findCity(devProfile.cidade)
+                const stateExist = await UserDeveloperModel.findState(devProfile.estado)
+                  
+                if(!cityExist) devProfile.id_cidade = 0 
+                if(!stateExist) devProfile.id_estado = 0 
+
+              }
 
               if(devProfile.bairro && devProfile.cep && devProfile.cidade && devProfile.estado && devProfile.logradouro && devProfile.numero_rua) {
                 const newAddress = await UserDeveloperModel.createDevAddress(
