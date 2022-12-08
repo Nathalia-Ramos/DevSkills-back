@@ -126,6 +126,7 @@ export default class UserCompanyModel {
           prova:{
             select: {
               id: true,
+              descricao: true,
               titulo: true,
               ativo: true,
               provaHabilidade:{
