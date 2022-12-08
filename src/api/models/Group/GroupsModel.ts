@@ -203,7 +203,8 @@ export default class UserCompanyModel {
           empresa: {
             select:{
               id: true,
-              nome_fantasia:true
+              nome_fantasia:true,
+              logo: true
             }
           }
         }
