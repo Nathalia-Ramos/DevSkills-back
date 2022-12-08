@@ -3,7 +3,7 @@ import {Grupos} from "../../interfaces/Groups/groups"
 import GroupsModel from "../../models/Group/GroupsModel";
 
 export default class createGroup{
-    static async teste(group: Grupos) {
+    static async create(group: Grupos) {
         if(group.nome, group.descricao, group.candidatos,group.id_prova_andamento, group.convite, group.candidatos){
         
             const create = {
