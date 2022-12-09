@@ -44,4 +44,11 @@ export default class GroupController {
 
         return res.status(200).json({data: data})
     }
+    static async getConviteStatus(req: Request, res: Response){
+        const { id } = req.params
+
+        const data = await GroupService.getConviteGroups(parseInt(id))
+
+        return res.status(200).json({data: data})
+    }
 }

@@ -267,13 +267,70 @@ export default class UserCompanyModel {
       }
     })
    }
-   static async getConviteStatus() : Promise <Convite>{
-    return await prismaClient.convite.findUnique({
+   static async getConviteStatus(idUsuario: number) : Promise <Convite | any>{
+    return await prismaClient.convite.findFirst({
       where:{
-        id: id
+        id: { 
+          equals: idUsuario
+        }
       },
       select:{
-        
+        conviteStatus:{
+          select:{
+            status: true
+          }
+        },
+        idConviteStatus: true,
+        grupo:{
+          select:{
+            id: true,
+            nome: true,
+            descricao: true,
+            status: true,
+            provaGrupo:{
+              select:{
+                provaAndamento:{
+                  select:{
+                    empresa:{
+                       select:{
+                        id: true,
+                        nome_fantasia: true,
+                        logo: true
+                       }
+                    },
+                    prova:{
+                      select:{
+                        id: true,
+                        titulo: true,
+                        descricao: true,
+                        ativo: true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+
+      }
+    })
+   }
+   static async convite(idUsuario: number) : Promise <Convite | any> {
+    return await prismaClient.convite.findFirst({
+      where:{
+        idUsuario:{
+          equals: idUsuario
+        }
+      },
+      select:{
+        grupo:{
+          select:{
+            id: true,
+            nome: true,
+            descricao: true
+          }
+        }
       }
     })
    }

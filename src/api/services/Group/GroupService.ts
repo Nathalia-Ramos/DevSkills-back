@@ -67,5 +67,10 @@ export default class createGroup{
 
         return result
     }
+    static async getConviteGroups(id: number){
+        const result = await GroupsModel.getConviteStatus(id)
+
+        return result
+    }
 }
 
