@@ -22,7 +22,7 @@ export default class UserDeveloperController {
 
     const answer = await DeveloperService.auth(login, senha)
 
-    res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {message: answer.message, type: answer.userType, token: answer, userInfo: answer.userInfo})
+    res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {message: answer.message, type: answer.userType, token: answer.token, userInfo: answer.userInfo})
 
    }
    static async sendPassMail(req: Request, res: Response) {
