@@ -267,7 +267,7 @@ export default class TestModel {
               }
             },
             provaStack:{
-              select:{
+              include:{
                 stack:{
                   select:{
                     id: true,
