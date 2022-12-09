@@ -35,28 +35,33 @@ export default class createGroup{
     }
     static async resposta (idUsuario: any, status: any, idGrupo: number){
         await GroupsModel.getGroup(idGrupo)
-        
+       
        const getStatus =  await GroupsModel.statusGet(status)
        const statusID = getStatus.id
-       //console.log(statusID)
-
-       const getUsers = await GroupsModel.getUsers(idUsuario)
-       const userId = getUsers.id
-       //console.log(userId)
-        
-        switch (status) {
-            case "ACEITO":
-                const a = await GroupsModel.updateGroupStatus(userId, statusID,status) 
-              console.log(a)
-                    break;
-            case "NEGADO":
-                await GroupsModel.updateGroupStatus(userId, statusID, status )
-                break;
-            }   
+ 
+       const groupInvite = await GroupsModel.findInvite(idUsuario, idGrupo)
+ 
+       if(groupInvite) {
+           switch (status) {
+               case "ACEITO":
+                   await GroupsModel.createGroupUser(idGrupo, idUsuario) && console.error(await GroupsModel.updateGroupStatus(idUsuario, statusID, groupInvite?.id));
+                //   console.log(statusID, status)
+                       break;
+               case "NEGADO":
+                   await GroupsModel.updateGroupStatus(idUsuario, statusID, groupInvite?.id)
+                   break;
+               }  
+       }
+       
     }
-    static async getGroupCompany(tokenValidate: TokenData | ErrorReturn,) {
+    static async getGroupCompany(tokenValidate: TokenData | ErrorReturn) {
         const result = await GroupsModel.getGroupsCompany(tokenValidate)
         console.log(result)
+
+        return result
+    }
+    static async getUsersGroups(id: number){
+        const result = await GroupsModel.getGroupsUser(id)
 
         return result
     }

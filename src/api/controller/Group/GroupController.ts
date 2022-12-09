@@ -35,4 +35,11 @@ export default class GroupController {
 
       
     }
+    static async getUsersGroups(req: Request, res: Response){
+        const { id } = req.params
+
+        const data = await GroupService.getUsersGroups(parseInt(id))
+
+        return res.status(200).json({data: data})
+    }
 }
