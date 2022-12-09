@@ -6,7 +6,7 @@ const router = Router()
 
 router.post('/createGroup', GrupoController.groupController)
 router.post('/respostaUsuarioConvite', GrupoController.resposta)
-router.get('/groupsCompany', GrupoController.getCompanyGroups)
+router.get('/groupsCompany/:id', GrupoController.getCompanyGroups)
 
 
 export default router
