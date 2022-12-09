@@ -38,15 +38,16 @@ export default class createGroup{
         
        const getStatus =  await GroupsModel.statusGet(status)
        const statusID = getStatus.id
+       //console.log(statusID)
 
        const getUsers = await GroupsModel.getUsers(idUsuario)
        const userId = getUsers.id
-       console.log("id do usuario", userId)
+       //console.log(userId)
         
         switch (status) {
             case "ACEITO":
-                await GroupsModel.createGroupUser(idGrupo, idUsuario) && console.error(await GroupsModel.updateGroupStatus(userId, statusID,status));
-             //   console.log(statusID, status)
+                const a = await GroupsModel.updateGroupStatus(userId, statusID,status) 
+              console.log(a)
                     break;
             case "NEGADO":
                 await GroupsModel.updateGroupStatus(userId, statusID, status )
