@@ -72,5 +72,10 @@ export default class createGroup{
 
         return result
     }
+    static async notificationGroup(id: number){
+        const result = await GroupsModel.convite(id)
+
+        return result
+    }
 }
 

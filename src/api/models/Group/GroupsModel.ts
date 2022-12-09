@@ -330,6 +330,46 @@ export default class UserCompanyModel {
             nome: true,
             descricao: true
           }
+        },
+         usuario:{
+          select:{
+            grupoUsuario:{
+              select:{
+                grupo:{
+                  select: {
+                    provaGrupo:{
+                      select:{
+                        provaAndamento:{
+                          select:{
+                            empresa:{
+                              select:{
+                                id: true,
+                                nome_fantasia: true,
+                                logo: true,
+                              },
+                            },
+                            prova:{
+                              select:{
+                                id: true,
+                                titulo: true,
+                                ativo: true
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+         },
+        conviteStatus:{
+          select:{
+            id: true,
+            status: true
+          }
         }
       }
     })
