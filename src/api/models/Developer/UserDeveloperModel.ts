@@ -577,6 +577,15 @@ export default class UserDeveloperModel {
       }
     })
   }
+  static async getAllUsers(){
+    return await prismaClient.usuario.findMany({
+      select:{
+        id: true,
+        email: true,
+        foto_perfil: true
+      }
+    })
+  }
 
  
 }

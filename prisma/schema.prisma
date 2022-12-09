@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -30,9 +29,10 @@ model Usuario {
   usuarioTesteComportamental UsuarioTesteComportamental[]
   LoginUsuario               LoginUsuario[]
 
+  convite Convite[]
   // Relacionando com a tabela de Gênero
-  genero   Genero @relation(fields: [idGenero], references: [id])
-  idGenero Int    @map("id_genero") @db.Int
+  genero        Genero          @relation(fields: [idGenero], references: [id])
+  idGenero      Int             @map("id_genero") @db.Int
 
   // Relaciomentos com tabelas intermediárias
   usuarioStack      UsuarioStack[]
@@ -153,10 +153,10 @@ model Stack {
   id   Int    @id @unique @default(autoincrement()) @db.Int
   nome String @db.VarChar(30)
 
-  habilidade            Habilidade[]
-  usuarioStack          UsuarioStack[]
-  provaStack            ProvaStack[]
-  TesteComportamental   TesteComportamental[]
+  habilidade          Habilidade[]
+  usuarioStack        UsuarioStack[]
+  provaStack          ProvaStack[]
+  TesteComportamental TesteComportamental[]
 
   @@map("tblstack")
 }
@@ -464,19 +464,19 @@ model Empresa {
   //Relacionamento com tabela provaAndamento
   provaAndamento ProvaAndamento[]
 
-  Seguidores Seguidores []  
+  Seguidores Seguidores[]
 
   @@map("tblempresa")
 }
 
 model Seguidores {
-   id Int @id @unique @default(autoincrement()) @db.Int
+  id Int @id @unique @default(autoincrement()) @db.Int
 
   empresa   Empresa @relation(fields: [idEmpresa], references: [id])
   idEmpresa Int     @map("id_empresa") @db.Int
 
-  usuario Usuario @relation(fields: [idUsuario], references: [id])
-  idUsuario Int @map("id_usuario") @db.Int
+  usuario   Usuario @relation(fields: [idUsuario], references: [id])
+  idUsuario Int     @map("id_usuario") @db.Int
 
   @@map("tblseguidores")
 }
@@ -495,9 +495,9 @@ model LoginEmpresa {
 model ProvaAndamento {
   id Int @id @unique @default(autoincrement()) @db.Int
 
-  data_inicio DateTime  @db.DateTime()
-  data_fim    DateTime  @db.DateTime()
-  duracao     String?    @db.VarChar(8)
+  data_inicio DateTime @db.DateTime()
+  data_fim    DateTime @db.DateTime()
+  duracao     String?  @db.VarChar(8)
 
   empresa   Empresa @relation(fields: [idEmpresa], references: [id])
   idEmpresa Int     @map("id_empresa") @db.Int
@@ -565,9 +565,9 @@ model EmpresaAvaliacao {
 model TesteCompetencia {
   id Int @id @unique @default(autoincrement()) @db.Int
 
-  titulo    String    @db.VarChar(50)
-  status    Boolean   @db.TinyInt
-  descricao String    @db.Text
+  titulo    String  @db.VarChar(50)
+  status    Boolean @db.TinyInt
+  descricao String  @db.Text
 
   // Relacionamento com Administrador
   administrador   Administrador @relation(fields: [idAdministrador], references: [id])
@@ -656,8 +656,8 @@ model TesteCompetenciaTodasQuestoes {
 model AlternativaTesteCompetencia {
   id Int @id @unique @default(autoincrement()) @db.Int
 
-  opcao         String  @db.VarChar(180)
-  correta       Boolean @db.TinyInt
+  opcao   String  @db.VarChar(180)
+  correta Boolean @db.TinyInt
 
   // Relacionamento com a tablea QuestaoTesteCompetencia
   questaoTesteCompetencia QuestaoTesteCompetencia @relation(fields: [idQuestao], references: [id])
@@ -970,7 +970,6 @@ model RespostaQuestaoProva {
 
   questaoProva   QuestaoProva @relation(fields: [idQuestaoProva], references: [id])
   idQuestaoProva Int          @map("id_questao_prova")
- 
 
   @@map("tblresposta_questao_prova")
 }
@@ -996,9 +995,9 @@ model QuestaoProva {
   foto      String? @db.Text
 
   //relacionamentos
-  alternativaProva         AlternativaProva[]
-  provasTodasQuestoes      ProvasTodasQuestoes[]
-  respostaQuestaoProva     RespostaQuestaoProva[]
+  alternativaProva     AlternativaProva[]
+  provasTodasQuestoes  ProvasTodasQuestoes[]
+  respostaQuestaoProva RespostaQuestaoProva[]
 
   questaoProvaTipo   QuestaoProvaTipo @relation(fields: [idQuestaoProvaTipo], references: [id])
   idQuestaoProvaTipo Int              @map("id_tipo") @db.Int
@@ -1056,39 +1055,37 @@ model TesteComportamental {
 
   usuarioTesteComportamental UsuarioTesteComportamental[]
   questaoTesteComportamental QuestaoTesteComportamental[]
-  TesteComportamentalGrupo TesteComportamentalGrupo []
+  TesteComportamentalGrupo   TesteComportamentalGrupo[]
 
   @@map("tblteste_comportamental")
 }
 
-model TesteComportamentalGrupo{
+model TesteComportamentalGrupo {
   id Int @id @unique @default(autoincrement()) @db.Int
 
-  grupo Grupo @relation(fields: [idGrupo], references: [id])
-  idGrupo Int @map("id_grupo") @db.Int
+  grupo   Grupo @relation(fields: [idGrupo], references: [id])
+  idGrupo Int   @map("id_grupo") @db.Int
 
-  testeComportamental TesteComportamental @relation(fields: [idTesteComportamental], references: [id])
-  idTesteComportamental Int @map("id_teste_comportamental") @db.Int
+  testeComportamental   TesteComportamental @relation(fields: [idTesteComportamental], references: [id])
+  idTesteComportamental Int                 @map("id_teste_comportamental") @db.Int
 
   @@map("tblteste_comportamental_grupo")
 }
 
-model PerfilComportamental { 
+model PerfilComportamental {
   id Int @id @unique @default(autoincrement()) @db.Int
 
   descricao String @db.Text
   resultado String @db.VarChar(30)
 
   UsuarioTesteComportamental UsuarioTesteComportamental[]
-  AlternativaComportamental AlternativaComportamental[]
+  AlternativaComportamental  AlternativaComportamental[]
 
   @@map("tblperfil_comportamental")
-
 }
 
 model UsuarioTesteComportamental {
   id Int @id @unique @default(autoincrement()) @db.Int
-
 
   testeComportamental   TesteComportamental @relation(fields: [idTesteComportamental], references: [id])
   idTesteComportamental Int                 @map("id_teste_comportamental") @db.Int
@@ -1096,8 +1093,8 @@ model UsuarioTesteComportamental {
   usuario   Usuario @relation(fields: [idUsuario], references: [id])
   idUsuario Int     @map("id_usuario") @db.Int
 
-  perfilComportamental PerfilComportamental @relation(fields: [idPerfil_comportamental], references: [id])
-  idPerfil_comportamental Int @map("id_perfil_comportamental")
+  perfilComportamental    PerfilComportamental @relation(fields: [idPerfil_comportamental], references: [id])
+  idPerfil_comportamental Int                  @map("id_perfil_comportamental")
 
   respostaComportamental RespostaComportamental[]
 
@@ -1124,8 +1121,8 @@ model AlternativaComportamental {
 
   respostaComportamental RespostaComportamental[]
 
-  perfilComportamental PerfilComportamental @relation(fields: [idPerfil_comportamental], references: [id])
-  idPerfil_comportamental Int @map("id_perfil_comportamental")
+  perfilComportamental    PerfilComportamental @relation(fields: [idPerfil_comportamental], references: [id])
+  idPerfil_comportamental Int                  @map("id_perfil_comportamental")
 
   questaoTesteComportamental QuestaoTesteComportamental @relation(fields: [idQuestao], references: [id])
   idQuestao                  Int                        @map("id_questao") @db.Int
@@ -1155,9 +1152,10 @@ model Grupo {
   status    Boolean @db.TinyInt
   descricao String  @db.Text
 
-  provaGrupo   ProvaGrupo[]
-  grupoUsuario GrupoUsuario[]
+  provaGrupo               ProvaGrupo[]
+  grupoUsuario             GrupoUsuario[]
   TesteComportamentalGrupo TesteComportamentalGrupo[]
+  grupo    Convite[]
 
   @@map("tblgrupo")
 }
@@ -1185,3 +1183,27 @@ model GrupoUsuario {
 
   @@map("tblgrupo_usuario")
 }
+
+model ConviteStatus {
+  id     Int    @id @unique @default(autoincrement()) @db.Int
+  status String @db.VarChar(50)
+
+  convite Convite[]
+
+  @@map("tblconvite_status")
+}
+model Convite {
+  id     Int    @id @unique @default(autoincrement()) @db.Int
+  
+  conviteStatus ConviteStatus @relation(fields: [idConviteStatus], references: [id])
+  idConviteStatus Int @map("id_convite_status") @db.Int
+
+  usuario   Usuario @relation(fields: [idUsuario], references: [id])
+  idUsuario Int     @map("id_usuario") @db.Int
+
+  grupo   Grupo @relation(fields: [idGrupo], references: [id])
+  idGrupo Int   @map("id_grupo") @db.Int
+
+  @@map("tblconvite")
+}
+
