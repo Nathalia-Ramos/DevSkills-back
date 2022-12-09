@@ -17,7 +17,7 @@ export default class createGroup{
 
             const getConvitStatus = await GroupsModel.GetStatusConvite(group.id)
             const getIdConvite = getConvitStatus.id
-            console.log(getIdConvite, "scrr deus")
+            console.log( getConvitStatus.id, "scrr deus")
 
             try {
                 group.candidatos.forEach(async (idUsuario: any ) => {
