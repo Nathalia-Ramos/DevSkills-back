@@ -658,6 +658,20 @@ export default class TestModel {
             email: true,
             foto_perfil: true,
             data_nascimento: true,
+            EnderecoUsuario:{
+              select:{
+                cidade:{
+                  select:{
+                    nome: true,
+                    estado:{
+                      select:{
+                        nome: true
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }

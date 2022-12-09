@@ -12,6 +12,10 @@ interface candidateData {
       email: string;
       foto_perfil: string | null;
       idade: number;
+      localidade: {
+        estado: string | null;
+        cidade: string | null;
+      }
   };
 }
 
