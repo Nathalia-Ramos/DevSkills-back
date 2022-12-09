@@ -120,9 +120,9 @@ export default class TestService {
 
         let totalCandidates : candidateData[] = []
 
-        candidates.forEach(async (userCandidate) => {
+        for(let i = 0; i < candidates.length; i++) {
 
-          // console.log(userCandidate.id)
+          const userCandidate = candidates[i]
 
           const currentDate = new Date()
 
@@ -152,7 +152,7 @@ export default class TestService {
             const userPoints = userCandidate.pontuacao
             const totalPoints = 100
 
-            const totalUserPoints = Math.round((userPoints * totalPoints) / userPoints)
+            const totalUserPoints = Math.round((userPoints * 100) / totalPoints)
 
             userPercentage = totalUserPoints + '%'
 
@@ -163,11 +163,11 @@ export default class TestService {
             id_prova_usuario: userCandidate.id,
             id_prova_andamento: userCandidate.idProvaAndamento,
             finalizada: userCandidate.finalizada,
-            duracao: '01:10:05',
-            // duracao: userTime ? userTime : null,
+            // duracao: '01:10:05',
+            duracao: userTime ? userTime : null,
             pontuacao: userCandidate.pontuacao ? userCandidate.pontuacao : null,
-            // porcentagemAcertos: userPercentage ? userPercentage : null,
-            porcentagemAcertos: '20%',
+            porcentagemAcertos: userPercentage ? userPercentage : null,
+            // porcentagemAcertos: '20%',
             corrigida: userCandidate.pontuacao ? true : false,
             candidato: {
               id: userCandidate.idUsuario,
@@ -185,12 +185,8 @@ export default class TestService {
             // console.log(candidateData)
 
             totalCandidates.push(candidateData)
-            
-            // console.log('tamanho dentro do for: ' + totalCandidates.length)
 
-        })
-
-          // console.log('tamanho fora do for: ' + totalCandidates.length)
+        }
 
           return {
             data: totalCandidates,
