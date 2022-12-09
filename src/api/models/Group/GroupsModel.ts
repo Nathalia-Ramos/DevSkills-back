@@ -147,7 +147,6 @@ export default class UserCompanyModel {
                 }
               }
             },
-    
             provaGrupo:{
               select:{
                 grupo:{
@@ -182,7 +181,6 @@ export default class UserCompanyModel {
                             }
                           }
                         },
-
                       }
                     },
                     _count:{
@@ -190,7 +188,6 @@ export default class UserCompanyModel {
                         grupoUsuario: true
                       }
                     }
-
                   }
                 }
               }
@@ -202,9 +199,7 @@ export default class UserCompanyModel {
               }
             }
           }
-
         }
-
       }
     })
   }
