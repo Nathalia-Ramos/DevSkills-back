@@ -129,6 +129,8 @@ export default class TestService {
 
           let userPercentage : string = ''
 
+          const userAddress = userCandidate.usuario.EnderecoUsuario[0]
+
           if(userCandidate.data_entrega) {
 
             const startDate = userCandidate.data_entrega.toISOString().split(/[\T\.]/)[0] + ' ' + userCandidate.data_entrega.toISOString().split(/[\T\.]/)[1]
@@ -172,6 +174,10 @@ export default class TestService {
               email: userCandidate.usuario.email,
               foto_perfil: userCandidate.usuario.foto_perfil,
               idade: currentDate.getFullYear() - userCandidate.usuario.data_nascimento.getFullYear(),
+              localidade:{
+                estado: userAddress ? userAddress.cidade.nome : null,
+                cidade: userAddress ? userAddress.cidade.estado.nome : null,
+              }
             }
           }
 
