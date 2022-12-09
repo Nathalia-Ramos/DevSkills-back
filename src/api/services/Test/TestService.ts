@@ -9,6 +9,7 @@ import AnswerTestModel from "../../models/AnswerTestModel";
 import TestModel from "../../models/Test/TestModel";
 import {candidateData} from "../../interfaces/Test/TestCandidate";
 import QuestionService from "./QuestionService";
+import { testDetails, skillsTest, stacksTest } from "../../interfaces/Test/TestDetails";
 import { answerData, testAnswers, questionAnswer, questionTest }   from "../../interfaces/Test/TestUserAnswers"
 // import jwt_decode from "jwt-decode";
 
@@ -256,16 +257,19 @@ export default class TestService {
     
   }
 
-  static async listTestDetails(id_prova: number) {
+  static async listTestDetails(id_prova_andamento: number) {
     
-      const testExist = await TestModel.findDetails(id_prova);
+      const testExist = await TestModel.findDetails(id_prova_andamento);
       
       if (testExist) {
+
+        const totalCandidates = await TestModel.findCandidates(id_prova_andamento)
 
         const testData = {
           titulo: testExist.prova.titulo,
           descricao: testExist.prova.descricao,
           duracao: testExist.duracao || null,
+          totalCandidatos: totalCandidates.length,
           dataFim: testExist.data_fim.toISOString().split('T')[0],
           empresa: {
             id: testExist.empresa.id,
@@ -274,6 +278,64 @@ export default class TestService {
           },
           tecnologias: testExist.prova.provaHabilidade,
           stacks: testExist.prova.provaStack,
+        }
+
+        return {
+            data: testData,
+            statusCode: 200,
+        };
+
+      } else {
+        return {
+          error: "Prova com o ID especificado não encontrada.",
+          statusCode: 404,
+        };
+      }
+
+    
+  }
+
+  static async listTestInfo(id_prova_andamento: number) {
+    
+      const testExist = await TestModel.findDetails(id_prova_andamento);
+      
+      if (testExist) {
+
+        const totalCandidates = await TestModel.findCandidates(id_prova_andamento)
+
+        let skillsTest : skillsTest[] = []
+        let stacksTest : stacksTest[] = []
+
+        testExist.prova.provaHabilidade.forEach((skill) => {
+
+          const skillData = {
+            id: skill.habilidade.id,
+            nome: skill.habilidade.nome,
+            icone: skill.habilidade.icone
+          }
+
+          skillsTest.push(skillData)
+
+        })
+
+        testExist.prova.provaStack.forEach((stack) => {
+
+          const stackData = {
+            id: stack.stack.id,
+            nome: stack.stack.nome
+          }
+
+          stacksTest.push(stackData)
+
+        })
+
+        const testData : testDetails = {
+          id: id_prova_andamento, 
+          titulo: testExist.prova.titulo,
+          descricao: testExist.prova.descricao,
+          totalCandidatos: totalCandidates.length,
+          provaStacks: stacksTest,
+          provaHabilidades: skillsTest
         }
 
         return {
