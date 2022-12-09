@@ -29,7 +29,7 @@ export default class TestService {
             };
 
             const prova = await TestModel.createTest(createTest);
-            const provaID = prova.id;
+            const provaID = prova.id
 
             const data_fim = new Date(test.data_fim);
 
@@ -180,7 +180,7 @@ export default class TestService {
               }
             }
           }
-
+          
             // console.log(candidateData)
 
             totalCandidates.push(candidateData)

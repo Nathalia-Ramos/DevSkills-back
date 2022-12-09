@@ -282,8 +282,7 @@ export default class CompanyService {
       }
         
    }
-   static async getProfileCompany( 
-    tokenValidate: TokenData | ErrorReturn, id: number){
+   static async getProfileCompany(tokenValidate: TokenData | ErrorReturn, id: number){
       
      if('id' in tokenValidate) {
         console.log("service", tokenValidate)
@@ -310,5 +309,18 @@ export default class CompanyService {
         } 
     }
    }
-}
+   static async createPhoto(idEmpresa: number,foto: string, legenda: string){
+    const data = await UserCompanyModel.photosCompany(idEmpresa, foto,legenda)
+    console.log(data)
+
+    return  data
+    
+   }
+   static async deletePhoto(idEmpresa: number){
+    const data = await UserCompanyModel.deletePhoto(idEmpresa)
+
+    return data
+   }
+  
+  }
   

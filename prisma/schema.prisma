@@ -1,0 +1,1209 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Usuário
+model Usuario {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  nome                 String   @db.VarChar(180)
+  email                String   @db.VarChar(110)
+  cpf                  String   @unique @db.VarChar(15)
+  data_nascimento      DateTime @db.Date
+  tag                  String   @db.VarChar(20)
+  ativo                Boolean  @db.TinyInt
+  pontuacao_plataforma Int      @db.Int
+  foto_perfil          String?  @db.VarChar(150)
+  biografia            String?  @db.Text
+  link_github          String?  @db.Text
+  link_portfolio       String?  @db.Text
+  permissao_email      Boolean  @db.TinyInt
+
+  //Relacionamento com a tabela Endereco_Usuario
+  EnderecoUsuario            EnderecoUsuario[]
+  usuarioTesteComportamental UsuarioTesteComportamental[]
+  LoginUsuario               LoginUsuario[]
+
+  convite Convite[]
+  // Relacionando com a tabela de Gênero
+  genero        Genero          @relation(fields: [idGenero], references: [id])
+  idGenero      Int             @map("id_genero") @db.Int
+
+  // Relaciomentos com tabelas intermediárias
+  usuarioStack      UsuarioStack[]
+  usuarioHabilidade UsuarioHabilidade[]
+  usuarioIdioma     UsuarioIdioma[]
+
+  UsuarioTelefone UsuarioTelefone[]
+
+  //relacionamento com a tabela usuarioProva
+  usuarioProva UsuarioProva[]
+
+  //relacionamento com a tabela ProvasSalvasUsuarios
+  provasSalvasUsuarios ProvasSalvasUsuarios[]
+
+  //relacionamento com a tabela GrupoUsuario
+  grupoUsuario GrupoUsuario[]
+
+  // Relacionamento com a tabela UsuarioTesteCompetencia
+  usuarioTesteCompetencia UsuarioTesteCompetencia[]
+
+  // Relacionamento com a tabela TestesCompetenciaSalvos
+  testesCompetenciaSalvos TestesCompetenciaSalvos[]
+
+  Seguidores Seguidores[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("tblusuario")
+}
+
+model LoginUsuario {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  senha String @db.VarChar(60)
+
+  usuario   Usuario @relation(fields: [idUsuario], references: [id])
+  idUsuario Int     @map("id_usuario") @db.Int
+
+  @@map("tbllogin_usuario")
+}
+
+model Genero {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  nome String @db.VarChar(22)
+
+  // Relacionando com o usuário
+  usuarios Usuario[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("tblgenero")
+}
+
+model UsuarioTelefone {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  ddd    String @db.VarChar(2)
+  numero String @db.VarChar(10)
+
+  // Relacionando com a tabela de TipoTelefone
+  tipoTelefone   TipoTelefone @relation(fields: [idTipoTelefone], references: [id])
+  idTipoTelefone Int          @map("id_tipo_telefone") @db.Int
+
+  // Relacionando com a tabela de Usuário
+  usuario   Usuario @relation(fields: [idUsuario], references: [id])
+  idUsuario Int     @map("id_usuario") @db.Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("tblusuario_telefone")
+}
+
+model TipoTelefone {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  nome String @db.VarChar(20)
+
+  // Relacionando com a tabela de UsuarioTelefone
+  usuarioTelefone UsuarioTelefone[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("tbltipo_telefone")
+}
+
+// FIM - Usuário
+
+//Linguagens
+model Idioma {
+  id   Int    @id @unique @default(autoincrement()) @db.Int
+  nome String @db.VarChar(30)
+
+  usuarioIdioma UsuarioIdioma[]
+  provaIdioma   ProvaIdioma[]
+
+  // Relacionamento com a tabela TesteCompetenciaIdioma
+  testeCompetenciaIdioma TesteCompetenciaIdioma[]
+
+  @@map("tblidioma")
+}
+
+model HabilidadeTipo {
+  id    Int     @id @unique @default(autoincrement()) @db.Int
+  nome  String  @db.VarChar(45)
+  ativo Boolean @db.TinyInt
+
+  habilidade Habilidade[]
+
+  @@map("tblhabilidade_tipo")
+}
+
+model Stack {
+  id   Int    @id @unique @default(autoincrement()) @db.Int
+  nome String @db.VarChar(30)
+
+  habilidade          Habilidade[]
+  usuarioStack        UsuarioStack[]
+  provaStack          ProvaStack[]
+  TesteComportamental TesteComportamental[]
+
+  @@map("tblstack")
+}
+
+model Habilidade {
+  id    Int     @id @unique @default(autoincrement()) @db.Int
+  nome  String  @db.VarChar(45)
+  icone String  @db.Text
+  ativo Boolean @db.TinyInt
+
+  stack          Stack          @relation(fields: [idStack], references: [id])
+  habilidadeTipo HabilidadeTipo @relation(fields: [idHabilidadeTipo], references: [id])
+
+  idStack Int @map("id_stack") @db.Int
+
+  idHabilidadeTipo Int @map("id_habilidade_tipo") @db.Int
+
+  usuarioHabilidade UsuarioHabilidade[]
+  provaHabilidade   ProvaHabilidade[]
+
+  // Relacionamento com a tabela TesteCompetenciaHabilidade
+  testeCompetenciaHabilidade TesteCompetenciaHabilidade[]
+
+  @@map("tblhabilidade")
+}
+
+//many to many entre usuario e habilidade
+model UsuarioHabilidade {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  usuario   Usuario @relation(fields: [idUsuario], references: [id])
+  idUsuario Int     @map("id_usuario") @db.Int
+
+  habilidade   Habilidade @relation(fields: [idHabilidade], references: [id])
+  idHabilidade Int        @map("id_habilidade") @db.Int
+
+  @@map("tblusuario_habilidade")
+}
+
+model UsuarioStack {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  usuario   Usuario @relation(fields: [idUsuario], references: [id])
+  idUsuario Int     @map("id_usuario") @db.Int
+
+  stack   Stack @relation(fields: [idStack], references: [id])
+  idStack Int   @map("id_stack") @db.Int
+
+  @@map("tblusuario_stack")
+}
+
+model UsuarioIdioma {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  // Relacionamento com a tabela de idioma
+  idioma   Idioma @relation(fields: [idIdioma], references: [id])
+  idIdioma Int    @map("id_idioma") @db.Int
+
+  // Relacionamento com a tabela de Usuario
+  usuario   Usuario @relation(fields: [idUsuario], references: [id])
+  idUsuario Int     @map("id_usuario") @db.Int
+
+  @@map("tblusuario_idioma")
+}
+
+// FIM - Linguagens
+
+//LAYER Endereço
+model Estado {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  nome String @db.VarChar(45)
+
+  cidade Cidade[]
+
+  @@map("tblestado")
+}
+
+model Cidade {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  nome String @db.VarChar(45)
+
+  estado   Estado @relation(fields: [idEstado], references: [id])
+  idEstado Int    @map("id_estado") @db.Int
+
+  enderecoUsuario EnderecoUsuario[]
+  enderecoEmpresa EnderecoEmpresa[]
+
+  @@map("tblcidade")
+}
+
+model EnderecoUsuario {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  logradouro  String  @db.VarChar(100)
+  numero      String  @db.VarChar(10)
+  bairro      String  @db.VarChar(120)
+  cep         String  @db.VarChar(15)
+  complemento String? @db.VarChar(100)
+
+  cidade   Cidade @relation(fields: [idCidade], references: [id])
+  idCidade Int    @map("id_cidade") @db.Int
+
+  usuario   Usuario @relation(fields: [idUsuario], references: [id])
+  idUsuario Int     @map("id_usuario") @db.Int
+
+  @@map("tblendereco_usuario")
+}
+
+model EnderecoEmpresa {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  logradouro  String  @db.VarChar(100)
+  numero      String  @db.VarChar(10)
+  bairro      String  @db.VarChar(120)
+  cep         String  @db.VarChar(15)
+  complemento String? @db.VarChar(45)
+
+  cidade   Cidade @relation(fields: [idCidade], references: [id])
+  idCidade Int    @map("id_cidade") @db.Int
+
+  // Relacionamento com Empresa
+  empresa Empresa[]
+
+  @@map("tblendereco_empresa")
+}
+
+//Fim Layer Endereço
+
+///PLANOS
+model Plano {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  nome  String  @db.VarChar(40)
+  valor Decimal @db.Decimal()
+  ativo Boolean @db.TinyInt
+
+  //Relacionamento com Assinatura
+  assinatura Assinatura[]
+
+  //Relacionamento com a tabela intermediaria PlanoBeneficio
+  planoBeneficio PlanoBeneficio[]
+
+  @@map("tblplanos")
+}
+
+model Assinatura {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  data_inicio          DateTime @db.Date()
+  data_fim             DateTime @db.Date()
+  renovacao_automatica Boolean  @db.TinyInt
+
+  plano   Plano @relation(fields: [idPlano], references: [id])
+  idPlano Int   @map("id_plano") @db.Int
+
+  empresa   Empresa @relation(fields: [idEmpresa], references: [id])
+  idEmpresa Int     @map("id_empresa") @db.Int
+
+  pagamento Pagamento[]
+
+  @@map("tblassinatura")
+}
+
+model Pagamento {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  data_pagamento DateTime @db.DateTime()
+  juros          Decimal  @db.Decimal()
+
+  // Relacionamento com PagamentoPix
+  pagamentoPix PagamentoPix[]
+
+  assinatura   Assinatura @relation(fields: [idAssinatura], references: [id])
+  idAssinatura Int        @map("id_assinatura") @db.Int
+
+  // Relacionando com PagamentoCartao
+  pagamentoCartao PagamentoCartao[]
+
+  @@map("tblpagamento")
+}
+
+model Beneficio {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  descricao String @db.Text
+
+  planoBeneficio PlanoBeneficio[]
+
+  @@map("tblbeneficio")
+}
+
+model PlanoBeneficio {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  plano   Plano @relation(fields: [idPlano], references: [id])
+  idPlano Int   @map("id_plano") @db.Int
+
+  beneficio   Beneficio @relation(fields: [idBeneficio], references: [id])
+  idBeneficio Int       @map("id_beneficio") @db.Int
+
+  @@map("tblplano_beneficio")
+}
+
+//FIM PLANOS 
+
+model PagamentoPix {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  chave  String? @db.Text
+  qrcode String? @db.Text
+
+  // Relacionamento com Pagamento
+  pagamento   Pagamento @relation(fields: [idPagamento], references: [id])
+  idPagamento Int       @map("id_pagamento") @db.Int
+
+  @@map("tblpagamento_pix")
+}
+
+model PagamentoCartao {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  data_validade DateTime @db.Date
+
+  // Relacionamento com a tabela CartaoBandeira
+  cartaoBandeira CartaoBandeira @relation(fields: [idBandeira], references: [id])
+  idBandeira     Int            @map("id_bandeira") @db.Int
+
+  // Relacionamento com Pagamento
+  pagamento   Pagamento @relation(fields: [idPagamento], references: [id])
+  idPagamento Int       @map("id_pagamento") @db.Int
+
+  // Relacionamento com CartaoForma
+  cartaoForma CartaoForma[]
+
+  @@map("tblpagamento_cartao")
+}
+
+model CartaoBandeira {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  nome String @db.VarChar(45)
+
+  // Relacionamento com PagamentoCartao
+  pagamentoCartao PagamentoCartao[]
+
+  @@map("tblcartao_bandeira")
+}
+
+model CartaoForma {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  // Relacionamento com PagamentoCartao
+  pagamentoCartao PagamentoCartao @relation(fields: [idCartao], references: [id])
+  idCartao        Int             @map("id_cartao") @db.Int
+
+  // Relacionamento FormaPagamento
+  formaPagamento   FormaPagamento @relation(fields: [idFormaPagamento], references: [id])
+  idFormaPagamento Int            @map("id_forma") @db.Int
+
+  @@map("tblcartao_forma")
+}
+
+model FormaPagamento {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  nome String @db.VarChar(45)
+
+  // Relacionamento com CartaoForma
+  cartaoForma CartaoForma[]
+
+  @@map("tblforma_pagamento")
+}
+
+// Empresa
+model Empresa {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  cnpj          String  @unique @db.VarChar(14)
+  email         String  @unique @db.VarChar(180)
+  nome_fantasia String  @db.VarChar(180)
+  ativo         Boolean @db.TinyInt
+  biografia     String? @db.Text
+  logo          String? @db.VarChar(120)
+
+  // Relacionamento com EnderecoEmpresa
+  enderecoEmpresa EnderecoEmpresa @relation(fields: [idEndereco], references: [id])
+  idEndereco      Int             @map("id_endereco") @db.Int
+
+  // Relacionamento com EmpresaTelefone
+  empresaTelefone EmpresaTelefone[]
+
+  LoginEmpresa LoginEmpresa[]
+
+  // Relacionamento com FotosAmbiente
+  fotosAmbiente FotosAmbiente[]
+
+  // Relacioanmento com EmpresaAvaliacao
+  empresaAvaliacao EmpresaAvaliacao[]
+
+  //Relacionamento com Assinatura
+  assinatura Assinatura[]
+
+  //Relacionamento com tabela provaAndamento
+  provaAndamento ProvaAndamento[]
+
+  Seguidores Seguidores[]
+
+  @@map("tblempresa")
+}
+
+model Seguidores {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  empresa   Empresa @relation(fields: [idEmpresa], references: [id])
+  idEmpresa Int     @map("id_empresa") @db.Int
+
+  usuario   Usuario @relation(fields: [idUsuario], references: [id])
+  idUsuario Int     @map("id_usuario") @db.Int
+
+  @@map("tblseguidores")
+}
+
+model LoginEmpresa {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  senha String @db.VarChar(60)
+
+  empresa   Empresa @relation(fields: [idEmpresa], references: [id])
+  idEmpresa Int     @map("id_empresa") @db.Int
+
+  @@map("tbllogin_empresa")
+}
+
+model ProvaAndamento {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  data_inicio DateTime @db.DateTime()
+  data_fim    DateTime @db.DateTime()
+  duracao     String?  @db.VarChar(8)
+
+  empresa   Empresa @relation(fields: [idEmpresa], references: [id])
+  idEmpresa Int     @map("id_empresa") @db.Int
+
+  prova   Prova @relation(fields: [idProva], references: [id])
+  idProva Int   @map("id_prova") @db.Int
+
+  usuarioProva UsuarioProva[]
+  provaGrupo   ProvaGrupo[]
+
+  @@map("tblprova_andamento")
+}
+
+model EmpresaTelefone {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  ddd    String @db.VarChar(2)
+  numero String @db.VarChar(12)
+
+  // Relacionamento com a Empresa
+  empresa   Empresa @relation(fields: [idEmpresa], references: [id])
+  idEmpresa Int     @map("id_empresa") @db.Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("tblempresa_telefone")
+}
+
+model FotosAmbiente {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  foto    String @db.Text
+  legenda String @db.VarChar(45)
+
+  // Relacionamento com Empresa
+  empresa   Empresa @relation(fields: [idEmpresa], references: [id])
+  idEmpresa Int     @map("id_empresa") @db.Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("tblfotos_ambiente")
+}
+
+model EmpresaAvaliacao {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  estrelas   Int    @db.Int
+  comentario String @db.Text
+
+  // Relacionamento com Empresa
+  empresa   Empresa @relation(fields: [idEmpresa], references: [id])
+  idEmpresa Int     @map("id_empresa") @db.Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("tblavaliacoes")
+}
+
+// FIM - Planos
+
+// Testes de Competências
+model TesteCompetencia {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  titulo    String  @db.VarChar(50)
+  status    Boolean @db.TinyInt
+  descricao String  @db.Text
+
+  // Relacionamento com Administrador
+  administrador   Administrador @relation(fields: [idAdministrador], references: [id])
+  idAdministrador Int           @map("id_administrador") @db.Int
+
+  // Relacionamento com TesteEmblema
+  emblema   TesteEmblema @relation(fields: [idEmblema], references: [id])
+  idEmblema Int          @map("id_emblema") @db.Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relacionamento com a tabela TesteCompetenciaHabilidade
+  testeCompetenciaHabilidade TesteCompetenciaHabilidade[]
+
+  // Relacionamento com a tabela TesteCompetenciaTodasQuestoes
+  testeCompetenciaTodasQuestoes TesteCompetenciaTodasQuestoes[]
+
+  // Relacionamento com a tabela UsuarioTesteCompetencia
+  usuarioTesteCompetencia UsuarioTesteCompetencia[]
+
+  // Relacionamento com a tabela TestesCompetenciaSalvos
+  testesCompetenciaSalvos TestesCompetenciaSalvos[]
+
+  // Relacionamento com a tabela TesteCompetenciaIdioma
+  testeCompetenciaIdioma TesteCompetenciaIdioma[]
+
+  @@map("tblteste_competencia")
+}
+
+model TesteEmblema {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  icone    String  @db.Text
+  titulo   String  @db.VarChar(90)
+  condicao Decimal @db.Decimal()
+
+  // Relacionamento com TesteCompetencia
+  testeCompetencia TesteCompetencia[]
+
+  @@map("tblemblema")
+}
+
+model TesteCompetenciaHabilidade {
+  id Int @id @unique @default(autoincrement())
+
+  // Relacionamento com a tabela TesteCompetencia
+  testeCompetencia TesteCompetencia @relation(fields: [idTeste], references: [id])
+  idTeste          Int              @map("id_teste") @db.Int
+
+  // Relacionamento com a tabela Habilidade
+  habilidade   Habilidade @relation(fields: [idHabilidade], references: [id])
+  idHabilidade Int        @map("id_habilidade") @db.Int
+
+  @@map("tblteste_competencia_habilidade")
+}
+
+model QuestaoTesteCompetencia {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  enunciado String @db.Text
+
+  // Relacionamento com a tabela TesteCompetenciaTodasQuestoes
+  testeCompetenciaTodasQuestoes TesteCompetenciaTodasQuestoes[]
+
+  // Relacionamento com a tabela AlternativaTesteCompetencia
+  alternativaTesteCompetencia AlternativaTesteCompetencia[]
+
+  @@map("tblquestao_teste_competencia")
+}
+
+model TesteCompetenciaTodasQuestoes {
+  id Int @unique @default(autoincrement()) @db.Int
+
+  // Relacionamento com a tabela QuestaoTesteCompetencia
+  questaoTesteCompetencia QuestaoTesteCompetencia @relation(fields: [idQuestaoTeste], references: [id])
+  idQuestaoTeste          Int                     @map("id_questao_teste") @db.Int
+
+  // Relacionamento com a tabela TesteCompetencia
+  testeCompetencia TesteCompetencia @relation(fields: [idTeste], references: [id])
+  idTeste          Int              @map("id_teste") @db.Int
+
+  @@map("tblteste_competencia_todas_questoes")
+}
+
+model AlternativaTesteCompetencia {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  opcao   String  @db.VarChar(180)
+  correta Boolean @db.TinyInt
+
+  // Relacionamento com a tablea QuestaoTesteCompetencia
+  questaoTesteCompetencia QuestaoTesteCompetencia @relation(fields: [idQuestao], references: [id])
+  idQuestao               Int                     @map("id_questao") @db.Int
+
+  // Relacionamento com a tabela RespostaTesteCompetencia
+  RespostaTesteCompetencia RespostaTesteCompetencia[]
+
+  @@map("tblalternativa_teste_competencia")
+}
+
+model RespostaTesteCompetencia {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  // Relacionamento com a tabela AlternativaTesteCompetencia
+  alternativaTesteCompetencia AlternativaTesteCompetencia @relation(fields: [idAlternativa], references: [id])
+  idAlternativa               Int                         @map("id_alternativa") @db.Int
+
+  usuarioTesteCompetencia UsuarioTesteCompetencia @relation(fields: [idUsuarioTeste], references: [id])
+  idUsuarioTeste          Int                     @map("id_usuario_teste") @db.Int
+
+  @@map("tblresposta_teste_competencia")
+}
+
+model UsuarioTesteCompetencia {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  pontuacao Int @db.Int
+
+  // Relacionamento com a tabela Usuario
+  usuario   Usuario @relation(fields: [idUsuario], references: [id])
+  idUsuario Int     @map("id_usuario") @db.Int
+
+  // Relacionamento com a tabela TesteCompetencia
+  testeCompetencia TesteCompetencia @relation(fields: [idTeste], references: [id])
+  idTeste          Int              @map("id_teste") @db.Int
+
+  // Relacionamento com a tabela RespostaTesteCompetencia
+  respostaTesteCompetencia RespostaTesteCompetencia[]
+
+  @@map("tblusuario_teste")
+}
+
+model TestesCompetenciaSalvos {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  // Relacionamento com a tabela TesteCompetencia
+  testeCompetencia TesteCompetencia @relation(fields: [idTeste], references: [id])
+  idTeste          Int              @map("id_teste") @db.Int
+
+  // Relacionamento com a tabela Usuario
+  usuario   Usuario @relation(fields: [idUsuario], references: [id])
+  idUsuario Int     @map("id_usuario") @db.Int
+
+  @@map("tbltestes_competencia_salvos")
+}
+
+model TesteCompetenciaIdioma {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  // Relacionamento com a tabela TesteCompetencia
+  testeCompetencia TesteCompetencia @relation(fields: [idTeste], references: [id])
+  idTeste          Int              @map("id_teste") @db.Int
+
+  // Relacionamento com a tabela Idioma
+  idioma   Idioma @relation(fields: [idIdioma], references: [id])
+  idIdioma Int    @map("id_idioma") @db.Int
+
+  @@map("tblteste_competencia_idioma")
+}
+
+// Administrador
+model Administrador {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  nome  String  @db.VarChar(180)
+  email String  @db.VarChar(110)
+  ativo Boolean @db.TinyInt
+  root  Boolean @db.TinyInt
+
+  // Relacionamento com TesteCompetencia
+  testeCompetencia TesteCompetencia[]
+
+  administradorProvas AdministradorProvas[]
+
+  denunciaAdmin DenunciaAdmin[]
+
+  LoginAdmin LoginAdmin[]
+
+  @@map("tbladministrador")
+}
+
+model LoginAdmin {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  senha String @db.VarChar(60)
+
+  administrador   Administrador @relation(fields: [idAdministrador], references: [id])
+  idAdministrador Int           @map("id_administrador") @db.Int
+
+  @@map("tbllogin_admin")
+}
+
+model AdministradorProvas {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  administrador   Administrador @relation(fields: [idAdministrador], references: [id])
+  idAdministrador Int           @map("id_administrador") @db.Int
+
+  provas  Prova @relation(fields: [idProva], references: [id])
+  idProva Int   @map("id_prova") @db.Int
+
+  @@map("tbladministrador_provas")
+}
+
+model DenunciaAdmin {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  resposta  String  @db.Text
+  resolvida Boolean @db.TinyInt
+
+  administrador   Administrador @relation(fields: [idAdministrador], references: [id])
+  idAdministrador Int           @map("id_administrador") @db.Int
+
+  denuncia   Denuncia @relation(fields: [idDenuncia], references: [id])
+  idDenuncia Int      @map("id_denuncia") @db.Int
+
+  @@map("tbladmin_denuncia")
+}
+
+//DENUNCIA 
+model Denuncia {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  descricao        String    @db.Text
+  data_solicitacao DateTime  @db.DateTime()
+  data_solucao     DateTime? @db.DateTime()
+  status           Boolean   @db.TinyInt
+
+  usuarioProva UsuarioProva @relation(fields: [idProva], references: [id])
+  idProva      Int          @map("id_prova_usuario") @db.Int
+
+  denunciaAdmin        DenunciaAdmin[]
+  denunciaTodosMotivos DenunciaTodosMotivos[]
+  fotosDenuncia        FotosDenuncia[]
+
+  @@map("tbldenuncia")
+}
+
+model FotosDenuncia {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  foto String @db.Text
+
+  denuncia   Denuncia @relation(fields: [idDenuncia], references: [id])
+  idDenuncia Int      @map("id_denuncia") @db.Int
+
+  @@map("tblfotos_denuncia")
+}
+
+model DenunciaTodosMotivos {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  denuncia   Denuncia @relation(fields: [idDenuncia], references: [id])
+  idDenuncia Int      @map("id_denuncia") @db.Int
+
+  denunciaMotivos   DenunciaMotivos @relation(fields: [idDenunciaMotivos], references: [id])
+  idDenunciaMotivos Int             @map("id_denuncia_motivos")
+
+  @@map("tbldenuncia_todos_motivos")
+}
+
+model DenunciaMotivos {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  nome  String  @db.VarChar(150)
+  ativo Boolean @db.TinyInt
+
+  denunciaTodosMotivos DenunciaTodosMotivos[]
+
+  @@map("tbldenuncia_motivos")
+}
+
+//PROVAS 
+model ProvaTipo {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  tipo String @db.VarChar(30)
+
+  prova Prova[]
+
+  @@map("tblprova_tipo")
+}
+
+model Prova {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  titulo             String    @db.VarChar(50)
+  descricao          String    @db.Text
+  ativo              Boolean   @db.TinyInt
+  link_repositorio   String?   @db.Text
+  ultima_atualizacao DateTime? @db.DateTime()
+
+  //relacionamentos 
+  provaIdioma          ProvaIdioma[]
+  provaStack           ProvaStack[]
+  provaHabilidade      ProvaHabilidade[]
+  provaAndamento       ProvaAndamento[]
+  provasSalvasUsuarios ProvasSalvasUsuarios[]
+  provasTodasQuestoes  ProvasTodasQuestoes[]
+  administradorProvas  AdministradorProvas[]
+
+  provaTipo   ProvaTipo @relation(fields: [idProvaTipo], references: [id])
+  idProvaTipo Int       @map("id_tipo") @db.Int
+
+  @@map("tblprova")
+}
+
+model ProvaIdioma {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  prova   Prova @relation(fields: [idProva], references: [id])
+  idProva Int   @map("id_prova") @db.Int
+
+  idioma   Idioma @relation(fields: [idIdioma], references: [id])
+  idIdioma Int    @map("id_idioma") @db.Int
+
+  @@map("tblprova_idioma")
+}
+
+model ProvaStack {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  prova   Prova @relation(fields: [idProva], references: [id])
+  idProva Int   @map("id_prova") @db.Int
+
+  stack        Stack @relation(fields: [idProvaStack], references: [id])
+  idProvaStack Int   @map("id_stack")
+
+  @@map("tblprova_stack")
+}
+
+model ProvaHabilidade {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  prova   Prova @relation(fields: [idProva], references: [id])
+  idProva Int   @map("id_prova") @db.Int
+
+  habilidade   Habilidade @relation(fields: [idHabilidade], references: [id])
+  idHabilidade Int        @map("id_habilidade") @db.Int
+
+  @@map("tblprova_habilidade")
+}
+
+model Feedback {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  estrelas  Int
+  avaliacao String @db.Text
+
+  usuarioProva   UsuarioProva @relation(fields: [idUsuarioProva], references: [id])
+  idUsuarioProva Int          @map("id_prova_usuario")
+
+  @@map("tblfeedback")
+}
+
+model UsuarioProva {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  finalizada   Boolean   @db.TinyInt
+  data_inicio  DateTime  @db.DateTime()
+  data_entrega DateTime? @db.DateTime()
+  pontuacao    Int?      @db.Int
+
+  //relacionamentos
+  feedback                 Feedback[]
+  respostaQuestaoProva     RespostaQuestaoProva[]
+  respostaAlternativaProva RespostaAlternativaProva[]
+  denuncia                 Denuncia[]
+
+  usuario   Usuario @relation(fields: [idUsuario], references: [id])
+  idUsuario Int     @map("id_usuario") @db.Int
+
+  provaAndamento   ProvaAndamento @relation(fields: [idProvaAndamento], references: [id])
+  idProvaAndamento Int            @map("id_prova_andamento") @db.Int
+
+  @@map("tblusuario_prova")
+}
+
+model ProvasSalvasUsuarios {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  prova   Prova @relation(fields: [idProva], references: [id])
+  idProva Int   @map("id_prova") @db.Int
+
+  usuario   Usuario @relation(fields: [idUsuario], references: [id])
+  idUsuario Int     @map("id_usuario") @db.Int
+
+  @@map("tblprovas_salvas_usuario")
+}
+
+model RespostaQuestaoProva {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  resposta String   @db.Text
+  correta  Boolean? @db.TinyInt
+
+  usuarioProva   UsuarioProva @relation(fields: [idUsuarioProva], references: [id])
+  idUsuarioProva Int          @map("id_prova_usuario")
+
+  questaoProva   QuestaoProva @relation(fields: [idQuestaoProva], references: [id])
+  idQuestaoProva Int          @map("id_questao_prova")
+
+  @@map("tblresposta_questao_prova")
+}
+
+// FIM - PROVAS
+
+//QUESTAO 
+model QuestaoProvaTipo {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  tipo String @db.VarChar(45)
+
+  //relacioanamento com a tabela QuestaoProva
+  questaoProva QuestaoProva[]
+
+  @@map("tblquestao_prova_tipo")
+}
+
+model QuestaoProva {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  enunciado String  @db.Text
+  foto      String? @db.Text
+
+  //relacionamentos
+  alternativaProva     AlternativaProva[]
+  provasTodasQuestoes  ProvasTodasQuestoes[]
+  respostaQuestaoProva RespostaQuestaoProva[]
+
+  questaoProvaTipo   QuestaoProvaTipo @relation(fields: [idQuestaoProvaTipo], references: [id])
+  idQuestaoProvaTipo Int              @map("id_tipo") @db.Int
+
+  @@map("tblquestao_prova")
+}
+
+model AlternativaProva {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  opcao   String  @db.Text
+  correta Boolean @db.TinyInt
+
+  respostaAlternativaProva RespostaAlternativaProva[]
+
+  questaoProva   QuestaoProva @relation(fields: [idQuestaoProva], references: [id])
+  idQuestaoProva Int          @map("id_questao") @db.Int
+
+  @@map("tblalternativa_prova")
+}
+
+model RespostaAlternativaProva {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  usuarioProva   UsuarioProva @relation(fields: [idUsuarioProva], references: [id])
+  idUsuarioProva Int          @map("id_prova_usuario") @db.Int
+
+  alternativaProva   AlternativaProva @relation(fields: [idAlternativaProva], references: [id])
+  idAlternativaProva Int              @map("id_alternativa") @db.Int
+
+  @@map("tblresposta_alternativa_prova")
+}
+
+model ProvasTodasQuestoes {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  questaoProva   QuestaoProva @relation(fields: [idQuestaoProva], references: [id])
+  idQuestaoProva Int          @map("id_questao_prova") @db.Int
+
+  prova   Prova @relation(fields: [idProva], references: [id])
+  idProva Int   @map("id_prova") @db.Int
+
+  @@map("tblprova_todas_questoes")
+}
+
+///Teste comportamental
+model TesteComportamental {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  titulo    String @db.VarChar(90)
+  descricao String @db.Text
+
+  stack   Stack @relation(fields: [idStack], references: [id])
+  idStack Int   @map("id_stack") @db.Int
+
+  usuarioTesteComportamental UsuarioTesteComportamental[]
+  questaoTesteComportamental QuestaoTesteComportamental[]
+  TesteComportamentalGrupo   TesteComportamentalGrupo[]
+
+  @@map("tblteste_comportamental")
+}
+
+model TesteComportamentalGrupo {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  grupo   Grupo @relation(fields: [idGrupo], references: [id])
+  idGrupo Int   @map("id_grupo") @db.Int
+
+  testeComportamental   TesteComportamental @relation(fields: [idTesteComportamental], references: [id])
+  idTesteComportamental Int                 @map("id_teste_comportamental") @db.Int
+
+  @@map("tblteste_comportamental_grupo")
+}
+
+model PerfilComportamental {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  descricao String @db.Text
+  resultado String @db.VarChar(30)
+
+  UsuarioTesteComportamental UsuarioTesteComportamental[]
+  AlternativaComportamental  AlternativaComportamental[]
+
+  @@map("tblperfil_comportamental")
+}
+
+model UsuarioTesteComportamental {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  testeComportamental   TesteComportamental @relation(fields: [idTesteComportamental], references: [id])
+  idTesteComportamental Int                 @map("id_teste_comportamental") @db.Int
+
+  usuario   Usuario @relation(fields: [idUsuario], references: [id])
+  idUsuario Int     @map("id_usuario") @db.Int
+
+  perfilComportamental    PerfilComportamental @relation(fields: [idPerfil_comportamental], references: [id])
+  idPerfil_comportamental Int                  @map("id_perfil_comportamental")
+
+  respostaComportamental RespostaComportamental[]
+
+  @@map("tblusuario_teste_comportamental")
+}
+
+model QuestaoTesteComportamental {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  enunciado String @db.Text
+
+  testeComportamental   TesteComportamental @relation(fields: [idTesteComportamental], references: [id])
+  idTesteComportamental Int                 @map("id_teste_comportamental") @db.Int
+
+  alternativaComportamental AlternativaComportamental[]
+
+  @@map("tblquestao_teste_comportamental")
+}
+
+model AlternativaComportamental {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  opcao String @db.VarChar(90)
+
+  respostaComportamental RespostaComportamental[]
+
+  perfilComportamental    PerfilComportamental @relation(fields: [idPerfil_comportamental], references: [id])
+  idPerfil_comportamental Int                  @map("id_perfil_comportamental")
+
+  questaoTesteComportamental QuestaoTesteComportamental @relation(fields: [idQuestao], references: [id])
+  idQuestao                  Int                        @map("id_questao") @db.Int
+
+  @@map("tblalternativa_comportamental")
+}
+
+model RespostaComportamental {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  usuarioTesteComportamental   UsuarioTesteComportamental @relation(fields: [idUsuarioTesteComportamental], references: [id])
+  idUsuarioTesteComportamental Int                        @map("id_teste_usuario") @db.Int
+
+  alternativaComportamental   AlternativaComportamental @relation(fields: [idAlternativaComportamental], references: [id])
+  idAlternativaComportamental Int                       @map("id_alternativa") @db.Int
+
+  @@map("tblresposta_comportamental")
+}
+
+//FIM TESTE COMPORTAMENTAL
+
+//Grupos
+model Grupo {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  nome      String  @db.VarChar(50)
+  status    Boolean @db.TinyInt
+  descricao String  @db.Text
+
+  provaGrupo               ProvaGrupo[]
+  grupoUsuario             GrupoUsuario[]
+  TesteComportamentalGrupo TesteComportamentalGrupo[]
+  grupo    Convite[]
+
+  @@map("tblgrupo")
+}
+
+model ProvaGrupo {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  provaAndamento   ProvaAndamento @relation(fields: [idProvaAndamento], references: [id])
+  idProvaAndamento Int            @map("id_prova_andamento") @db.Int
+
+  grupo   Grupo @relation(fields: [idGrupo], references: [id])
+  idGrupo Int   @map("id_grupo") @db.Int
+
+  @@map("tblprova_grupo")
+}
+
+model GrupoUsuario {
+  id Int @id @unique @default(autoincrement()) @db.Int
+
+  grupo   Grupo @relation(fields: [idGrupo], references: [id])
+  idGrupo Int   @map("id_grupo") @db.Int
+
+  usuario   Usuario @relation(fields: [idUsuario], references: [id])
+  idUsuario Int     @map("id_usuario") @db.Int
+
+  @@map("tblgrupo_usuario")
+}
+
+model ConviteStatus {
+  id     Int    @id @unique @default(autoincrement()) @db.Int
+  status String @db.VarChar(50)
+
+  convite Convite[]
+
+  @@map("tblconvite_status")
+}
+model Convite {
+  id     Int    @id @unique @default(autoincrement()) @db.Int
+  
+  conviteStatus ConviteStatus @relation(fields: [idConviteStatus], references: [id])
+  idConviteStatus Int @map("id_convite_status") @db.Int
+
+  usuario   Usuario @relation(fields: [idUsuario], references: [id])
+  idUsuario Int     @map("id_usuario") @db.Int
+
+  grupo   Grupo @relation(fields: [idGrupo], references: [id])
+  idGrupo Int   @map("id_grupo") @db.Int
+
+  @@map("tblconvite")
+}
+

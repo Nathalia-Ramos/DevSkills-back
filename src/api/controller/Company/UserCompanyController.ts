@@ -120,4 +120,19 @@ export default class UserCompanyController {
       //console.log(result)
       return res.status(200).json({ data: result });
   }
+  static async createPhotoCompany(req: Request, res: Response){
+    const {idEmpresa, foto, legenda} = req.body
+
+    await CompanyService.createPhoto(idEmpresa, foto, legenda)
+
+    return res.status(201).json({message: "Registro criado com sucesso!"})
+  }
+  static async deletePhotos(req: Request, res: Response){
+    const {idEmpresa} = req.params
+
+    await CompanyService.deletePhoto(parseInt(idEmpresa))
+
+    return res.status(201).json({message: "Registro exluído com sucesso!"})
+
+  }
 }
