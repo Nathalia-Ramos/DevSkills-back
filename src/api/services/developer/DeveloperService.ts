@@ -166,9 +166,9 @@ export default class DeveloperService {
 
       if (developerLogin) {
         if (await bcrypt.compare(senha, developerLogin?.senha)) {
-          const userType = 'DEVELOPER'
-          const token = Jwt.sign({id: userExist.id, type: userType}, 'secret', {expiresIn: '7d'})
-          
+
+          const token = Jwt.sign({id: userExist.id, type:"DEVELOPER"}, 'secret',{expiresIn: '7d'})
+        
           return {
             message: message.UserAuthorized,
             token: token,
@@ -556,6 +556,11 @@ static async listUserProfile(tokenValidate: TokenData | ErrorReturn, id: number)
     }
   }
 
+}
+static async getUsers(){
+  const result = await DeveloperModel.getAllUsers()
+
+  return result
 }
 
 
