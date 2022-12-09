@@ -320,9 +320,6 @@ export default class UserCompanyModel {
     })
    }
    static async convite(idUsuario: number) : Promise <Convite | any> {
-
-      }
-    },
     select:{
       grupo:{
         select:{
@@ -360,6 +357,7 @@ export default class UserCompanyModel {
       }
     }
   })
+
  }
  
   static async findInvite(
