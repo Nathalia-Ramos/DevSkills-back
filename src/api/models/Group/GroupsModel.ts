@@ -107,35 +107,7 @@ export default class UserCompanyModel {
       }
     })
   }
-  static async getGroupsCompany(
-    tokenValidate: any
-  ): Promise <Empresa| any>{
-    return await prismaClient.empresa.findFirst({
-      where:{
-        id: tokenValidate
-      },
-      select:{
-        provaAndamento:{
-          select:{
-            prova:{
-              select: {
-                id: true,
-                titulo: true,
-                ativo: true,
-                provaHabilidade:{
-                  select:{
-                    habilidade: {
-                      select:{
-                        id: true,
-                        nome: true,
-                        icone: true
-                      }
-
-  })
- }
- static async getGroupsCompany(
-  id: number
- ): Promise <Empresa| any>{
+ static async getGroupsCompnay(id: number): Promise <Empresa | any>{
   return await prismaClient.empresa.findUnique({
     where:{
       id: id
@@ -144,150 +116,146 @@ export default class UserCompanyModel {
       provaAndamento:{
         select:{
           prova:{
-            select: {
+            select:{
               id: true,
               descricao: true,
               titulo: true,
-              ativo: true,
+              ativo: true, 
               provaHabilidade:{
                 select:{
-                  habilidade: {
+                  habilidade:{
                     select:{
                       id: true,
                       nome: true,
                       icone: true
-
                     }
                   }
                 },
-                provaStack:{
-                  select:{
-                    stack: {
-                      select:{
-                        id: true,
-                        nome: true
-                      }
+              },
+              provaStack:{
+                select:{
+                   stack:{
+                    select:{
+                      id: true,
+                      nome: true
                     }
-                  }
-                }
-              }
-            },
-            provaGrupo:{
-              select:{
-                grupo:{
-                  select:{
-                    id: true,
-                    nome: true,
-                    descricao: true,
-                    status: true,
-                    grupoUsuario:{
-                      select:{
-                        usuario:{
-                          select:{
-                            id: true,
-                            nome: true,
-                            email: true,
-                            ativo: true,
-                            EnderecoUsuario:{
-                              select:{
-                                cidade:{
-                                  select:{
-                                    id: true,
-                                    nome: true,
-                                    estado:{
-                                      select:{
-                                        id: true,
-                                        nome: true
+                   } 
+                },
+              },
+              provaAndamento:{
+                select:{
+                  provaGrupo:{
+                    select:{
+                      grupo:{
+                        select:{
+                          id: true,
+                          nome: true,
+                          descricao: true,
+                          status: true,
+                          grupoUsuario:{
+                            select:{
+                              usuario:{
+                                select:{
+                                  id: true,
+                                  nome: true,
+                                  email: true,
+                                  ativo: true,
+                                  EnderecoUsuario:{
+                                    select:{
+                                      cidade:{
+                                        select:{
+                                          id: true,
+                                          nome: true,
+                                          estado:{
+                                            select:{
+                                              id: true,
+                                              nome: true
+                                            }
+                                          }
+                                        }
                                       }
-                                    }
+                                    },
                                   },
-                                },
+                                  _count:{
+                                    select:{
+                                      grupoUsuario: true
+                                    }
+                                  }
+                                }
                               }
                             }
                           }
-                        },
-                      }
-                    },
-                    _count:{
-                      select:{
-                        grupoUsuario: true
+                        }
                       }
                     }
                   }
                 }
               }
             },
-            empresa: {
-              select:{
-                id: true,
-                nome_fantasia:true
-              }
-            }
-
-          }
-        }
-      }
-    })
-  }
-  static async getGroupsUser(id: number){
-    return await prismaClient.provaGrupo.findMany({
-      where:{
-        grupo:{
-          grupoUsuario:{
-            some:{
-              idUsuario: {
-                equals: id
-              }
-
           },
-          empresa: {
+          empresa:{
             select:{
               id: true,
-              nome_fantasia:true,
-              logo: true
-
+              nome_fantasia: true
             }
           }
         }
-      },
-      select:{
-
-        grupo:{
-          select:{
-            id: true,
-            nome: true,
-            descricao: true,
-            status: true,
-            provaGrupo:{
-              select:{
-                provaAndamento:{
-                  select:{
-                    empresa:{
-                      select:{
-                        id: true,
-                        nome_fantasia: true,
-                        logo: true,
-                        ativo: true,
-                      },
-                    },
-                    prova:{
-                      select:{
-                        id: true,
-                        titulo: true,
-                        descricao: true,
-                        ativo: true
-                      }
-                    }
-                  }
-                }
-              }
-            },
-
+      }
+    }
+  })
+ }
+ static async getGroupsUser(idUsuario: number){
+  return await prismaClient.provaGrupo.findMany({
+    where:{
+      grupo:{
+        grupoUsuario:{
+          some:{
+            id: {
+              equals: idUsuario
+            }
           }
         }
       }
-    })
-  }
+    },
+    select:{
+      grupo:{
+        select:{
+          id: true,
+          nome: true,
+          descricao: true,
+          status: true,
+          provaGrupo:{
+            select:{
+              provaAndamento:{
+                select:{
+                  empresa:{
+                    select:{
+                      id: true,
+                      nome_fantasia: true,
+                      logo: true,
+                      ativo: true
+                    }
+                  },
+                  prova:{
+                    select:{
+                      id: true,
+                      titulo: true,
+                      descricao: true,
+                      ativo: true
+                    }
+                  }
+                },
+
+              }
+            }
+          }
+
+        }
+      }
+    }
+  })
+ }
+ 
   static async findInvite(
     id_usuario: number,
     id_grupo: number
