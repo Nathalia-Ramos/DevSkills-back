@@ -117,49 +117,73 @@ export default class TestService {
 
       if(candidates) {
 
-        const totalCandidates : candidateData[] = []
+        let totalCandidates : candidateData[] = []
 
         candidates.forEach(async (userCandidate) => {
 
-          console.log(userCandidate.id)
+          // console.log(userCandidate.id)
 
           const currentDate = new Date()
-        
+
           let userTime : string = ''
+
+          let userPercentage : string = ''
 
           if(userCandidate.data_entrega) {
 
             const startDate = userCandidate.data_entrega.toISOString().split(/[\T\.]/)[0] + ' ' + userCandidate.data_entrega.toISOString().split(/[\T\.]/)[1]
             const endDate = userCandidate.data_inicio.toISOString().split(/[\T\.]/)[0] + ' ' + userCandidate.data_inicio.toISOString().split(/[\T\.]/)[1]
 
-            console.log('morre no ' + userCandidate.id)
             const resultDiff : Object = await TestModel.getTimeDiff(startDate, endDate)
             
             const timeDiff : string = Object.values(resultDiff)[0].duracao.toISOString()
-
+            
+            // console.log(userTime)
             userTime = timeDiff.split(/[/T/.]/)[1]
+            // console.log(userTime)
+            
+          }
+
+          if(userCandidate.pontuacao) {
+            
+            const userPoints = userCandidate.pontuacao
+            const totalPoints = 100
+
+            const totalUserPoints = Math.round((userPoints * totalPoints) / userPoints)
+
+            userPercentage = totalUserPoints + '%'
 
           }
 
-            const candidateData : candidateData = { 
-              id_prova_usuario: userCandidate.id,
-              id_prova_andamento: userCandidate.idProvaAndamento,
-              finalizada: userCandidate.finalizada,
-              duracao: userTime ? userTime : null,
-              pontuacao: userCandidate.pontuacao,
-              candidato: {
-                id: userCandidate.idUsuario,
-                nome: userCandidate.usuario.nome,
-                email: userCandidate.usuario.email,
-                foto_perfil: userCandidate.usuario.foto_perfil,
-                idade: currentDate.getFullYear() - userCandidate.usuario.data_nascimento.getFullYear(),
-              }
+          // console.log("finalizada: "+ userCandidate.finalizada)
+          const candidateData : candidateData = { 
+            id_prova_usuario: userCandidate.id,
+            id_prova_andamento: userCandidate.idProvaAndamento,
+            finalizada: userCandidate.finalizada,
+            duracao: '01:10:05',
+            // duracao: userTime ? userTime : null,
+            pontuacao: userCandidate.pontuacao ? userCandidate.pontuacao : null,
+            // porcentagemAcertos: userPercentage ? userPercentage : null,
+            porcentagemAcertos: '20%',
+            corrigida: userCandidate.pontuacao ? true : false,
+            candidato: {
+              id: userCandidate.idUsuario,
+              nome: userCandidate.usuario.nome,
+              email: userCandidate.usuario.email,
+              foto_perfil: userCandidate.usuario.foto_perfil,
+              idade: currentDate.getFullYear() - userCandidate.usuario.data_nascimento.getFullYear(),
             }
-            
+          }
+          
             // console.log(candidateData)
+
             totalCandidates.push(candidateData)
             
-          })
+            // console.log('tamanho dentro do for: ' + totalCandidates.length)
+
+        })
+
+          // console.log('tamanho fora do for: ' + totalCandidates.length)
 
           return {
             data: totalCandidates,
