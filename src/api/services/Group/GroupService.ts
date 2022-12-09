@@ -54,8 +54,13 @@ export default class createGroup{
        }
        
     }
+
     static async getGroupCompany(tokenValidate: TokenData | ErrorReturn) {
         const result = await GroupsModel.getGroupsCompany(tokenValidate)
+
+    static async getGroupCompany(id: number) {
+        const result = await GroupsModel.getGroupsCompany(id)
+
         console.log(result)
 
         return result

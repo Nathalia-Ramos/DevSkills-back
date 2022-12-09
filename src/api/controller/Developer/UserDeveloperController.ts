@@ -5,6 +5,7 @@ import tokenVerify from "../../../middlewares/auth"
 import UserDeveloperModel from "../../models/Developer/UserDeveloperModel";
 import { prismaClient } from "../../../database/prismaClient";
 import { ProvaAndamento } from "@prisma/client";
+import { devProfile } from "../../interfaces/Developer/DeveloperProfile";
  
 export default class UserDeveloperController {
    static async create(req: Request, res: Response) {
@@ -14,15 +15,28 @@ export default class UserDeveloperController {
        const answer = await DeveloperService.create(user)
 
        res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {message: answer.message})
+       
+    }
+
+    static async updateProfile(req: Request, res: Response) {
+        
+    const data : devProfile = req.body
+    
+    const tokenValidate = await tokenVerify(req)
+
+    const answer = await DeveloperService.updateDevProfile(data, tokenValidate)
+    
+    res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {message: answer.message})
 
    }
+
    static async auth(req: Request, res: Response) {
 
     const { login, senha } = req.body
 
     const answer = await DeveloperService.auth(login, senha)
 
-    res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {message: answer.message, type: answer.userType, token: answer, userInfo: answer.userInfo})
+    res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {message: answer.message, type: answer.userType, token: answer.token, userInfo: answer.userInfo})
 
    }
    static async sendPassMail(req: Request, res: Response) {
@@ -53,8 +67,9 @@ export default class UserDeveloperController {
    static async userInfo(req: Request, res: Response) {
 
     const tokenValidate = await tokenVerify(req)
+    const {id} = req.params
 
-    const answer = await DeveloperService.listUserProfile(tokenValidate)
+    const answer = await DeveloperService.listUserProfile(tokenValidate, parseInt(id))
 
     return res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {data: answer.data})
 

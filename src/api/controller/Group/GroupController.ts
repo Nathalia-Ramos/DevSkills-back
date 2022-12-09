@@ -26,12 +26,14 @@ export default class GroupController {
     }
     static async getCompanyGroups(req: Request, res: Response) {
 
-        const tokenValidate = await authGuard(req)
+        const {id} = req.params
         //console.log(req)
+       
+        const result = await GroupService.getGroupCompany(parseInt(id))
 
-        const result = await GroupService.getGroupCompany(tokenValidate)
+        if(result === null) return res.status(400).json({error: "não existe existe id correspondete"})
    
-        res.status(200).json({ data: result })
+        return res.status(200).json({ data: result })
 
       
     }

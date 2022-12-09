@@ -83,6 +83,7 @@ export default class UserCompanyModel {
     return result
    
     }
+
   static async createGroupStatus(
     id_convite_status: any,
     idGrupo: any,
@@ -129,6 +130,33 @@ export default class UserCompanyModel {
                         nome: true,
                         icone: true
                       }
+
+  })
+ }
+ static async getGroupsCompany(
+  id: number
+ ): Promise <Empresa| any>{
+  return await prismaClient.empresa.findUnique({
+    where:{
+      id: id
+    },
+    select:{
+      provaAndamento:{
+        select:{
+          prova:{
+            select: {
+              id: true,
+              descricao: true,
+              titulo: true,
+              ativo: true,
+              provaHabilidade:{
+                select:{
+                  habilidade: {
+                    select:{
+                      id: true,
+                      nome: true,
+                      icone: true
+
                     }
                   }
                 },
@@ -195,6 +223,7 @@ export default class UserCompanyModel {
                 nome_fantasia:true
               }
             }
+
           }
         }
       }
@@ -209,6 +238,14 @@ export default class UserCompanyModel {
               idUsuario: {
                 equals: id
               }
+
+          },
+          empresa: {
+            select:{
+              id: true,
+              nome_fantasia:true,
+              logo: true
+
             }
           }
         }

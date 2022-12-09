@@ -14,9 +14,9 @@ const authGuard = async (req: Request) : Promise<TokenData | ErrorReturn> => {
   if (!userToken) return { error: "Acesso negado!", statusCode: 401 };
   
   try {
+
+    const { id, type } : any = jwt.verify(userToken, jwtSecret!);
     
-    const { id, type }: any = jwt.verify(userToken, jwtSecret!);
-   
 
     return {
       id: id,

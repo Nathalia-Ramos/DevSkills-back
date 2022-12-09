@@ -7,7 +7,8 @@ import TestController from "../../src/api/controller/Test/TestController";
 const router = Router()
 
 router.post('/', UserDeveloperController.create)
-router.get('/', UserDeveloperController.userInfo)
+router.get('/:id', UserDeveloperController.userInfo)
+router.put('/', UserDeveloperController.updateProfile)
 router.post('/login', UserDeveloperController.auth)
 router.post('/forgotPassword', UserDeveloperController.sendPassMail)
 router.post('/userTest', TestController.createUserTest)
