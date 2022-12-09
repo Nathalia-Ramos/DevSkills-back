@@ -8,5 +8,8 @@ router.post('/createGroup', GrupoController.groupController)
 router.post('/respostaUsuarioConvite', GrupoController.resposta)
 router.get('/groupsCompany/:id', GrupoController.getCompanyGroups)
 
+router.get('/groupsUsers/:id', GrupoController.getUsersGroups)
+
+
 
 export default router

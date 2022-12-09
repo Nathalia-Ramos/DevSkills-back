@@ -29,88 +29,108 @@ export default class UserCompanyModel {
       }
     })
   }
-
- static async createTestGroup(
-  idProvaAndamento: any,
-  idGrupo: any
- ) : Promise <ProvaGrupo> {
-  return await prismaClient.provaGrupo.create({
-    data:{
-      idProvaAndamento,
-      idGrupo
-    }
-  })
- }
- static async createGroupConvite(
-   status: any,
-   id: number
- ): Promise <ConviteStatus>{
-  return await prismaClient.conviteStatus.create({
-    data:{
-      status: "PENDENTE"
-    }
-  })
- }
- static async GetStatusConvite(
-  status: any
- ) : Promise <ConviteStatus | any>{
-   return await prismaClient.conviteStatus.findFirst({
-     where:{
-      status: status
-     }
-   })
- }
- static async statusGet(
-  status: string
- ): Promise <ConviteStatus | any>{
-  return await prismaClient.conviteStatus.findFirst({
-    where:{
-      status: status
-    }
-  })
- }
- static async getGroup(id: number){
-  return await prismaClient.grupo.findFirst({
-    where:{
-      id: id
-    }
-  })
- }
-
- static async updateGroupStatus( idUsuario: number, statusID: number, status: string ) : Promise <Convite>{
-  console.log("model", idUsuario,statusID)
-  return await prismaClient.convite.update({
-     where:{
-        id: idUsuario
-     },
-     data:{
-       idConviteStatus: statusID
-       
-      },
-      //  include: { conviteStatus: true }
+  static async createTestGroup(
+    idProvaAndamento: any,
+    idGrupo: any
+  ) : Promise <ProvaGrupo> {
+    return await prismaClient.provaGrupo.create({
+      data:{
+        idProvaAndamento,
+        idGrupo
+      }
     })
   }
- static async createGroupStatus(
-   id_convite_status: any,
-   idGrupo: any,
-   idUsuario: number
+  static async createGroupConvite(
+    status: any,
+    id: number
+  ): Promise <ConviteStatus>{
+    return await prismaClient.conviteStatus.create({
+      data:{
+        status: "PENDENTE"
+      }
+    })
+  }
+  static async GetStatusConvite(
+    status: any
+  ) : Promise <ConviteStatus | any>{
+    return await prismaClient.conviteStatus.findFirst({
+      where:{
+        status: status
+      }
+    })
+  }
+  static async statusGet(
+    status: string
+  ): Promise <ConviteStatus | any>{
+    return await prismaClient.conviteStatus.findFirst({
+      where:{
+        status: status
+      }
+    })
+  }
+  static async getGroup(id: number){
+    return await prismaClient.grupo.findFirst({
+      where:{
+        id: id
+      }
+    })
+  }
+  static async updateGroupStatus(idUsuario: number, statusID: number, idConvite: number) : Promise <Number>{
+    console.log("model", idUsuario,statusID)
    
- ):  Promise <Convite>{
-   return await prismaClient.convite.create({
-     data:{
-        idConviteStatus: id_convite_status,
-        idGrupo: idGrupo,
-        idUsuario: idUsuario
-     }
-   })
- }
- static async getUsers(
-  idUsuario: number
- ) : Promise <Usuario | any>{
-  return await prismaClient.usuario.findFirst({
-    where:{
-      id: idUsuario
+    const result = await prismaClient.$executeRaw`UPDATE tblconvite SET id_convite_status = ${statusID} where id = ${idConvite}`
+   
+    return result
+   
     }
+
+  static async createGroupStatus(
+    id_convite_status: any,
+    idGrupo: any,
+    idUsuario: number
+    
+  ):  Promise <Convite>{
+    return await prismaClient.convite.create({
+      data:{
+          idConviteStatus: id_convite_status,
+          idGrupo: idGrupo,
+          idUsuario: idUsuario
+      }
+    })
+  }
+  static async getUsers(
+    idUsuario: number
+  ) : Promise <Usuario | any>{
+    return await prismaClient.usuario.findFirst({
+      where:{
+        id: idUsuario
+      }
+    })
+  }
+  static async getGroupsCompany(
+    tokenValidate: any
+  ): Promise <Empresa| any>{
+    return await prismaClient.empresa.findFirst({
+      where:{
+        id: tokenValidate
+      },
+      select:{
+        provaAndamento:{
+          select:{
+            prova:{
+              select: {
+                id: true,
+                titulo: true,
+                ativo: true,
+                provaHabilidade:{
+                  select:{
+                    habilidade: {
+                      select:{
+                        id: true,
+                        nome: true,
+                        icone: true
+                      }
+
   })
  }
  static async getGroupsCompany(
@@ -136,82 +156,147 @@ export default class UserCompanyModel {
                       id: true,
                       nome: true,
                       icone: true
+
                     }
                   }
-                }
-              },
-              provaStack:{
-                select:{
-                  stack: {
-                    select:{
-                      id: true,
-                      nome: true
+                },
+                provaStack:{
+                  select:{
+                    stack: {
+                      select:{
+                        id: true,
+                        nome: true
+                      }
                     }
                   }
                 }
               }
-            }
-          },
-  
-          provaGrupo:{
-            select:{
-              grupo:{
-                select:{
-                  id: true,
-                  nome: true,
-                  descricao: true,
-                  status: true,
-                  grupoUsuario:{
-                    select:{
-                       usuario:{
-                        select:{
-                          id: true,
-                          nome: true,
-                          email: true,
-                          ativo: true,
-                          EnderecoUsuario:{
-                            select:{
-                              cidade:{
-                                select:{
-                                  id: true,
-                                  nome: true,
-                                  estado:{
-                                    select:{
-                                      id: true,
-                                      nome: true
+            },
+            provaGrupo:{
+              select:{
+                grupo:{
+                  select:{
+                    id: true,
+                    nome: true,
+                    descricao: true,
+                    status: true,
+                    grupoUsuario:{
+                      select:{
+                        usuario:{
+                          select:{
+                            id: true,
+                            nome: true,
+                            email: true,
+                            ativo: true,
+                            EnderecoUsuario:{
+                              select:{
+                                cidade:{
+                                  select:{
+                                    id: true,
+                                    nome: true,
+                                    estado:{
+                                      select:{
+                                        id: true,
+                                        nome: true
+                                      }
                                     }
-                                  }
+                                  },
                                 },
-                              },
+                              }
                             }
                           }
-                        }
-                       },
-
-                    }
-                  },
-                  _count:{
-                    select:{
-                      grupoUsuario: true
+                        },
+                      }
+                    },
+                    _count:{
+                      select:{
+                        grupoUsuario: true
+                      }
                     }
                   }
-
                 }
               }
+            },
+            empresa: {
+              select:{
+                id: true,
+                nome_fantasia:true
+              }
             }
+
+          }
+        }
+      }
+    })
+  }
+  static async getGroupsUser(id: number){
+    return await prismaClient.provaGrupo.findMany({
+      where:{
+        grupo:{
+          grupoUsuario:{
+            some:{
+              idUsuario: {
+                equals: id
+              }
+
           },
           empresa: {
             select:{
               id: true,
               nome_fantasia:true,
               logo: true
+
             }
           }
         }
+      },
+      select:{
 
+        grupo:{
+          select:{
+            id: true,
+            nome: true,
+            descricao: true,
+            status: true,
+            provaGrupo:{
+              select:{
+                provaAndamento:{
+                  select:{
+                    empresa:{
+                      select:{
+                        id: true,
+                        nome_fantasia: true,
+                        logo: true,
+                        ativo: true,
+                      },
+                    },
+                    prova:{
+                      select:{
+                        id: true,
+                        titulo: true,
+                        descricao: true,
+                        ativo: true
+                      }
+                    }
+                  }
+                }
+              }
+            },
+
+          }
+        }
       }
-
-    }
-  })
- }
+    })
+  }
+  static async findInvite(
+    id_usuario: number,
+    id_grupo: number
+   ) : Promise<Convite | null> {
+    return await prismaClient.convite.findFirst({
+      where:{
+        idGrupo: id_grupo,
+        idUsuario: id_usuario
+      }
+    })
+   }
 }

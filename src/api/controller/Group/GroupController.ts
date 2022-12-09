@@ -14,10 +14,12 @@ export default class GroupController {
         return res.status(201).json({message: "Grupo cadastrado com sucesso!"})
     }
     static async resposta(req: Request, res: Response){
-        const { idUsuario,status, idGrupo} = req.body
+        const { idUsuario, status, idGrupo } = req.body
+    //    console.log(req.body)
 
         const teste = await GroupService.resposta(idUsuario, status,idGrupo)
-       // console.log(teste)
+      //  console.log(idGrupo)
+       // console.log(teste, "controller")
 
         return res.status(201).json({message: "Resposta enviada!"})
 
@@ -34,5 +36,12 @@ export default class GroupController {
         return res.status(200).json({ data: result })
 
       
+    }
+    static async getUsersGroups(req: Request, res: Response){
+        const { id } = req.params
+
+        const data = await GroupService.getUsersGroups(parseInt(id))
+
+        return res.status(200).json({data: data})
     }
 }
