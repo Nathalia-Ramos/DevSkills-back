@@ -530,6 +530,7 @@ export default class UserCompanyModel {
       },
       select:{
         id: true,
+        nome_fantasia: true,
         logo: true,
         biografia: true,
         email: true,
