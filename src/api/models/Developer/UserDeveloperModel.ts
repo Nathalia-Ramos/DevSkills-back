@@ -52,6 +52,7 @@ export default class UserDeveloperModel {
     biografia,
     nome,
     email,
+    tag,
     foto_perfil,
     link_github,
     link_portfolio,
@@ -66,6 +67,7 @@ export default class UserDeveloperModel {
       data:{
         nome: nome,
         email: email,
+        tag: tag,
         foto_perfil: foto_perfil,
         link_github: link_github,
         link_portfolio: link_portfolio,
@@ -257,7 +259,19 @@ export default class UserDeveloperModel {
       where: {
         id: id
       },
-      include:{
+      select:{
+        id: true,
+        nome: true,
+        email: true,
+        cpf: true,
+        data_nascimento: true,
+        tag: true,
+        pontuacao_plataforma: true,
+        foto_perfil: true,
+        biografia: true,
+        link_github: true,
+        link_portfolio: true,
+        permissao_email: true,
         usuarioStack: {
           select:{
             stack:{
@@ -270,8 +284,19 @@ export default class UserDeveloperModel {
         },
         usuarioHabilidade: {
           select:{
-            idHabilidade: true,
-            habilidade: true,
+            habilidade: {
+              select:{
+                id: true,
+                nome: true,
+                icone: true,
+                habilidadeTipo:{
+                  select:{
+                    id: true,
+                    nome: true
+                  }
+                }
+              }
+            },
           }
         },
         EnderecoUsuario: {
@@ -391,7 +416,7 @@ export default class UserDeveloperModel {
 
   static async deleteSkills(
     id_usuario: number) {
-      return await prisma.usuarioStack.deleteMany({
+      return await prisma.usuarioHabilidade.deleteMany({
         where:{
           idUsuario: id_usuario
         }

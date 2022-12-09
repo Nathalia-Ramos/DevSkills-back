@@ -293,6 +293,7 @@ export default class DeveloperService {
             biografia: devProfile.biografia,
             nome: devProfile.nome,
             email: devProfile.email,
+            tag: devProfile.tag,
             foto_perfil: devProfile.foto_perfil,
             link_github: devProfile.link_github,
             link_portfolio: devProfile.link_portfolio,
@@ -311,10 +312,13 @@ export default class DeveloperService {
               }
             }
 
-            if(devProfile.id_login) {
-              
-              if(devProfile.senha) {
+            
+            if(devProfile.senha) {
 
+              const userLogin = await UserDeveloperModel.findLogin(userID)
+
+              if(userLogin) {
+  
                 if(validateRegex(devProfile.senha, "^(?=.*[A-Z])(?=.*[!#@$%&])(?=.*[0-9])(?=.*[a-z]).{8,15}$")) {
                   devProfile.senha = await bcrypt.hash(devProfile.senha, 10)
                 } else {
@@ -323,23 +327,28 @@ export default class DeveloperService {
                     statusCode: 400,
                   }
                 }
-
-              }
-
-              const loginUpdated = await UserDeveloperModel.updateDevLogin(
-                devProfile.senha,
-                devProfile.id_login,
-                userID
-              ) 
-              
-              if(!loginUpdated) {
+  
+              } else {
                 return {
                   error: "Não foi possivel atualizar o login do usuario.",
                   statusCode: 500
                 }
               }
+  
+                const loginUpdated = await UserDeveloperModel.updateDevLogin(
+                  devProfile.senha,
+                  userLogin?.id,
+                  userID
+                ) 
+                
+                if(!loginUpdated) {
+                  return {
+                    error: "Não foi possivel atualizar o login do usuario.",
+                    statusCode: 500
+                  }
+                }
 
-            } 
+              }
 
             if(devProfile.id_usuario_telefone) {
 
@@ -489,7 +498,7 @@ export default class DeveloperService {
   
         } else {
           return {
-            error: "Acesso sjddj.",
+            error: "Acesso negado.",
             statusCode: 401
           }
         }

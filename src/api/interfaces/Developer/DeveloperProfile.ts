@@ -2,6 +2,7 @@ interface devProfile {
     biografia: string | undefined,
     senha: string | undefined,
     nome: string | undefined,
+    tag: string | undefined,
     email: string | undefined,
     foto_perfil: string | undefined,
     link_github: string | undefined,
@@ -10,6 +11,8 @@ interface devProfile {
 
     ddd_telefone: string | undefined,
     numero_telefone: string | undefined,
+    id_usuario_telefone: number | undefined,
+    id_tipo_telefone: number | undefined,
 
     logradouro: string | undefined,
     numero_rua: string | undefined,
@@ -22,9 +25,6 @@ interface devProfile {
     id_estado: number | undefined,
     id_usuario_endereco: number | undefined,
 
-    id_usuario_telefone: number | undefined,
-    id_tipo_telefone: number | undefined,
-    id_login: number | undefined,
     id_genero: number | undefined,
     ids_stacks: number[] | undefined,
     ids_habilidades: number[] | undefined
@@ -34,6 +34,7 @@ interface updateDev {
     biografia: string | undefined,
     nome: string | undefined,
     email: string | undefined,
+    tag: string | undefined,
     foto_perfil: string | undefined,
     link_github: string | undefined,
     link_portfolio: string | undefined,
