@@ -1,15 +1,17 @@
-import { PrismaClient, Usuario, LoginUsuario, UsuarioHabilidade, UsuarioStack, UsuarioTelefone, Empresa, Prova, ProvaAndamento } from "@prisma/client";
+import { PrismaClient, Usuario, LoginUsuario, UsuarioHabilidade, UsuarioStack, UsuarioTelefone, Empresa, Prova, ProvaAndamento, Cidade, Estado } from "@prisma/client";
 import bcrypt, { compare } from "bcrypt";
 import Jwt from "jsonwebtoken";
 import DeveloperData from "../../interfaces/Developer/Developer";
 import PhoneData from "../../interfaces/Developer/DeveloperPhone";
 import DeveloperStacks from "../../interfaces/Developer/DeveloperStacks";
 import DeveloperSkills from "../../interfaces/Developer/DeveloperSkills";
+import {updateAddress, updateDev, updatePhone, updateLogin, devProfile} from "../../interfaces/Developer/DeveloperProfile"
 import { prismaClient } from "../../../database/prismaClient";
 
 const prisma = new PrismaClient();
 
 export default class UserDeveloperModel {
+
   static async create({
     nome,
     email,
@@ -27,7 +29,7 @@ export default class UserDeveloperModel {
           ativo: true,
           pontuacao_plataforma: 0,
           permissao_email,
-          tag: "teste",
+          tag: "",
           genero: {
             connect: {
               id: id_genero,
@@ -46,23 +48,216 @@ export default class UserDeveloperModel {
 
   }
 
+  static async updateDevInfo({
+    biografia,
+    nome,
+    email,
+    foto_perfil,
+    link_github,
+    link_portfolio,
+    permissao_email,
+    id_usuario,
+    id_genero,
+  } : updateDev) {
+    return await prisma.usuario.update({
+      where:{
+        id: id_usuario
+      },
+      data:{
+        nome: nome,
+        email: email,
+        foto_perfil: foto_perfil,
+        link_github: link_github,
+        link_portfolio: link_portfolio,
+        permissao_email: permissao_email,
+        biografia: biografia,
+        idGenero: id_genero,
+      }
+    })
+  }
+
+  static async updateDevLogin(
+    senha: string | undefined,
+    id_login: number | undefined,
+    id_usuario: number,
+  ) {
+    return prisma.loginUsuario.update({
+      data:{
+        senha: senha,
+        usuario:{
+          connect:{
+            id: id_usuario
+          }
+        }
+      },
+      where:{
+        id: id_login
+      }
+    })
+  }
+
+  static async updateDevPhone(
+    ddd_telefone: string,
+    numero_telefone: string,
+
+    id_usuario_telefone: number,
+    id_tipo_telefone: number,
+    id_usuario: number,
+    ) {
+      return await prisma.usuarioTelefone.update({
+        data:{
+          numero: numero_telefone,
+          ddd: ddd_telefone,
+          idTipoTelefone: id_tipo_telefone,
+          idUsuario: id_usuario
+        },
+        where:{
+          id: id_usuario_telefone
+        }
+      })
+  }
+
+  static async createDevPhone(
+    ddd_telefone: string,
+    numero_telefone: string,
+
+    id_tipo_telefone: number,
+    id_usuario: number,
+    ) {
+      return await prisma.usuarioTelefone.create({
+        data:{
+          numero: numero_telefone,
+          ddd: ddd_telefone,
+          idTipoTelefone: id_tipo_telefone,
+          idUsuario: id_usuario
+        }
+      })
+  }
+
+  static async updateDevAddress(
+    bairro: string,
+    cep: string,
+    cidade: string,
+    estado: string,
+    logradouro: string,
+    numero_rua: string,
+    complemento: string | undefined,
+    id_cidade: number | undefined,
+    id_estado: number | undefined,
+    id_usuario_endereco: number | undefined,
+  ) {
+    return await prisma.enderecoUsuario.update({
+      data:{
+        bairro: bairro,
+        numero: numero_rua,
+        logradouro: logradouro,
+        cep: cep,
+        complemento: complemento || null,
+        cidade:{
+          connectOrCreate:{
+            create:{
+              nome: cidade,
+              estado:{
+                connectOrCreate:{
+                  create:{
+                    nome: estado
+                  },
+                  where:{
+                    id: id_estado
+                  }
+                }
+              }
+            },
+            where:{
+              id: id_cidade
+            }
+          }
+        }
+      },
+      where:{
+        id: id_usuario_endereco
+      }
+    })
+  }
+
+  static async findState(
+    nome: string
+  ) : Promise<Estado | null> {
+    return await prisma.estado.findFirst({
+      where:{
+        nome: {
+          equals: nome
+        }
+      }
+    })
+  }
+
+  static async findCity(
+    nome: string
+  ) : Promise<Cidade | null> {
+    return await prisma.cidade.findFirst({
+      where:{
+        nome: {
+          equals: nome
+        }
+      }
+    })
+  }
+
+  static async createDevAddress(
+    bairro: string,
+    cep: string,
+    cidade: string,
+    estado: string,
+    logradouro: string,
+    numero_rua: string,
+    complemento: string | undefined,
+    id_usuario: number,
+    id_cidade: number | undefined,
+    id_estado: number | undefined,
+  ) {
+    return await prisma.enderecoUsuario.create({
+      data:{
+        bairro: bairro,
+        numero: numero_rua,
+        logradouro: logradouro,
+        cep: cep,
+        complemento: complemento || null,
+        usuario:{
+          connect: {
+            id: id_usuario
+          }
+        },
+        cidade:{
+          connectOrCreate:{
+            create:{
+              nome: cidade,
+              estado:{
+                connectOrCreate:{
+                  create:{
+                    nome: estado
+                  },
+                  where:{
+                    id: id_estado
+                  }
+                }
+              }
+            },
+            where:{
+              id: id_cidade
+            }
+          }
+        }
+      }
+    })
+  }
+
   static async getUserInfo(id: number) {
     return await prisma.usuario.findFirst({
       where: {
         id: id
       },
-      select:{
-        id: true,
-        nome: true,
-        foto_perfil: true,
-        email: true,
-        cpf: true,
-        biografia: true,
-        pontuacao_plataforma: true,
-        tag: true,
-        data_nascimento: true,
-        link_github: true,
-        link_portfolio: true,
+      include:{
         usuarioStack: {
           select:{
             stack:{
@@ -81,6 +276,7 @@ export default class UserDeveloperModel {
         },
         EnderecoUsuario: {
           select:{
+            id: true,
             logradouro: true,
             numero: true,
             bairro: true,
@@ -95,10 +291,12 @@ export default class UserDeveloperModel {
         },
         UsuarioTelefone: {
           select:{
+            id: true,
             ddd: true,
             numero: true,
             tipoTelefone:{
               select:{
+                id: true,
                 nome: true
               }
             }
@@ -135,25 +333,6 @@ export default class UserDeveloperModel {
                     },
                   }
                 }
-              }
-            }
-          }
-        },
-        usuarioTesteCompetencia: {
-          select: {
-            id: true,
-            pontuacao: true,
-            testeCompetencia: {
-              select:{
-                id: true,
-                titulo: true,
-                descricao: true,
-                testeCompetenciaHabilidade: {
-                  select:{
-                    idHabilidade: true,
-                    habilidade: true
-                  }
-                },
               }
             }
           }
@@ -199,6 +378,24 @@ export default class UserDeveloperModel {
           idStack: id_stack,
         }});
 
+  }
+
+  static async deleteStacks(
+    id_usuario: number) {
+      return await prisma.usuarioStack.deleteMany({
+        where:{
+          idUsuario: id_usuario
+        }
+      })
+  }
+
+  static async deleteSkills(
+    id_usuario: number) {
+      return await prisma.usuarioStack.deleteMany({
+        where:{
+          idUsuario: id_usuario
+        }
+      })
   }
 
   static async relateSkills({

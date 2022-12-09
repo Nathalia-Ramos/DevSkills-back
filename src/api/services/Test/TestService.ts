@@ -29,7 +29,7 @@ export default class TestService {
             };
 
             const prova = await TestModel.createTest(createTest);
-            const provaID = prova.id;
+            const provaID = prova.id
 
             const data_fim = new Date(test.data_fim);
 
@@ -174,7 +174,7 @@ export default class TestService {
               idade: currentDate.getFullYear() - userCandidate.usuario.data_nascimento.getFullYear(),
             }
           }
-
+          
             // console.log(candidateData)
 
             totalCandidates.push(candidateData)

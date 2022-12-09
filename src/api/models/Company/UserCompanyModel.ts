@@ -1,6 +1,7 @@
-import {
-  Empresa, LoginEmpresa, ProvaAndamento
-} from "@prisma/client";
+
+
+import { Empresa, EmpresaTelefone, FotosAmbiente, LoginEmpresa, prisma, ProvaAndamento } from "@prisma/client";
+
 import { prismaClient } from "../../../database/prismaClient";
 import AddressData from "../../interfaces/Company/Address";
 import CityData from "../../interfaces/Company/City";
@@ -8,7 +9,9 @@ import CompanyPhoneData from "../../interfaces/Company/CompanyPhone";
 import CompanyUser from "../../interfaces/Company/CompanyUser";
 import LoginData from "../../interfaces/Company/Login";
 import StateData from "../../interfaces/Company/State";
+import Group from "../../interfaces/Groups/group";
 import filter from "./../../interfaces/Test/AdminFilter";
+
 
 export default class UserCompanyModel {
   static async create({
@@ -176,6 +179,13 @@ export default class UserCompanyModel {
           senha,
           idEmpresa: id_empresa,
         },
+        select:{
+          empresa:{
+            select:{
+              logo: true
+            }
+          }
+        } 
       });
 
       prismaClient.$disconnect;
@@ -496,54 +506,71 @@ export default class UserCompanyModel {
       },
     });
   }
-  static async getProfileCompany(id: number): Promise<Empresa | any> {
+ 
+  static async photosCompany(
+    idEmpresa: number,
+    foto: string, 
+    legenda: string,
+    
+  ) : Promise <FotosAmbiente> {
+    return await prismaClient.fotosAmbiente.create({
+      data:{
+        foto: foto,
+        legenda: legenda,
+        idEmpresa,
+        createdAt: new Date,
+        updatedAt: new Date
+      }
+    })
+  }
+  static async getProfileCompany(id: number): Promise <Empresa | any>{
     return await prismaClient.empresa.findFirst({
       where: {
-        id: id,
+        id: id
       },
-      select: {
+      select:{
         id: true,
-        nome_fantasia: true,
         logo: true,
         biografia: true,
         email: true,
         empresaTelefone: {
-          select: {
-            id: true,
+          select:{
             numero: true,
-            ddd: true,
-          },
+            ddd: true
+          }
         },
-        enderecoEmpresa: {
-          select: {
+        enderecoEmpresa:{
+          select:{
             id: true,
             logradouro: true,
             bairro: true,
             cep: true,
             complemento: true,
             numero: true,
-            cidade: {
-              select: {
+            cidade:{
+              select:{
                 nome: true,
-                estado: {
-                  select: {
-                    nome: true,
-                  },
-                },
-              },
-            },
+                estado:{
+                  select:{
+                    id: true,
+                    nome: true
+                  }
+                }
+              }
+            }
           },
+          
         },
-        empresaAvaliacao: {
-          select: {
+        empresaAvaliacao:{
+          select:{
             comentario: true,
             estrelas: true,
-          },
+          }
         },
-        provaAndamento: {
-          select: {
-            prova: {
-              select: {
+        provaAndamento:{
+          select:{
+            prova:{
+              select:{
                 id: true,
                 titulo: true,
                 descricao: true,
@@ -555,43 +582,51 @@ export default class UserCompanyModel {
                         nome: true,
                         icone: true,
                         ativo: true
-                      },
-                    },
-                  },
-                },
-                provaStack: {
-                  select: {
-                    stack: {
-                      select: {
-                        nome: true,
                       }
                     }
-                  },
+                  }
                 },
-              },
-            },
-          },
+                provaStack:{
+                  select:{
+                    stack:{
+                      select:{
+                        nome: true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         },
-        fotosAmbiente: {
-          select: {
+        fotosAmbiente:{
+          select:{
             id: true,
             foto: true,
-            legenda: true,
-          },
+            legenda: true
+          }
         },
-        Seguidores: {
-          select: {
-            usuario: true,
-          },
-        },
+        Seguidores:{
+          select:{
+            usuario: true
+          }
+        }
       },
-    });
+       
+    })
   }
-  /*static async teste(){
-    return await prismaClient.usuario.findMany({
-      select:{
-        
+
+
+  static async deletePhoto(
+    idEmpresa: number
+  ): Promise <FotosAmbiente> {
+    return await prismaClient.fotosAmbiente.delete({
+      where:{
+        id: idEmpresa
       }
     })
-  }*/
+  }
+
 }
+
+      
