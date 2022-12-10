@@ -107,103 +107,49 @@ export default class UserCompanyModel {
       }
     })
   }
- static async getGroupsCompnay(id: number): Promise <Empresa | any>{
-  return await prismaClient.empresa.findUnique({
-    where:{
-      id: id
-    },
-    select:{
-      provaAndamento:{
-        select:{
-          prova:{
-            select:{
-              id: true,
-              descricao: true,
-              titulo: true,
-              ativo: true, 
-              provaHabilidade:{
-                select:{
-                  habilidade:{
-                    select:{
-                      id: true,
-                      nome: true,
-                      icone: true
-                    }
-                  }
-                },
-              },
-              provaStack:{
-                select:{
-                   stack:{
-                    select:{
-                      id: true,
-                      nome: true
-                    }
-                   } 
-                },
-              },
-              provaAndamento:{
-                select:{
-                  provaGrupo:{
-                    select:{
-                      grupo:{
-                        select:{
-                          id: true,
-                          nome: true,
-                          descricao: true,
-                          status: true,
-                          grupoUsuario:{
-                            select:{
-                              usuario:{
-                                select:{
-                                  id: true,
-                                  nome: true,
-                                  email: true,
-                                  ativo: true,
-                                  EnderecoUsuario:{
-                                    select:{
-                                      cidade:{
-                                        select:{
-                                          id: true,
-                                          nome: true,
-                                          estado:{
-                                            select:{
-                                              id: true,
-                                              nome: true
-                                            }
-                                          }
-                                        }
-                                      }
-                                    },
-                                  },
-                                  _count:{
-                                    select:{
-                                      grupoUsuario: true
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            },
-          },
-          empresa:{
-            select:{
-              id: true,
-              nome_fantasia: true
-            }
-          }
-        }
-      }
-    }
-  })
- }
+static async getGroupsCompnay(id: number): Promise<Empresa | any> {
+    const groups: any = await prismaClient.$queryRaw`SELECT 
+                                                    distinct  tblgrupo.id as idGrupo,
+                                                      tblgrupo.nome,
+                                                    tblgrupo.descricao,
+                                                      tblgrupo.status as ativo
+                                                      
+                                                  FROM tblgrupo
+                                                    inner join tblgrupo_usuario
+                                                    where tblgrupo.id in 
+                                                      (SELECT 
+                                                        id_grupo FROM tblprova_grupo where
+                                                          tblprova_grupo.id_prova_andamento 
+                                                            in (select id from tblprova_andamento where tblprova_andamento.id_empresa = ${id})
+                                                      ) group by idGrupo `;
+    console.log(groups);
+
+    let users;
+    const idsGroup = groups.map((item: any) => item.idGrupo).toString();
+
+    const usersQuatity: any = await prismaClient.$queryRaw`
+      SELECT 
+	distinct tblgrupo_usuario.id_grupo AS idGrupo,
+    cast(COUNT(tblgrupo_usuario.id_usuario) as DECIMAL) as totalCandidatos
+    from tblgrupo_usuario 
+    
+    where id_grupo IN (${idsGroup})
+    
+group by idGrupo;
+    `;
+
+    console.log(usersQuatity);
+
+    return [
+      groups.map((item: any) => ({
+        id: item.idGrupo,
+        nome: item.nome,
+        descricao: item.descricao,
+        ativo: item.ativo,
+        quantidade: parseInt(usersQuatity[0].totalCandidatos),
+      })),
+    ];
+  }
  static async getGroupsUser(idUsuario: number){
   return await prismaClient.grupoUsuario.findMany({
     where:{
