@@ -62,4 +62,15 @@ export default class GroupController {
         return res.status(200).json({data: data})
 
     }
+    static async convitePendente(req: Request, res: Response){
+        const { id } = req.params
+
+        
+        const data = await GroupService.convitePendente(parseInt(id))
+     
+        if(data === null ) return res.status(404).json({error: "id não encontrado"})
+
+        return res.status(200).json({data: data})
+
+    }
 }

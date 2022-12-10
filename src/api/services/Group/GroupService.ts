@@ -65,6 +65,7 @@ export default class createGroup{
     static async getUsersGroups(id: number){
         const result = await GroupsModel.getGroupsUser(id)
 
+        console.log(result)
         return result
     }
     static async getConviteGroups(id: number){
@@ -74,6 +75,11 @@ export default class createGroup{
     }
     static async notificationGroup(id: number){
         const result = await GroupsModel.convite(id)
+
+        return result
+    }
+    static async convitePendente(id: number){
+        const result = await GroupsModel.convitePendente(id)
 
         return result
     }
