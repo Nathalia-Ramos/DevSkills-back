@@ -205,17 +205,11 @@ export default class UserCompanyModel {
   })
  }
  static async getGroupsUser(idUsuario: number){
-  return await prismaClient.provaGrupo.findMany({
+  return await prismaClient.grupoUsuario.findMany({
     where:{
-      grupo:{
-        grupoUsuario:{
-          some:{
-            id: {
-              equals: idUsuario
-            }
-          }
-        }
-      }
+       idUsuario:{
+          equals: idUsuario 
+       }
     },
     select:{
       grupo:{
