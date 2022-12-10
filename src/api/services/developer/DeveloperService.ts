@@ -559,6 +559,7 @@ static async listUserProfile(tokenValidate: TokenData | ErrorReturn, id: number)
 }
 static async getUsers(){
   const result = await DeveloperModel.getAllUsers()
+  console.log("ususarios:", result)
 
   return result
 }

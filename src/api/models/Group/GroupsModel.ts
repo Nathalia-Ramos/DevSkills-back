@@ -133,10 +133,13 @@ export default class UserCompanyModel {
         nome: item.nome,
         descricao: item.descricao,
         ativo: item.ativo,
-        quantidade: parseInt(
-          usersQuatity.find((group) => group.idGrupo === item.idGrupo)
-            .totalCandidatos
-        ),
+        quantidade: usersQuatity.find((group) => group.idGrupo === item.idGrupo)
+          ?.totalCandidatos
+          ? parseInt(
+              usersQuatity.find((group) => group.idGrupo === item.idGrupo)
+                .totalCandidatos
+            )
+          : 0,
       })),
     ];
   }

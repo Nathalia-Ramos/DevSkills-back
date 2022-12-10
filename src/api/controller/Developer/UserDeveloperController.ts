@@ -74,9 +74,10 @@ export default class UserDeveloperController {
     return res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {data: answer.data})
 
    } 
-   static async getAllUsers(req: Request,res: Response){
+   static async getAllUsers(req: Request, res: Response){
+         console.log("testando")
     
-        const users = await DeveloperService.getUsers()
+        const users = await DeveloperService.getUsers();
         console.log(users)
 
         return res.status(200).json({data: users})
