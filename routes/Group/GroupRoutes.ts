@@ -10,7 +10,7 @@ router.get('/groupsCompany/:id', GrupoController.getCompanyGroups)
 router.get('/groupsUsers/:id', GrupoController.getUsersGroups)
 router.get('/conviteUsers/:id', GrupoController.getConviteStatus)
 router.get('/notification/:id', GrupoController.getConvite)
-router.get('/convitePendente/:idUsuario', GrupoController.getConvite)
+router.get('/convitePendente/:idUsuario', GrupoController.convitePendente)
 router.get('/:id', GrupoController.groupById)
 
 

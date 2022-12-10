@@ -369,61 +369,69 @@ export default class UserCompanyModel {
     })
    }
    static async convitePendente( idUsuario: number) : Promise <Convite| any> {
-     return await prismaClient.convite.findFirst({
+    return await prismaClient.convite.findMany({
       where:{
-         idUsuario: {
+        idUsuario:{
           equals: idUsuario
-         },
-         
-         AND:{
- 
-           conviteStatus:{
-             status:{
-               equals: "PENDENTE"
-             }
-           },
+        },
+         conviteStatus:{
+          status:{
+            contains: "PENDENTE"
+          }
          }
-    },
-      
+      },
       select:{
         grupo:{
           select:{
             id: true,
             nome: true,
-            descricao: true,
-            status: true,
-            provaGrupo:{
+            descricao: true
+          }
+        },
+         usuario:{
+          select:{
+            grupoUsuario:{
               select:{
-                provaAndamento:{
-                  select:{
-                    empresa:{
+                grupo:{
+                  select: {
+                    provaGrupo:{
                       select:{
-                        id: true,
-                        nome_fantasia: true,
-                        logo: true,
-                        ativo: true
-                      }
-                    },
-                    prova:{
-                      select:{
-                        id: true,
-                        titulo: true,
-                        descricao: true,
-                        ativo: true
+                        provaAndamento:{
+                          select:{
+                            empresa:{
+                              select:{
+                                id: true,
+                                nome_fantasia: true,
+                                logo: true,
+                              },
+                            },
+                            prova:{
+                              select:{
+                                id: true,
+                                titulo: true,
+                                ativo: true
+                              }
+                            }
+                          }
+                        }
                       }
                     }
-                  },
-  
+                  }
                 }
               }
             }
-  
+          }
+         },
+        conviteStatus:{
+          select:{
+            id: true,
+            status: true
           }
         }
-      },
-
+      }
     })
    }
+  
    static async groupById(id: number) : Promise <Grupo | any>{
     return await prismaClient.grupo.findFirst({
       where:{
