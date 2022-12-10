@@ -317,7 +317,7 @@ export default class UserCompanyModel {
     })
    }
    static async convite(idUsuario: number) : Promise <Convite | any> {
-    return await prismaClient.convite.findFirst({
+    return await prismaClient.convite.findMany({
       where:{
         idUsuario:{
           equals: idUsuario
