@@ -1,4 +1,4 @@
-import { Convite, ConviteStatus, Empresa, EmpresaTelefone, GrupoUsuario, prisma, ProvaGrupo, Usuario } from "@prisma/client";
+import { Convite, ConviteStatus, Empresa, EmpresaTelefone, Grupo, GrupoUsuario, prisma, ProvaGrupo, Usuario } from "@prisma/client";
 import { prismaClient } from "../../../database/prismaClient";
 import Group from "../../interfaces/Groups/group";
 
@@ -369,17 +369,22 @@ export default class UserCompanyModel {
     })
    }
    static async convitePendente( idUsuario: number) : Promise <Convite| any> {
-    return await prismaClient.convite.findMany({
+     return await prismaClient.convite.findFirst({
       where:{
-        idUsuario:{
+         idUsuario: {
           equals: idUsuario
-        },
-         conviteStatus:{
-          status:{
-            contains: "PENDENTE"
-          }
+         },
+         
+         AND:{
+ 
+           conviteStatus:{
+             status:{
+               equals: "PENDENTE"
+             }
+           },
          }
-      },
+    },
+      
       select:{
         grupo:{
           select:{
@@ -415,8 +420,72 @@ export default class UserCompanyModel {
   
           }
         }
-      }
+      },
 
     })
    }
+   static async groupById(id: number) : Promise <Grupo | any>{
+    return await prismaClient.grupo.findFirst({
+      where:{
+        id: id
+      },
+      select:{
+        id: true,
+        nome: true,
+        descricao: true,
+        provaGrupo:{
+          select:{
+            provaAndamento:{
+              select:{
+                prova:{
+                 select:{
+                  id: true,
+                  titulo: true,
+                  descricao: true,
+                  provaHabilidade:{
+                    select:{
+                      habilidade:{
+                        select:{
+                          id: true,
+                          nome: true,
+                          icone: true
+                        }
+                      }
+                    }
+                  },
+                  provaStack:{
+                    select:{
+                      stack:{
+                        select:{
+                          id: true,
+                          nome: true
+                        }
+                      }
+                    }
+                  }
+                 }
+                }
+              }
+            }
+          }
+        }
+
+      }
+    })
+   }
   }
+
+/* select:{
+    conviteStatus:{
+       select:{
+        convite:{
+          where:{
+            conviteStatus:{
+              status:{
+                contains: "PENDENTE"
+              }
+            }
+          }
+        }
+       }
+    },*/

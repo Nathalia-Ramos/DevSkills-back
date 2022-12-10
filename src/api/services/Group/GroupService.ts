@@ -17,7 +17,7 @@ export default class createGroup{
 
             const getConvitStatus = await GroupsModel.GetStatusConvite(group.id)
             const getIdConvite = getConvitStatus.id
-            console.log(getIdConvite, "scrr deus")
+    
 
             try {
                 group.candidatos.forEach(async (idUsuario: any ) => {
@@ -78,8 +78,13 @@ export default class createGroup{
 
         return result
     }
-    static async convitePendente(id: number){
-        const result = await GroupsModel.convitePendente(id)
+    static async convitePendente(idUsuario: number){
+        const result = await GroupsModel.convitePendente(idUsuario)
+
+        return result
+    }
+    static async groupById(id: number){
+        const result = await GroupsModel.groupById(id)
 
         return result
     }
