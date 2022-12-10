@@ -1,7 +1,13 @@
-import { Convite, ConviteStatus, Empresa, EmpresaTelefone, GrupoUsuario, prisma, ProvaGrupo, Usuario } from "@prisma/client";
+import {
+  Convite,
+  ConviteStatus,
+  Empresa,
+  GrupoUsuario,
+  ProvaGrupo,
+  Usuario,
+} from "@prisma/client";
 import { prismaClient } from "../../../database/prismaClient";
 import Group from "../../interfaces/Groups/group";
-
 
 export default class UserCompanyModel {
   static async createGroup({ nome, descricao }: Group): Promise<Group> {
@@ -116,20 +122,6 @@ export default class UserCompanyModel {
                                                       ) group by idGrupo `;
     console.log(groups);
 
-    let users;
-    const idsGroup = groups.map((item: any) => item.idGrupo).toString();
-
-    let test = `IN (${idsGroup})`;
-
-    console.log(`SELECT 
-	distinct tblgrupo_usuario.id_grupo AS idGrupo,
-    cast(COUNT(tblgrupo_usuario.id_usuario) as DECIMAL) as totalCandidatos
-    from tblgrupo_usuario 
-    
-    where id_grupo ${test}
-    
-group by idGrupo;`);
-
     const usersQuatity: any[] =
       await prismaClient.$queryRaw`SELECT * FROM vwQuantidadeCandidatosPorGrupo`;
 
@@ -148,7 +140,39 @@ group by idGrupo;`);
       })),
     ];
   }
-  
+
+  static async getGroupCompanyInfo(id: number) {
+    return await prismaClient.grupoUsuario.findMany({
+      where: {
+        idGrupo: id,
+      },
+      select: {
+        usuario: {
+          select: {
+            id: true,
+            nome: true,
+            foto_perfil: true,
+            email: true,
+            convite: {
+              where: { idGrupo: id },
+              select: { conviteStatus: true, idGrupo: true },
+            },
+            EnderecoUsuario: {
+              include: {
+                cidade: {
+                  select: {
+                    nome: true,
+                    estado: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
   static async getGroupsUser(idUsuario: number) {
     return await prismaClient.grupoUsuario.findMany({
       where: {
