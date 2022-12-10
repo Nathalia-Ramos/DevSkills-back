@@ -142,27 +142,76 @@ export default class UserCompanyModel {
   }
 
   static async getGroupCompanyInfo(id: number) {
-    return await prismaClient.grupoUsuario.findMany({
+    return await prismaClient.grupo.findMany({
       where: {
-        idGrupo: id,
+        id: id,
       },
       select: {
-        usuario: {
+        id: true,
+        nome: true,
+        descricao: true,
+        status: true,
+
+        grupoUsuario: {
+          where: {
+            idGrupo: id,
+          },
           select: {
-            id: true,
-            nome: true,
-            foto_perfil: true,
-            email: true,
-            convite: {
-              where: { idGrupo: id },
-              select: { conviteStatus: true, idGrupo: true },
-            },
-            EnderecoUsuario: {
-              include: {
-                cidade: {
+            usuario: {
+              select: {
+                id: true,
+                nome: true,
+                email: true,
+                foto_perfil: true,
+                convite: {
+                  where: { idGrupo: id },
+                  select: { conviteStatus: true },
+                },
+                EnderecoUsuario: {
                   select: {
-                    nome: true,
-                    estado: true,
+                    cidade: { select: { nome: true, estado: true } },
+                  },
+                },
+              },
+            },
+          },
+        },
+
+        provaGrupo: {
+          where: {
+            idGrupo: id,
+          },
+          select: {
+            provaAndamento: {
+              select: {
+                id: true,
+                prova: {
+                  select: {
+                    id: true,
+                    titulo: true,
+                    descricao: true,
+                    ativo: true,
+                    provaStack: {
+                      select: {
+                        stack: {
+                          select: {
+                            id: true,
+                            nome: true,
+                          },
+                        },
+                      },
+                    },
+                    provaHabilidade: {
+                      select: {
+                        habilidade: {
+                          select: {
+                            id: true,
+                            nome: true,
+                            icone: true,
+                          },
+                        },
+                      },
+                    },
                   },
                 },
               },
