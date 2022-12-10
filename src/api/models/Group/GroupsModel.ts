@@ -185,6 +185,7 @@ export default class UserCompanyModel {
             provaAndamento: {
               select: {
                 id: true,
+                data_fim: true,
                 prova: {
                   select: {
                     id: true,
