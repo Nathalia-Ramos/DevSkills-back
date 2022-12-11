@@ -119,7 +119,7 @@ export default class UserCompanyModel {
                                                         id_grupo FROM tblprova_grupo where
                                                           tblprova_grupo.id_prova_andamento 
                                                             in (select id from tblprova_andamento where tblprova_andamento.id_empresa = ${id})
-                                                      ) group by idGrupo `;
+                                                      ) group by idGrupo order by idGrupo desc `;
     console.log(groups);
 
     const usersQuatity: any[] =
@@ -145,77 +145,36 @@ export default class UserCompanyModel {
   }
 
   static async getGroupCompanyInfo(id: number) {
-    return await prismaClient.grupo.findMany({
-      where: {
-        id: id,
-      },
+    const groupInfo = await prismaClient.grupo.findUnique({
+      where: { id },
       select: {
         id: true,
         nome: true,
         descricao: true,
         status: true,
+      },
+    });
 
-        grupoUsuario: {
-          where: {
-            idGrupo: id,
-          },
-          select: {
-            usuario: {
-              select: {
-                id: true,
-                nome: true,
-                email: true,
-                foto_perfil: true,
-                convite: {
-                  where: { idGrupo: id },
-                  select: { conviteStatus: true },
-                },
-                EnderecoUsuario: {
-                  select: {
-                    cidade: { select: { nome: true, estado: true } },
-                  },
-                },
-              },
-            },
-          },
-        },
+    const usersOfGroup = await prismaClient.convite.findMany({
+      where: {
+        idGrupo: id,
+      },
 
-        provaGrupo: {
-          where: {
-            idGrupo: id,
-          },
+      select: {
+        conviteStatus: true,
+        usuario: {
           select: {
-            provaAndamento: {
+            id: true,
+            foto_perfil: true,
+            email: true,
+            nome: true,
+
+            EnderecoUsuario: {
               select: {
-                id: true,
-                data_fim: true,
-                prova: {
+                cidade: {
                   select: {
-                    id: true,
-                    titulo: true,
-                    descricao: true,
-                    ativo: true,
-                    provaStack: {
-                      select: {
-                        stack: {
-                          select: {
-                            id: true,
-                            nome: true,
-                          },
-                        },
-                      },
-                    },
-                    provaHabilidade: {
-                      select: {
-                        habilidade: {
-                          select: {
-                            id: true,
-                            nome: true,
-                            icone: true,
-                          },
-                        },
-                      },
-                    },
+                    nome: true,
+                    estado: true,
                   },
                 },
               },
@@ -224,6 +183,30 @@ export default class UserCompanyModel {
         },
       },
     });
+
+    const testsOfGroup = await prismaClient.provaGrupo.findMany({
+      where: {
+        idGrupo: id,
+      },
+      select: {
+        provaAndamento: {
+          select: {
+            id: true,
+            data_fim: true,
+            prova: {
+              select: {
+                id: true,
+                titulo: true,
+                descricao: true,
+                ativo: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return { groupInfo, usersOfGroup, testsOfGroup };
   }
 
   static async getGroupsUser(idUsuario: number) {
