@@ -13,6 +13,7 @@ import generator from "generate-password";
 import TokenData from "../../interfaces/Token/Token";
 import { updateDev, devProfile } from "../../interfaces/Developer/DeveloperProfile";
 import UserDeveloperModel from "../../models/Developer/UserDeveloperModel";
+import TestModel from "../../models/Test/TestModel";
 
 export default class DeveloperService {
   static async create(userInfo: RegisterDeveloperData) {
@@ -557,6 +558,53 @@ static async listUserProfile(tokenValidate: TokenData | ErrorReturn, id: number)
   }
 
 }
+
+  static async filterTests(tokenValidate: TokenData | ErrorReturn) {
+
+  if('id' in tokenValidate) {
+
+    if(tokenValidate.type != 'DEVELOPER') {
+      return {
+        error: "Acesso negado para este tipo de usuário.",
+        statusCode: 401
+      }
+    }
+
+    const userInfo = await DeveloperModel.getUserInfo(tokenValidate.id)
+  
+      if (userInfo) {
+        
+        const skillsIDS : number[] = []
+        const stacksIDS : number[] = []
+        
+        userInfo.usuarioStack.forEach((value) => { stacksIDS.push(value.stack.id) })
+        
+        userInfo.usuarioHabilidade.forEach((value) => { skillsIDS.push(value.idHabilidade) })
+
+        const recommendedTests = await UserDeveloperModel.filterTests(skillsIDS, stacksIDS)
+
+        return {
+            data: recommendedTests,
+            statusCode: 200
+          }
+
+      } else {
+          return {
+              error: "Usuário com o ID especificado não encontrado.",
+              statusCode: 404
+          }
+      }
+
+  } else {
+    return {
+      error: tokenValidate.error,
+      statusCode: tokenValidate.statusCode
+    }
+  }
+
+  
+}
+
 static async getUsers(){
   const result = await DeveloperModel.getAllUsers()
 

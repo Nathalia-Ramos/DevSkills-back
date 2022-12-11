@@ -73,7 +73,20 @@ export default class UserDeveloperController {
 
     return res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {data: answer.data})
 
+   }
+
+   static async filterTest(req: Request, res: Response) {
+
+    const tokenValidate = await tokenVerify(req)
+    // const {id} = req.params
+    // console.log(tokenValidate)
+
+    const answer = await DeveloperService.filterTests(tokenValidate)
+
+    return res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {data: answer.data})
+
    } 
+   
    static async getAllUsers(req: Request,res: Response){
     
         const users = await DeveloperService.getUsers()
