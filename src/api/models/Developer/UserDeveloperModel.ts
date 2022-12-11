@@ -117,6 +117,82 @@ export default class UserDeveloperModel {
       })
   }
 
+  static async filterTests(
+    ids_habilidades: number[],
+    ids_stacks: number[]
+  ) {
+    return await prismaClient.provaAndamento.findMany({
+      where:{
+        prova:{
+          OR: [
+            {
+              ativo: true,
+              provaHabilidade:{
+                some:{
+                  idHabilidade: {
+                    in: ids_habilidades
+                  }
+                }
+              }
+            },
+            {
+              ativo: true,
+              provaStack:{
+                some:{
+                  stack:{
+                    id:{
+                      in: ids_stacks
+                    }
+                  }
+                }
+              }
+            },
+            {
+              ativo: true
+            }
+          ]
+        }
+      },
+      select:{
+        id: true,
+        empresa:{
+          select:{
+            logo: true
+          }
+        },
+        prova:{
+          select:{
+            provaHabilidade: {
+              select:{
+                habilidade:{
+                  select:{
+                    id: true,
+                    icone: true,
+                    nome: true,
+                  }
+                }
+              }
+            },
+            provaStack: {
+              select:{
+                stack:{
+                  select:{
+                    id: true,
+                    nome: true,
+                  }
+                }
+              }
+            },
+            provaTipo: true,
+            titulo: true,
+            descricao: true,              
+            }
+          }
+        }
+    })
+
+  }
+
   static async createDevPhone(
     ddd_telefone: string,
     numero_telefone: string,

@@ -6,6 +6,7 @@ import TestController from "../../src/api/controller/Test/TestController";
 
 const router = Router()
 
+router.get('/recommendedTest', UserDeveloperController.filterTest)
 router.post('/', UserDeveloperController.create)
 router.get('/:id', UserDeveloperController.userInfo)
 router.put('/', UserDeveloperController.updateProfile)
@@ -23,6 +24,5 @@ router.get('/userTest/:id/answers', TestController.listUserAnswers)
 router.get('/testSearch/:search', UserDeveloperController.userSearch)
 router.get('/testList/:search', UserDeveloperController.userSearch)
 router.get('/getAllUsers', UserDeveloperController.getAllUsers)
-
 
 export default router
