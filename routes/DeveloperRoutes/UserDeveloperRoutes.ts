@@ -6,6 +6,7 @@ import TestController from "../../src/api/controller/Test/TestController";
 const router = Router()
 
 router.get("/getAllUsers", UserDeveloperController.getAllUsers);
+router.get("/getRanking", UserDeveloperController.getRanking);
 router.post("/", UserDeveloperController.create);
 router.get("/:id", UserDeveloperController.userInfo);
 router.put("/", UserDeveloperController.updateProfile);
