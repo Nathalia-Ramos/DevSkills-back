@@ -12,14 +12,14 @@ export default class GroupController {
     return res.status(201).json({ message: "Grupo cadastrado com sucesso!" });
   }
   static async resposta(req: Request, res: Response) {
-    // const { idUsuario, status, idGrupo } = req.body;
-    // //    console.log(req.body)
+    const { idUsuario, status, idGrupo } = req.body;
+    //    console.log(req.body)
 
-    // const teste = await GroupService.resposta(idUsuario, status, idGrupo);
-    // //  console.log(idGrupo)
-    // // console.log(teste, "controller")
+    const teste = await GroupService.resposta(idUsuario, status, idGrupo);
+    //  console.log(idGrupo)
+    // console.log(teste, "controller")
 
-    // return res.status(201).json({ message: "Resposta enviada!" });
+    return res.status(201).json({ message: "Resposta enviada!" });
   }
   static async getCompanyGroups(req: Request, res: Response) {
     const { id } = req.params;

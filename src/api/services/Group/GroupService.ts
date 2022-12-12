@@ -1,9 +1,5 @@
-import UserCompanyModel from "../../models/Company/UserCompanyModel";
 import { Grupos } from "../../interfaces/Groups/groups";
 import GroupsModel from "../../models/Group/GroupsModel";
-import TokenData from "../../interfaces/Token/Token";
-import { ErrorReturn } from "../../interfaces/ReturnPattern/Returns";
-
 
 export default class createGroup {
   static async create(group: Grupos) {
@@ -48,65 +44,42 @@ export default class createGroup {
       }
     }
   }
-  // static async resposta(idUsuario: any, status: any, idGrupo: number) {
-  //   await GroupsModel.getGroup(idGrupo);
+  static async resposta(idUsuario: any, status: any, idGrupo: number) {
+    await GroupsModel.getGroup(idGrupo);
 
-  //   const getStatus = await GroupsModel.statusGet(status);
-  //   const statusID = getStatus.id;
+    const getStatus = await GroupsModel.statusGet(status);
+    const statusID = getStatus.id;
 
-  //   const groupInvite = await GroupsModel.findInvite(idUsuario, idGrupo);
+    const groupInvite = await GroupsModel.findInvite(idUsuario, idGrupo);
 
-  //   if (groupInvite) {
-  //     switch (status) {
-  //       case "ACEITO":
-  //         (await GroupsModel.createGroupUser(idGrupo, idUsuario)) &&
-  //           console.error(
-  //             await GroupsModel.updateGroupStatus(
-  //               idUsuario,
-  //               statusID,
-  //               groupInvite?.id
-  //             )
-  //           );
-  //         //   console.log(statusID, status)
-  //         break;
-  //       case "NEGADO":
-  //         await GroupsModel.updateGroupStatus(
-  //           idUsuario,
-  //           statusID,
-  //           groupInvite?.id
-  //         );
-  //         break;
-  //     }
-  //   }
-
-  //   const getConvitStatus = await GroupsModel.GetStatusConvite(group.id);
-  //   const getIdConvite = getConvitStatus.id;
-  //   console.log(getIdConvite, "scrr deus");
-
-  //   try {
-  //     group.candidatos.forEach(async (idUsuario: any) => {
-  //       console.error(
-  //         await GroupsModel.createGroupStatus(getIdConvite, groupId, idUsuario)
-  //       );
-  //     });
-  //   } catch (error: any) {
-  //     console.error("teste", error);
-  //   }
-
-  //   try {
-  //     group.id_prova_andamento.forEach(async (value: any) => {
-  //       await GroupsModel.createTestGroup(value, groupId);
-  //     });
-  //   } catch (error: any) {
-  //     console.error(error);
-  //   }
-  // }
+    if (groupInvite) {
+      switch (status) {
+        case "ACEITO":
+          (await GroupsModel.createGroupUser(idGrupo, idUsuario)) &&
+            console.error(
+              await GroupsModel.updateGroupStatus(
+                idUsuario,
+                statusID,
+                groupInvite?.id
+              )
+            );
+          //   console.log(statusID, status)
+          break;
+        case "NEGADO":
+          await GroupsModel.updateGroupStatus(
+            idUsuario,
+            statusID,
+            groupInvite?.id
+          );
+          break;
+      }
+    }
+  }
 
   static async convitePendente(idUsuario: number) {
     const result = await GroupsModel.convitePendente(idUsuario);
 
     return result;
-
   }
 
   static async groupById(id: number) {
@@ -147,7 +120,4 @@ export default class createGroup {
 
     return result;
   }
-
-
 }
-

@@ -1,14 +1,4 @@
-import {
-  PrismaClient,
-  UsuarioProva,
-  ProvaAndamento,
-  RespostaQuestaoProva,
-  RespostaAlternativaProva,
-  Usuario,
-  QuestaoProvaTipo,
-  QuestaoProva,
-} from "@prisma/client";
-import { userAnswer, userTest } from "../../interfaces/AnswerTest";
+import { PrismaClient, ProvaAndamento, UsuarioProva } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -83,6 +73,7 @@ export default class AnswerTestModel {
 
 
   static async findTest(id_prova: number) {
+
     return await prisma.provaAndamento.findFirst({
       where: {
         id: id_prova,
