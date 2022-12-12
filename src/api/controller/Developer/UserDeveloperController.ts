@@ -8,6 +8,7 @@ import { ProvaAndamento } from "@prisma/client";
 import { devProfile } from "../../interfaces/Developer/DeveloperProfile";
  
 export default class UserDeveloperController {
+
   static async create(req: Request, res: Response) {
     let user: RegisterDeveloperData = req.body;
 
@@ -27,11 +28,8 @@ export default class UserDeveloperController {
 
     const answer = await DeveloperService.updateDevProfile(data, tokenValidate);
 
-    res
-      .status(answer.statusCode)
-      .json(
-        answer.error ? { error: answer.error } : { message: answer.message }
-      );
+    res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { message: answer.message });
+    
   }
 
   static async auth(req: Request, res: Response) {
@@ -39,30 +37,17 @@ export default class UserDeveloperController {
 
     const answer = await DeveloperService.auth(login, senha);
 
-    res
-      .status(answer.statusCode)
-      .json(
-        answer.error
-          ? { error: answer.error }
-          : {
-              message: answer.message,
-              type: answer.userType,
-              token: answer.token,
-              userInfo: answer.userInfo,
-            }
-      );
+    res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { message: answer.message, type: answer.userType, token: answer.token, userInfo: answer.userInfo });
   }
+  
   static async sendPassMail(req: Request, res: Response) {
     const { email } = req.body;
 
     const answer = await DeveloperService.sendMail(email);
 
-    res
-      .status(answer.statusCode)
-      .json(
-        answer.error ? { error: answer.error } : { message: answer.message }
-      );
+    res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { message: answer.message });
   }
+  
   static async userSearch(req: Request, res: Response) {
     const { search } = req.params;
 
@@ -70,6 +55,7 @@ export default class UserDeveloperController {
 
     return res.status(200).json({ data: result });
   }
+  
   static async userTest(req: Request, res: Response) {
     const { search } = req.params;
 
@@ -87,10 +73,9 @@ export default class UserDeveloperController {
       parseInt(id)
     );
 
-    return res
-      .status(answer.statusCode)
-      .json(answer.error ? { error: answer.error } : { data: answer.data });
+    return res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data });
   }
+  
   static async getAllUsers(req: Request, res: Response) {
     console.log("testando");
 
@@ -108,4 +93,17 @@ export default class UserDeveloperController {
 
     return res.status(200).json({ data: users });
   }
+
+   static async filterTest(req: Request, res: Response) {
+
+    const tokenValidate = await tokenVerify(req)
+    // const {id} = req.params
+    // console.log(tokenValidate)
+
+    const answer = await DeveloperService.filterTests(tokenValidate)
+
+    return res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {data: answer.data})
+
+   } 
+   
 }

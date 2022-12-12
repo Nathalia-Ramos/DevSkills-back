@@ -1,11 +1,4 @@
-import {
-  Convite,
-  ConviteStatus,
-  Empresa,
-  GrupoUsuario,
-  ProvaGrupo,
-  Usuario,
-} from "@prisma/client";
+import { Convite, ConviteStatus, Empresa, EmpresaTelefone, Grupo, GrupoUsuario, prisma, ProvaGrupo, Usuario } from "@prisma/client";
 import { prismaClient } from "../../../database/prismaClient";
 import Group from "../../interfaces/Groups/group";
 
@@ -387,35 +380,115 @@ export default class UserCompanyModel {
           select: {
             id: true,
             nome: true,
-            descricao: true,
-            status: true,
-            provaGrupo: {
-              select: {
-                provaAndamento: {
-                  select: {
-                    empresa: {
-                      select: {
-                        id: true,
-                        nome_fantasia: true,
-                        logo: true,
-                        ativo: true,
-                      },
-                    },
-                    prova: {
-                      select: {
-                        id: true,
-                        titulo: true,
-                        descricao: true,
-                        ativo: true,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
+            descricao: true
+          }
         },
+         usuario:{
+          select:{
+            grupoUsuario:{
+              select:{
+                grupo:{
+                  select: {
+                    provaGrupo:{
+                      select:{
+                        provaAndamento:{
+                          select:{
+                            empresa:{
+                              select:{
+                                id: true,
+                                nome_fantasia: true,
+                                logo: true,
+                              },
+                            },
+                            prova:{
+                              select:{
+                                id: true,
+                                titulo: true,
+                                ativo: true
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+         },
+        conviteStatus:{
+          select:{
+            id: true,
+            status: true
+          }
+        }
+      }
+    })
+   }
+  
+   static async groupById(id: number) : Promise <Grupo | any>{
+    return await prismaClient.grupo.findFirst({
+      where:{
+        id: id
       },
-    });
+      select:{
+        id: true,
+        nome: true,
+        descricao: true,
+        provaGrupo:{
+          select:{
+            provaAndamento:{
+              select:{
+                prova:{
+                 select:{
+                  id: true,
+                  titulo: true,
+                  descricao: true,
+                  provaHabilidade:{
+                    select:{
+                      habilidade:{
+                        select:{
+                          id: true,
+                          nome: true,
+                          icone: true
+                        }
+                      }
+                    }
+                  },
+                  provaStack:{
+                    select:{
+                      stack:{
+                        select:{
+                          id: true,
+                          nome: true
+                        }
+                      }
+                    }
+                  }
+                 }
+                }
+              }
+            }
+          }
+        }
+
+      }
+    })
+   }
   }
-}
+
+/* select:{
+    conviteStatus:{
+       select:{
+        convite:{
+          where:{
+            conviteStatus:{
+              status:{
+                contains: "PENDENTE"
+              }
+            }
+          }
+        }
+       }
+    },*/
