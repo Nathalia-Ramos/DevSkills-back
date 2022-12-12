@@ -1,19 +1,19 @@
-import RegisterDeveloperData from "../../interfaces/Developer/RegisterDeveloper";
-import DeveloperPhoneData from "../../interfaces/Developer/DeveloperPhone";
-import DeveloperModel from "../../models/Developer/UserDeveloperModel";
-import DeveloperPhoneModel from "../../models/Phone/DeveloperPhoneModel";
 import bcrypt from "bcrypt";
-import Jwt from "jsonwebtoken";
-import validateRegex from "../../utils/RegexValidate";
-import message from "../../../config/ReturnMessages";
-import { ErrorReturn, SuccessReturn } from "../../interfaces/ReturnPattern/Returns"
-import { compare } from "bcrypt";
-import nodemailer from "nodemailer";
 import generator from "generate-password";
+import Jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
+import message from "../../../config/ReturnMessages";
+import { devProfile } from "../../interfaces/Developer/DeveloperProfile";
+import RegisterDeveloperData from "../../interfaces/Developer/RegisterDeveloper";
+import { ErrorReturn } from "../../interfaces/ReturnPattern/Returns";
 import TokenData from "../../interfaces/Token/Token";
-import { updateDev, devProfile } from "../../interfaces/Developer/DeveloperProfile";
-import UserDeveloperModel from "../../models/Developer/UserDeveloperModel";
-import TestModel from "../../models/Test/TestModel";
+import {
+  default as DeveloperModel,
+  default as UserDeveloperModel,
+} from "../../models/Developer/UserDeveloperModel";
+import validateRegex from "../../utils/RegexValidate";
+
+const jwtSecret = process.env.JWT_PASS;
 
 export default class DeveloperService {
   static async create(userInfo: RegisterDeveloperData) {
@@ -174,7 +174,7 @@ export default class DeveloperService {
         if (await bcrypt.compare(senha, developerLogin?.senha)) {
           const token = Jwt.sign(
             { id: userExist.id, type: "DEVELOPER" },
-            "secret",
+            jwtSecret!,
             { expiresIn: "7d" }
           );
 
@@ -578,57 +578,60 @@ export default class DeveloperService {
     }
   }
 
-  static async filterTests(tokenValidate: TokenData | ErrorReturn) {
+  static async getUsers() {
+    const result = await DeveloperModel.getAllUsers();
+    console.log("ususarios:", result);
 
-  if('id' in tokenValidate) {
-
-    if(tokenValidate.type != 'DEVELOPER') {
-      return {
-        error: "Acesso negado para este tipo de usuário.",
-        statusCode: 401
-      }
-    }
-
-    const userInfo = await DeveloperModel.getUserInfo(tokenValidate.id)
-  
-      if (userInfo) {
-        
-        const skillsIDS : number[] = []
-        const stacksIDS : number[] = []
-        
-        userInfo.usuarioStack.forEach((value) => { stacksIDS.push(value.stack.id) })
-        
-        userInfo.usuarioHabilidade.forEach((value) => { skillsIDS.push(value.idHabilidade) })
-
-        const recommendedTests = await UserDeveloperModel.filterTests(skillsIDS, stacksIDS)
-
-        return {
-            data: recommendedTests,
-            statusCode: 200
-          }
-
-      } else {
-          return {
-              error: "Usuário com o ID especificado não encontrado.",
-              statusCode: 404
-          }
-      }
-
-  } else {
-    return {
-      error: tokenValidate.error,
-      statusCode: tokenValidate.statusCode
-    }
+    return result;
   }
 
-  
-}
+  static async filterTests(tokenValidate: TokenData | ErrorReturn) {
+    console.log("to na service");
 
-static async getUsers(){
-  const result = await DeveloperModel.getAllUsers()
+    if ("id" in tokenValidate) {
+      if (tokenValidate.type != "DEVELOPER") {
+        return {
+          error: "Acesso negado para este tipo de usuário.",
+          statusCode: 401,
+        };
+      }
 
-  return result
-}
+      const userInfo = await DeveloperModel.getUserInfo(tokenValidate.id);
+
+      if (userInfo) {
+        const skillsIDS: number[] = [];
+        const stacksIDS: number[] = [];
+
+        userInfo.usuarioStack.forEach((value) => {
+          stacksIDS.push(value.stack.id);
+        });
+
+        userInfo.usuarioHabilidade.forEach((value) => {
+          skillsIDS.push(value.idHabilidade);
+        });
+
+        const recommendedTests = await UserDeveloperModel.filterTests(
+          skillsIDS,
+          stacksIDS
+        );
+
+        return {
+          data: recommendedTests,
+          statusCode: 200,
+        };
+      } else {
+        return {
+          error: "Usuário com o ID especificado não encontrado.",
+          statusCode: 404,
+        };
+      }
+    } else {
+      return {
+        error: tokenValidate.error,
+        statusCode: tokenValidate.statusCode,
+      };
+    }
+  }
 
   static async getRanking() {
     const result = await DeveloperModel.getRanking();

@@ -1,213 +1,215 @@
-import {Request, Response} from "express"
-import ReturnMessages from "../../../config/ReturnMessages"
-import TestProgress from "../../interfaces/Test/TestProgress"
-import tokenVerify from "../../../middlewares/auth"
-import filter from "../../interfaces/Test/AdminFilter"
-import {TestData} from "../../interfaces/Test/Tests"
-import TestModel from "../../models/Test/TestModel"
-import TestService from "../../services/Test/TestService"
-import { userAnswer, userTest, testAnswer } from "../../interfaces/Test/AnswerTest"
-import AnswerTestService from "../../services/Test/AnswerTestService"
-import {correctAnswer, testCorrection} from "../../interfaces/Test/Answer"
-import queryTestFilter from './../../utils/queryTestFilter';
+import { Request, Response } from "express";
+import tokenVerify from "../../../middlewares/auth";
+import { testCorrection } from "../../interfaces/Test/Answer";
+import { testAnswer, userTest } from "../../interfaces/Test/AnswerTest";
+import TestProgress from "../../interfaces/Test/TestProgress";
+import { TestData } from "../../interfaces/Test/Tests";
+import TestModel from "../../models/Test/TestModel";
+import AnswerTestService from "../../services/Test/AnswerTestService";
+import TestService from "../../services/Test/TestService";
+import queryTestFilter from "./../../utils/queryTestFilter";
 
 export default class TestController {
+  static async execute(req: Request, res: Response) {
+    const test: TestData = req.body;
 
-    static async execute(req: Request, res: Response){
-        
-        const test : TestData = req.body
-        
-        const tests = await TestService.create(test)
-        
-        return res.status(201).json({message: "Prova inserida com sucesso!"})
+    const tests = await TestService.create(test);
 
-    }
+    return res.status(201).json({ message: "Prova inserida com sucesso!" });
+  }
 
-    static async findUserAnswers(req: Request, res: Response) {
+  static async findUserAnswers(req: Request, res: Response) {
+    const { id, take } = req.params;
 
-        const { id, take } = req.params
+    const result = await TestService.findUserAnswers(
+      parseInt(id),
+      parseInt(take)
+    );
 
-        const result = await TestService.findUserAnswers(parseInt(id), parseInt(take))
+    return res
+      .status(result.statusCode)
+      .json(result.error ? { error: result.error } : { data: result.data });
+  }
 
-        return res.status(result.statusCode).json(result.error ? {error: result.error} : {data: result.data})
+  static async listTestDetails(req: Request, res: Response) {
+    const { id } = req.params;
 
-    }  
+    const result = await TestService.listTestDetails(parseInt(id));
 
-    static async listTestDetails(req: Request, res: Response) {
+    return res
+      .status(result.statusCode)
+      .json(result.error ? { error: result.error } : { data: result.data });
+  }
 
-        const { id } = req.params
+  static async listTestInfo(req: Request, res: Response) {
+    const { id } = req.params;
 
-        const result = await TestService.listTestDetails(parseInt(id))
+    const result = await TestService.listTestInfo(parseInt(id));
 
-        return res.status(result.statusCode).json(result.error ? {error: result.error} : {data: result.data})
+    return res
+      .status(result.statusCode)
+      .json(result.error ? { error: result.error } : { data: result.data });
+  }
 
-    } 
-    
-    static async listTestInfo(req: Request, res: Response) {
+  static async findAdminTestByID(req: Request, res: Response) {
+    const { id } = req.params;
 
-        const { id } = req.params
+    const answer = await TestService.findAdminTestByID(parseInt(id));
 
-        const result = await TestService.listTestInfo(parseInt(id))
+    return res
+      .status(answer.statusCode)
+      .json(answer.error ? { error: answer.error } : { data: answer.data });
+  }
 
-        return res.status(result.statusCode).json(result.error ? {error: result.error} : {data: result.data})
+  static async findAdminTests(req: Request, res: Response) {
+    // const { ids_habilidades, ids_stacks, tipo, pagina } : any = req.query
+    const userFiltersData = queryTestFilter(req);
 
-    } 
+    const answer = await TestService.findAdminTests(userFiltersData);
 
-    static async findAdminTestByID(req: Request, res: Response) {
+    return res
+      .status(answer.statusCode)
+      .json(answer.error ? { error: answer.error } : { data: answer.data });
+  }
+  static async relateTestTemplate(req: Request, res: Response) {
+    const body: TestProgress = req.body;
 
-        const { id } = req.params
+    const answer = await TestService.relateTemplate(body);
 
-        const answer = await TestService.findAdminTestByID(parseInt(id))
+    return res
+      .status(answer?.statusCode)
+      .json(
+        answer.error ? { error: answer.error } : { message: answer.message }
+      );
+  }
+  static async test(req: Request, res: Response) {
+    try {
+      const test = await TestModel.allTest();
 
-        return res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data })
+      return res.status(200).json({ message: "Provas", data: test });
+    } catch (error) {}
+  }
+  static async listTest(req: Request, res: Response) {
+    const { take }: any = req.query;
 
-    }
+    const result = await TestService.findTestNumber(parseInt(take));
 
-    static async findAdminTests(req: Request, res: Response) {
+    return res.status(200).json({ data: result });
+  }
 
-        // const { ids_habilidades, ids_stacks, tipo, pagina } : any = req.query
-        const userFiltersData = queryTestFilter(req)
+  static async createUserTest(req: Request, res: Response) {
+    const data: userTest = req.body;
 
-        const answer = await TestService.findAdminTests(userFiltersData);
+    const answer = await AnswerTestService.createUserTest(data);
 
-        return res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data })
+    return res
+      .status(answer?.statusCode)
+      .json(
+        answer?.error
+          ? { error: answer.error }
+          : { message: answer.message, data: answer.data }
+      );
+  }
 
-    }
-    static async relateTestTemplate(req: Request, res: Response){
-        
-        const body : TestProgress = req.body
+  // static async updateUserTest(req: Request, res: Response) {,
 
-        const answer = await TestService.relateTemplate(body)
+  //     const data : updateUserTest = req.body
 
-        return res.status(answer?.statusCode).json(
-            answer.error ? { 'error': answer.error } : { 'message': answer.message }
-        )
-    }
-    static async test(req: Request, res: Response) {
-    
-        try { 
-            const test = await TestModel.allTest()
-            
-            return res.status(200).json({message: "Provas", data: test})
-        } catch (error) {
-            
-        }
+  //     const answer = await AnswerTestService.updateUserTest(data)
 
-    }
-    static async listTest(req: Request, res: Response){
+  //     return res.status(answer?.statusCode).json(answer?.error? {error: answer.error} : { message: answer.message, data: answer.data })
 
-        const { take } : any = req.query
-   
-        const result = await TestService.findTestNumber(parseInt(take))
-  
-        return res.status(200).json({data: result})
+  // }
 
-       }
+  static async createUserAnswer(req: Request, res: Response) {
+    const data: testAnswer = req.body;
 
-    static async createUserTest(req: Request, res: Response) {
+    const answer = await AnswerTestService.createAnswerTest(data);
 
-        const data : userTest = req.body
+    return res
+      .status(answer?.statusCode)
+      .json(
+        answer?.error ? { error: answer.error } : { message: answer?.message }
+      );
+  }
 
-        const answer = await AnswerTestService.createUserTest(data)
+  static async findTest(req: Request, res: Response) {
 
-        return res.status(answer?.statusCode).json(answer?.error ? { error: answer.error } : { message: answer.message, data: answer.data })
+    const { id } = req.params;
 
-    }
+    if (!id) return res.json({ error: "Socorro DEUS!" });
 
-    // static async updateUserTest(req: Request, res: Response) {, 
+    const tokenValidate = await tokenVerify(req);
 
-    //     const data : updateUserTest = req.body
+    const answer = await TestService.findTest(parseInt(id), tokenValidate);
 
-    //     const answer = await AnswerTestService.updateUserTest(data)
+    res
+      .status(answer.statusCode)
+      .json(answer.error ? { error: answer.error } : { data: answer.data });
+  }
 
-    //     return res.status(answer?.statusCode).json(answer?.error? {error: answer.error} : { message: answer.message, data: answer.data })
+  static async findCandidates(req: Request, res: Response) {
+    const { id } = req.params;
 
-    // }
+    // const tokenValidate = await tokenVerify(req)
 
-    static async createUserAnswer(req: Request, res: Response) {
+    const answer = await TestService.findCandidates(parseInt(id));
 
-        const data : testAnswer = req.body
+    res
+      .status(answer.statusCode)
+      .json(answer.error ? { error: answer.error } : { data: answer.data });
+  }
 
-        const answer = await AnswerTestService.createAnswerTest(data)
+  static async findUserTest(req: Request, res: Response) {
+    const { id } = req.params;
 
-        return res.status(answer?.statusCode).json(answer?.error ? { error: answer.error } : { message: answer?.message })
+    const answer = await TestService.listUserTest(parseInt(id));
 
-    }
+    res
+      .status(answer.statusCode)
+      .json(answer.error ? { error: answer.error } : { data: answer.data });
+  }
 
-    static async findTest(req: Request, res: Response) {
+  // static async updateAnswer(req: Request, res: Response) {
 
-        const { id } = req.params
+  //     const data : userAnswer = req.body
 
-        const tokenValidate = await tokenVerify(req)
+  //     const answer = await AnswerTestService.updateAnswer(data)
 
-        const answer = await TestService.findTest(parseInt(id), tokenValidate)
-   
-        res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data })
+  //     return res.status(answer?.statusCode).json(answer?.error ? { error: answer.error } : { message: answer?.message })
 
-      
-    }
+  // }
 
-    static async findCandidates(req: Request, res: Response) {
+  static async updateCorrectAnswer(req: Request, res: Response) {
+    const data: testCorrection = req.body;
+    const { id } = req.params;
 
-        const { id } = req.params
+    const answer = await TestService.correctionAnswer(data, parseInt(id));
 
-        // const tokenValidate = await tokenVerify(req)
+    return res
+      .status(answer.statusCode)
+      .json(
+        answer.error ? { error: answer.error } : { message: answer.message }
+      );
+  }
 
-        const answer = await TestService.findCandidates(parseInt(id))
+  static async listUserAnswers(req: Request, res: Response) {
+    const { id } = req.params;
 
-        res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data })
+    const answer = await AnswerTestService.listAnswers(parseInt(id));
 
-    }
+    res
+      .status(answer.statusCode)
+      .json(answer.error ? { error: answer.error } : { data: answer.data });
+  }
 
-    static async findUserTest(req: Request, res: Response) {
+  static async listOverview(req: Request, res: Response) {
+    const { id } = req.params;
 
-        const { id } = req.params
+    const answer = await TestService.listOverview(parseInt(id));
 
-        const answer = await TestService.listUserTest(parseInt(id))
-
-        res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data })
-
-    }
-
-    // static async updateAnswer(req: Request, res: Response) {
-
-    //     const data : userAnswer = req.body
-
-    //     const answer = await AnswerTestService.updateAnswer(data)
-
-    //     return res.status(answer?.statusCode).json(answer?.error ? { error: answer.error } : { message: answer?.message })
-
-    // }
-
-    static async updateCorrectAnswer(req: Request, res: Response) {
-
-        const data : testCorrection = req.body
-        const { id } = req.params
-
-        const answer = await TestService.correctionAnswer(data, parseInt(id))
-
-        return res.status(answer.statusCode).json(answer.error ? {error: answer.error} : {message: answer.message})
-
-    }
-  
-    static async listUserAnswers(req: Request, res: Response) {
-
-        const { id } = req.params
-
-        const answer = await AnswerTestService.listAnswers(parseInt(id))
-
-        res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data })
-        
-    } 
-    
-    static async listOverview(req: Request, res: Response) {
-        
-        const { id } = req.params
-        
-        const answer = await TestService.listOverview(parseInt(id))
-        
-        res.status(answer.statusCode).json(answer.error ? { error: answer.error } : { data: answer.data })
-        
-    }
-
+    res
+      .status(answer.statusCode)
+      .json(answer.error ? { error: answer.error } : { data: answer.data });
+  }
 }
