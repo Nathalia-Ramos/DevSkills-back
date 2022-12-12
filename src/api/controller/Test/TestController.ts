@@ -72,6 +72,8 @@ export default class TestController {
       .json(answer.error ? { error: answer.error } : { data: answer.data });
   }
   static async relateTestTemplate(req: Request, res: Response) {
+    console.clear()
+    console.log(this.relateTestTemplate)
     const body: TestProgress = req.body;
 
     const answer = await TestService.relateTemplate(body);

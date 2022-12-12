@@ -1,16 +1,25 @@
 import ReturnMessages from "../../../config/ReturnMessages";
 import { ErrorReturn } from "../../interfaces/ReturnPattern/Returns";
 import filter from "../../interfaces/Test/AdminFilter";
-import {correctAnswer, testCorrection} from "../../interfaces/Test/Answer";
+import { testCorrection } from "../../interfaces/Test/Answer";
+import { candidateData } from "../../interfaces/Test/TestCandidate";
+import {
+  skillsTest,
+  stacksTest,
+  testDetails,
+} from "../../interfaces/Test/TestDetails";
 import TestProgress from "../../interfaces/Test/TestProgress";
 import { TestData } from "../../interfaces/Test/Tests";
+import {
+  answerData,
+  questionAnswer,
+  questionTest,
+  testAnswers,
+} from "../../interfaces/Test/TestUserAnswers";
 import TokenData from "../../interfaces/Token/Token";
 import AnswerTestModel from "../../models/AnswerTestModel";
 import TestModel from "../../models/Test/TestModel";
-import {candidateData} from "../../interfaces/Test/TestCandidate";
 import QuestionService from "./QuestionService";
-import { testDetails, skillsTest, stacksTest } from "../../interfaces/Test/TestDetails";
-import { answerData, testAnswers, questionAnswer, questionTest }   from "../../interfaces/Test/TestUserAnswers"
 // import jwt_decode from "jwt-decode";
 
 export default class TestService {
