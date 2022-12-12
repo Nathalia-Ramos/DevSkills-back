@@ -417,6 +417,7 @@ export default class TestService {
                         id: userQuestion.id,
                         enunciado: userQuestion.questaoProva.enunciado,
                         tipo: userQuestion.questaoProva.questaoProvaTipo.tipo,
+                        foto: userQuestion.questaoProva.foto,
                         resposta: {
                           id: userAnswer.id,
                           texto: userAnswer.resposta
@@ -448,6 +449,7 @@ export default class TestService {
                       id: userQuestion.id,
                       enunciado: userQuestion.questaoProva.enunciado,
                       tipo: userQuestion.questaoProva.questaoProvaTipo.tipo,
+                      foto: userQuestion.questaoProva.foto,
                       acertou: userQuestion.questaoProva.alternativaProva.correta,
                       alternativas: options
                     }
