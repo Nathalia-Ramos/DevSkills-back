@@ -9,6 +9,7 @@ import AnswerTestModel from "../../models/AnswerTestModel";
 import TestModel from "../../models/Test/TestModel";
 import {candidateData} from "../../interfaces/Test/TestCandidate";
 import QuestionService from "./QuestionService";
+import { testDetails, skillsTest, stacksTest } from "../../interfaces/Test/TestDetails";
 import { answerData, testAnswers, questionAnswer, questionTest }   from "../../interfaces/Test/TestUserAnswers"
 // import jwt_decode from "jwt-decode";
 
@@ -29,7 +30,7 @@ export default class TestService {
             };
 
             const prova = await TestModel.createTest(createTest);
-            const provaID = prova.id;
+            const provaID = prova.id
 
             const data_fim = new Date(test.data_fim);
 
@@ -113,120 +114,85 @@ export default class TestService {
 
     if(typeof id_prova_andamento === 'number') {
 
-      const testExist = await TestModel.findTestProgress(id_prova_andamento)
+      const candidates = await TestModel.findCandidates(id_prova_andamento)
 
-      if(testExist) {
-        
-        const candidates = await TestModel.findCandidates(id_prova_andamento)
-  
-        if(candidates) {
-  
-          const totalCandidates : candidateData[] = []
-  
-          candidates.forEach((userCandidate) => {
+      if(candidates) {
+
+        let totalCandidates : candidateData[] = []
+
+        for(let i = 0; i < candidates.length; i++) {
+
+          const userCandidate = candidates[i]
+
+          const currentDate = new Date()
+
+          let userTime : string = ''
+
+          let userPercentage : string = ''
+
+          const userAddress = userCandidate.usuario.EnderecoUsuario[0]
+
+          if(userCandidate.data_entrega) {
+
+            const startDate = userCandidate.data_entrega.toISOString().split(/[\T\.]/)[0] + ' ' + userCandidate.data_entrega.toISOString().split(/[\T\.]/)[1]
+            const endDate = userCandidate.data_inicio.toISOString().split(/[\T\.]/)[0] + ' ' + userCandidate.data_inicio.toISOString().split(/[\T\.]/)[1]
+
+            const resultDiff : Object = await TestModel.getTimeDiff(startDate, endDate)
             
-            const currentDate = new Date()
-
-            if(testExist.duracao != null) {
+            const timeDiff : string = Object.values(resultDiff)[0].duracao.toISOString()
             
-              // const time = (userCandidate.data_entrega.getTime() - userCandidate.data_inicio.getTime())
-              
-              // console.log(time)
-              if(userCandidate.data_entrega && userCandidate.data_inicio) {
-    
-                const candidateHours = {
-                  hours: '00',
-                  minutes: '00',
-                  seconds: '00'
-                }
-    
-                const totalSecondsDiff = (userCandidate.data_entrega.getTime() - userCandidate.data_inicio.getTime()) / 1000
-                const minutesDiff = Math.floor(totalSecondsDiff / 60)
-    
-                const secondsDiff = Math.floor(minutesDiff % 60)
-                candidateHours.seconds = secondsDiff.toString().padStart(2, '0')
-    
-                if (minutesDiff > 60) {
-                  const hoursDiff = Math.floor(minutesDiff / 60)
-                  
-                  candidateHours.hours = hoursDiff.toString().padStart(2, '0')
+            // console.log(userTime)
+            userTime = timeDiff.split(/[/T/.]/)[1]
+            // console.log(userTime)
+            
+          }
 
-                  candidateHours.minutes = (Math.floor(minutesDiff % 60)).toString().padStart(2, '0')
-                } else {
-                  candidateHours.minutes = minutesDiff.toString().padStart(2, '0')
-                }
-    
-                const candidateData : candidateData = { 
-                  id_prova_usuario: userCandidate.id,
-                  id_prova_andamento: userCandidate.idProvaAndamento,
-                  finalizada: true,
-                  duracao: candidateHours.hours + ':' + candidateHours.minutes + ':' + candidateHours.seconds,
-                  pontuacao: userCandidate.pontuacao || 0,
-                  candidato: {
-                    id: userCandidate.idUsuario,
-                    nome: userCandidate.usuario.nome,
-                    email: userCandidate.usuario.email,
-                    foto_perfil: userCandidate.usuario.foto_perfil,
-                    idade: currentDate.getFullYear() - userCandidate.usuario.data_nascimento.getFullYear(),
-                  }
-                }
-    
-                // console.log(candidateData)
-                totalCandidates.push(candidateData)
-                
-              } else {
-                const candidateData : candidateData = { 
-                  id_prova_usuario: userCandidate.id,
-                  id_prova_andamento: userCandidate.idProvaAndamento,
-                  finalizada: false,
-                  pontuacao: userCandidate.pontuacao ? userCandidate.pontuacao : 0,
-                  candidato: {
-                    id: userCandidate.idUsuario,
-                    nome: userCandidate.usuario.nome,
-                    email: userCandidate.usuario.email,
-                    foto_perfil: userCandidate.usuario.foto_perfil,
-                    idade: currentDate.getFullYear() - userCandidate.usuario.data_nascimento.getFullYear(),
-                  }
-                }
+          if(userCandidate.pontuacao) {
+            
+            const userPoints = userCandidate.pontuacao
+            const totalPoints = 100
 
-                totalCandidates.push(candidateData)
+            const totalUserPoints = Math.round((userPoints * 100) / totalPoints)
 
-            }
+            userPercentage = totalUserPoints + '%'
 
-            } else {
-              
-              const candidateData : candidateData = { 
-                id_prova_usuario: userCandidate.id,
-                id_prova_andamento: userCandidate.idProvaAndamento,
-                finalizada: userCandidate.finalizada,
-                pontuacao: userCandidate.pontuacao ? userCandidate.pontuacao : 0,
-                candidato: {
-                  id: userCandidate.idUsuario,
-                  nome: userCandidate.usuario.nome,
-                  email: userCandidate.usuario.email,
-                  foto_perfil: userCandidate.usuario.foto_perfil,
-                  idade: currentDate.getFullYear() - userCandidate.usuario.data_nascimento.getFullYear(),
-                }
+          }
+
+          // console.log("finalizada: "+ userCandidate.finalizada)
+          const candidateData : candidateData = { 
+            id_prova_usuario: userCandidate.id,
+            id_prova_andamento: userCandidate.idProvaAndamento,
+            finalizada: userCandidate.finalizada,
+            // duracao: '01:10:05',
+            duracao: userTime ? userTime : null,
+            pontuacao: userCandidate.pontuacao ? userCandidate.pontuacao : null,
+            porcentagemAcertos: userPercentage ? userPercentage : null,
+            // porcentagemAcertos: '20%',
+            corrigida: userCandidate.pontuacao ? true : false,
+            candidato: {
+              id: userCandidate.idUsuario,
+              nome: userCandidate.usuario.nome,
+              email: userCandidate.usuario.email,
+              foto_perfil: userCandidate.usuario.foto_perfil,
+              idade: currentDate.getFullYear() - userCandidate.usuario.data_nascimento.getFullYear(),
+              localidade:{
+                estado: userAddress ? userAddress.cidade.nome : null,
+                cidade: userAddress ? userAddress.cidade.estado.nome : null,
               }
-
-              totalCandidates.push(candidateData)
-            
             }
-  
-          })
-  
+          }
+          
+            // console.log(candidateData)
+
+            totalCandidates.push(candidateData)
+
+        }
+
           return {
             data: totalCandidates,
             statusCode: 200
           }
-  
-        } else {
-          return {
-            error: "Nenhum candidato encontrado.",
-            statusCode: 404
-          }
-        }
-
+          
       } else {
         return {
           error: "Prova com o ID especificado não encontrada.",
@@ -287,16 +253,19 @@ export default class TestService {
     
   }
 
-  static async listTestDetails(id_prova: number) {
+  static async listTestDetails(id_prova_andamento: number) {
     
-      const testExist = await TestModel.findDetails(id_prova);
+      const testExist = await TestModel.findDetails(id_prova_andamento);
       
       if (testExist) {
+
+        const totalCandidates = await TestModel.findCandidates(id_prova_andamento)
 
         const testData = {
           titulo: testExist.prova.titulo,
           descricao: testExist.prova.descricao,
           duracao: testExist.duracao || null,
+          totalCandidatos: totalCandidates.length,
           dataFim: testExist.data_fim.toISOString().split('T')[0],
           empresa: {
             id: testExist.empresa.id,
@@ -305,6 +274,64 @@ export default class TestService {
           },
           tecnologias: testExist.prova.provaHabilidade,
           stacks: testExist.prova.provaStack,
+        }
+
+        return {
+            data: testData,
+            statusCode: 200,
+        };
+
+      } else {
+        return {
+          error: "Prova com o ID especificado não encontrada.",
+          statusCode: 404,
+        };
+      }
+
+    
+  }
+
+  static async listTestInfo(id_prova_andamento: number) {
+    
+      const testExist = await TestModel.findDetails(id_prova_andamento);
+      
+      if (testExist) {
+
+        const totalCandidates = await TestModel.findCandidates(id_prova_andamento)
+
+        let skillsTest : skillsTest[] = []
+        let stacksTest : stacksTest[] = []
+
+        testExist.prova.provaHabilidade.forEach((skill) => {
+
+          const skillData = {
+            id: skill.habilidade.id,
+            nome: skill.habilidade.nome,
+            icone: skill.habilidade.icone
+          }
+
+          skillsTest.push(skillData)
+
+        })
+
+        testExist.prova.provaStack.forEach((stack) => {
+
+          const stackData = {
+            id: stack.stack.id,
+            nome: stack.stack.nome
+          }
+
+          stacksTest.push(stackData)
+
+        })
+
+        const testData : testDetails = {
+          id: id_prova_andamento, 
+          titulo: testExist.prova.titulo,
+          descricao: testExist.prova.descricao,
+          totalCandidatos: totalCandidates.length,
+          provaStacks: stacksTest,
+          provaHabilidades: skillsTest
         }
 
         return {
@@ -342,7 +369,7 @@ export default class TestService {
 
     if(typeof id_prova_andamento === 'number') {
 
-      const testExist = await TestModel.findTest(id_prova_andamento)
+      const testExist = await TestModel.findTestProgress(id_prova_andamento)
 
       if(testExist) {
 
@@ -446,44 +473,31 @@ export default class TestService {
                 userPercentage = Math.round((userPoints * 100) / totalPoints)
 
               }
-              
-              const candidateHours = {
-                hours: '00',
-                minutes: '00',
-                seconds: '00'
-              }
-              
-              if(userTest.data_entrega) {  
-    
-                const totalSecondsDiff = Math.abs((userTest.data_entrega.getTime() - userTest.data_inicio.getTime()) / 1000)
-                
-                console.log('segundos totais: ' + totalSecondsDiff)
-                
-                const minutesDiff = Math.round(totalSecondsDiff / 60)
-                candidateHours.minutes = minutesDiff.toString().padStart(2, '0')
-                
-                const secondsDiff = Math.round(totalSecondsDiff % 60)
-                candidateHours.seconds = secondsDiff.toString().padStart(2, '0')
-                
-                console.log('segundos restantes: ' + secondsDiff)
 
-                if (minutesDiff > 60) {
-                  candidateHours.hours = (Math.round(minutesDiff / 60)).toString().padStart(2, '0')
-                  candidateHours.minutes = (Math.round(minutesDiff % 60)).toString().padStart(2, '0')
-                } else if(minutesDiff == 60) {
-                  candidateHours.hours = '01'
-                  candidateHours.minutes = '00'
-                }
+              let userTime : string = ''
 
-                console.log('minutos totais: ' + minutesDiff)
-    
+              if(userTest.data_entrega) {
+
+                const startDate = userTest.data_entrega.toISOString().split(/[\T\.]/)[0] + ' ' + userTest.data_entrega.toISOString().split(/[\T\.]/)[1]
+                const endDate = userTest.data_inicio.toISOString().split(/[\T\.]/)[0] + ' ' + userTest.data_inicio.toISOString().split(/[\T\.]/)[1]
+
+                console.log('entrega ' + startDate)
+                console.log('inicio ' + endDate)
+
+                const resultDiff : Object = await TestModel.getTimeDiff(startDate, endDate)
+                
+                const timeDiff : string = Object.values(resultDiff)[0].duracao.toISOString()
+
+                userTime = timeDiff.split(/[/T/.]/)[1]
+
               }
 
               const userInfos = {
                 id: user.id,
                 idProvaUsuario: userTest.id,
                 nome: user.nome,
-                tempo: candidateHours.hours + ':' + candidateHours.minutes + ':' + candidateHours.seconds,
+                tempo: userTime,
+
                 corrigida: userTest.pontuacao ? true : false,
                 pontuacao: userTest.pontuacao,
                 porcentagemAcertos: userPercentage,

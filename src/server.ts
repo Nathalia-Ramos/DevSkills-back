@@ -14,19 +14,20 @@ app.use(express.json());
 
 app.use(cors())
 
-import UserRoutes from "../routes/CompanyRoutes/UserCompanyRoutes"
-import AddresRoutes from "../routes/CompanyRoutes/AddressRoutes" 
-import ForgetPassword from "../routes/CompanyRoutes/ForgotPassword"
-import ResetPass  from "../routes/CompanyRoutes/ResetPassword"
-import GenderRoutes from "../routes/CommonRoutes/GenderRoutes"
+import AdminRoutes from "../routes/AdminRoutes/UserAdminRoutes";
+import GenderRoutes from "../routes/CommonRoutes/GenderRoutes";
+import SkillRoutes from "../routes/CommonRoutes/SkillsRoutes";
+import StackRoutes from "../routes/CommonRoutes/StacksRoutes";
+import AddresRoutes from "../routes/CompanyRoutes/AddressRoutes";
+import AuthRoutes from "../routes/CompanyRoutes/AuthRoutes";
+import UserCompanyController from "../routes/CompanyRoutes/find";
+import ForgetPassword from "../routes/CompanyRoutes/ForgotPassword";
+import PhoneRoutes from "../routes/CompanyRoutes/PhoneCompanyRoutes";
+import ResetPass from "../routes/CompanyRoutes/ResetPassword";
+import UserRoutes from "../routes/CompanyRoutes/UserCompanyRoutes";
 import DeveloperRoutes from "../routes/DeveloperRoutes/UserDeveloperRoutes";
-import StackRoutes from "../routes/CommonRoutes/StacksRoutes"
-import SkillRoutes from "../routes/CommonRoutes/SkillsRoutes"
-import PhoneRoutes from "../routes/CompanyRoutes/PhoneCompanyRoutes"
-import UserCompanyController from "../routes/CompanyRoutes/find"
-import AuthRoutes from "../routes/CompanyRoutes/AuthRoutes"
-import AdminRoutes from "../routes/AdminRoutes/UserAdminRoutes"
-import Test from "../routes/TestRoutes/TestRouter"
+import Group from "../routes/Group/GroupRoutes";
+import Test from "../routes/TestRoutes/TestRouter";
 
 app.use('/company', UserRoutes)
 app.use('/user', UserRoutes)
@@ -42,7 +43,23 @@ app.use('/phone', PhoneRoutes)
 app.use('/find', UserCompanyController)
 app.use('/auth', AuthRoutes)
 app.use('/admin', AdminRoutes)
+app.use('/group', Group)
 
 app.listen(process.env.PORT || 4041, () => {
     console.log("Server running")
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
