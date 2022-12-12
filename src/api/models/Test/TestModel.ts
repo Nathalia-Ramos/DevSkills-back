@@ -255,13 +255,18 @@ export default class TestModel {
             nome_fantasia: true,
             logo: true,
             id: true
-          }
+          },
         },
         prova:{
           select:{
             titulo: true,
             descricao: true,
             link_repositorio: true,
+            provaTipo:{
+              select: {
+                tipo: true,
+              }
+            },
             provaHabilidade: {
               select:{
                 habilidade:{
@@ -282,7 +287,8 @@ export default class TestModel {
                   }
                 }
               }
-            }
+            },
+
           }
         }
       }

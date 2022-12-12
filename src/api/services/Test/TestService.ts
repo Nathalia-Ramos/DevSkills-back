@@ -267,6 +267,7 @@ export default class TestService {
           duracao: testExist.duracao || null,
           totalCandidatos: totalCandidates.length,
           dataFim: testExist.data_fim.toISOString().split('T')[0],
+          tipo: testExist.prova.provaTipo.tipo,
           empresa: {
             id: testExist.empresa.id,
             logo: testExist.empresa.logo,
@@ -274,6 +275,7 @@ export default class TestService {
           },
           tecnologias: testExist.prova.provaHabilidade,
           stacks: testExist.prova.provaStack,
+          
         }
 
         return {

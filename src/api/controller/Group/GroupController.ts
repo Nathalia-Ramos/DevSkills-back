@@ -12,14 +12,14 @@ export default class GroupController {
     return res.status(201).json({ message: "Grupo cadastrado com sucesso!" });
   }
   static async resposta(req: Request, res: Response) {
-    const { idUsuario, status, idGrupo } = req.body;
-    //    console.log(req.body)
+    // const { idUsuario, status, idGrupo } = req.body;
+    // //    console.log(req.body)
 
-    const teste = await GroupService.resposta(idUsuario, status, idGrupo);
-    //  console.log(idGrupo)
-    // console.log(teste, "controller")
+    // const teste = await GroupService.resposta(idUsuario, status, idGrupo);
+    // //  console.log(idGrupo)
+    // // console.log(teste, "controller")
 
-    return res.status(201).json({ message: "Resposta enviada!" });
+    // return res.status(201).json({ message: "Resposta enviada!" });
   }
   static async getCompanyGroups(req: Request, res: Response) {
     const { id } = req.params;
@@ -72,26 +72,26 @@ export default class GroupController {
 
     return res.status(200).json({ data: data });
   }
-  
-    }
-    static async convitePendente(req: Request, res: Response){
-        const { idUsuario } = req.params
 
-        const data = await GroupService.convitePendente(parseInt(idUsuario))
-     
-        if(data === null ) return res.status(404).json({error: "id não encontrado"})
+  static async convitePendente(req: Request, res: Response) {
+    const { idUsuario } = req.params;
 
-        return res.status(200).json({data: data})
-    }
-    static async groupById(req: Request, res: Response){
-        const { id } = req.params
+    const data = await GroupService.convitePendente(parseInt(idUsuario));
 
-        const data = await GroupService.groupById(parseInt(id))
-     
-        if(data === null ) return res.status(404).json({error: "grupo não encontrado"})
+    if (data === null)
+      return res.status(404).json({ error: "id não encontrado" });
 
-        return res.status(200).json({data: data})
+    return res.status(200).json({ data: data });
+  }
 
-    }
+  static async groupById(req: Request, res: Response) {
+    const { id } = req.params;
 
+    const data = await GroupService.groupById(parseInt(id));
+
+    if (data === null)
+      return res.status(404).json({ error: "grupo não encontrado" });
+
+    return res.status(200).json({ data: data });
+  }
 }

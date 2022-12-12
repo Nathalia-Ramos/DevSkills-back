@@ -4,18 +4,15 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import Jwt from "jsonwebtoken";
 
-
-
 export default class AuthDeveloperController {
-    static async auth(req: Request, res: Response) {
+  static async auth(req: Request, res: Response) {
+    const login = req.body;
 
-const login = req.body
+    const password = login.senha;
 
-        const password = login.senha
+    const findUser = await UserDeveloperModel.findLogin(login);
 
-        const findUser = await UserDeveloperModel.findLogin(login)
-
-      /*  if(await bcrypt.compare(password, findUser.senha)) {
+    /*  if(await bcrypt.compare(password, findUser.senha)) {
             const data = {
                 nome: login.nome,
                 idUsuario: login.id,
@@ -26,5 +23,5 @@ const login = req.body
 
         res.status(200).json({ data: data, token: token})
         }*/
-    }
+  }
 }
