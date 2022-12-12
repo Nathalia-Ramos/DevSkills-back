@@ -577,14 +577,6 @@ export default class DeveloperService {
       };
     }
   }
-  static async getUsers() {
-    const result = await DeveloperModel.getAllUsers();
-    console.log("ususarios:", result);
-
-    return result;
-  }
-
-}
 
   static async filterTests(tokenValidate: TokenData | ErrorReturn) {
 

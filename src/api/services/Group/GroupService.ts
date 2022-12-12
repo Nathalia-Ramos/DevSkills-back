@@ -34,85 +34,25 @@ export default class createGroup{
        }
     }
     static async resposta (idUsuario: any, status: any, idGrupo: number){
-        await GroupsModel.getGroup(idGrupo)
-       
-       const getStatus =  await GroupsModel.statusGet(status)
-       const statusID = getStatus.id
- 
-       const groupInvite = await GroupsModel.findInvite(idUsuario, idGrupo)
- 
-       if(groupInvite) {
-           switch (status) {
-               case "ACEITO":
-                   await GroupsModel.createGroupUser(idGrupo, idUsuario) && console.error(await GroupsModel.updateGroupStatus(idUsuario, statusID, groupInvite?.id));
-                //   console.log(statusID, status)
-                       break;
-               case "NEGADO":
-                   await GroupsModel.updateGroupStatus(idUsuario, statusID, groupInvite?.id)
-                   break;
-               }  
-       }
-       
-    }
+      await GroupsModel.getGroup(idGrupo)
+     
+     const getStatus =  await GroupsModel.statusGet(status)
+     const statusID = getStatus.id
 
-      const getConvitStatus = await GroupsModel.GetStatusConvite(group.id);
-      const getIdConvite = getConvitStatus.id;
-      console.log(getIdConvite, "scrr deus");
+     const groupInvite = await GroupsModel.findInvite(idUsuario, idGrupo)
 
-      try {
-        group.candidatos.forEach(async (idUsuario: any) => {
-          console.error(
-            await GroupsModel.createGroupStatus(
-              getIdConvite,
-              groupId,
-              idUsuario
-            )
-          );
-        });
-      } catch (error: any) {
-        console.error("teste", error);
-      }
-
-      try {
-        group.id_prova_andamento.forEach(async (value: any) => {
-          await GroupsModel.createTestGroup(value, groupId);
-        });
-      } catch (error: any) {
-        console.error(error);
-      }
-    }
-  }
-  static async resposta(idUsuario: any, status: any, idGrupo: number) {
-    await GroupsModel.getGroup(idGrupo);
-
-    const getStatus = await GroupsModel.statusGet(status);
-    const statusID = getStatus.id;
-
-    const groupInvite = await GroupsModel.findInvite(idUsuario, idGrupo);
-
-    if (groupInvite) {
-      switch (status) {
-        case "ACEITO":
-          (await GroupsModel.createGroupUser(idGrupo, idUsuario)) &&
-            console.error(
-              await GroupsModel.updateGroupStatus(
-                idUsuario,
-                statusID,
-                groupInvite?.id
-              )
-            );
-          //   console.log(statusID, status)
-          break;
-        case "NEGADO":
-          await GroupsModel.updateGroupStatus(
-            idUsuario,
-            statusID,
-            groupInvite?.id
-          );
-          break;
-      }
-    }
-    
+     if(groupInvite) {
+         switch (status) {
+             case "ACEITO":
+                 await GroupsModel.createGroupUser(idGrupo, idUsuario) && console.error(await GroupsModel.updateGroupStatus(idUsuario, statusID, groupInvite?.id));
+              //   console.log(statusID, status)
+                     break;
+             case "NEGADO":
+                 await GroupsModel.updateGroupStatus(idUsuario, statusID, groupInvite?.id)
+                 break;
+             }  
+     }
+     
   }
 
     static async convitePendente(idUsuario: number){
@@ -157,11 +97,6 @@ export default class createGroup{
   }
   static async notificationGroup(id: number) {
     const result = await GroupsModel.convite(id);
-
-    return result;
-  }
-  static async convitePendente(id: number) {
-    const result = await GroupsModel.convitePendente(id);
 
     return result;
   }

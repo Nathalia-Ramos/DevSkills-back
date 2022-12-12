@@ -73,7 +73,7 @@ export default class GroupController {
     return res.status(200).json({ data: data });
   }
   
-    }
+  
     static async convitePendente(req: Request, res: Response){
         const { idUsuario } = req.params
 
