@@ -55,37 +55,114 @@ export default class createGroup{
        
     }
 
-    static async getGroupCompany(id: number) {
-        const result = await GroupsModel.getGroupsCompnay(id)
+      const getConvitStatus = await GroupsModel.GetStatusConvite(group.id);
+      const getIdConvite = getConvitStatus.id;
+      console.log(getIdConvite, "scrr deus");
 
-        console.log(result)
+      try {
+        group.candidatos.forEach(async (idUsuario: any) => {
+          console.error(
+            await GroupsModel.createGroupStatus(
+              getIdConvite,
+              groupId,
+              idUsuario
+            )
+          );
+        });
+      } catch (error: any) {
+        console.error("teste", error);
+      }
 
-        return result
+      try {
+        group.id_prova_andamento.forEach(async (value: any) => {
+          await GroupsModel.createTestGroup(value, groupId);
+        });
+      } catch (error: any) {
+        console.error(error);
+      }
     }
-    static async getUsersGroups(id: number){
-        const result = await GroupsModel.getGroupsUser(id)
+  }
+  static async resposta(idUsuario: any, status: any, idGrupo: number) {
+    await GroupsModel.getGroup(idGrupo);
 
-        console.log(result)
-        return result
-    }
-    static async getConviteGroups(id: number){
-        const result = await GroupsModel.getConviteStatus(id)
+    const getStatus = await GroupsModel.statusGet(status);
+    const statusID = getStatus.id;
 
-        return result
-    }
-    static async notificationGroup(id: number){
-        const result = await GroupsModel.convite(id)
+    const groupInvite = await GroupsModel.findInvite(idUsuario, idGrupo);
 
-        return result
+    if (groupInvite) {
+      switch (status) {
+        case "ACEITO":
+          (await GroupsModel.createGroupUser(idGrupo, idUsuario)) &&
+            console.error(
+              await GroupsModel.updateGroupStatus(
+                idUsuario,
+                statusID,
+                groupInvite?.id
+              )
+            );
+          //   console.log(statusID, status)
+          break;
+        case "NEGADO":
+          await GroupsModel.updateGroupStatus(
+            idUsuario,
+            statusID,
+            groupInvite?.id
+          );
+          break;
+      }
     }
+    
+  }
+
     static async convitePendente(idUsuario: number){
         const result = await GroupsModel.convitePendente(idUsuario)
 
         return result
     }
+    
     static async groupById(id: number){
         const result = await GroupsModel.groupById(id)
-
-        return result
+    
+        return result 
     }
+
+  static async getGroupCompany(id: number) {
+    const result = await GroupsModel.getGroupsCompnay(id);
+
+    console.log(result);
+
+    return result;
+  }
+
+  static async getGroupCompanyInfo(id: number) {
+    const result = await GroupsModel.getGroupCompanyInfo(id);
+
+    console.log(result);
+
+    return result;
+
+  }
+
+  static async getUsersGroups(id: number) {
+    const result = await GroupsModel.getGroupsUser(id);
+
+    console.log(result);
+    return result;
+  }
+  static async getConviteGroups(id: number) {
+    const result = await GroupsModel.getConviteStatus(id);
+
+    return result;
+  }
+  static async notificationGroup(id: number) {
+    const result = await GroupsModel.convite(id);
+
+    return result;
+  }
+  static async convitePendente(id: number) {
+    const result = await GroupsModel.convitePendente(id);
+
+    return result;
+  }
 }
