@@ -478,17 +478,3 @@ export default class UserCompanyModel {
    }
   }
 
-/* select:{
-    conviteStatus:{
-       select:{
-        convite:{
-          where:{
-            conviteStatus:{
-              status:{
-                contains: "PENDENTE"
-              }
-            }
-          }
-        }
-       }
-    },*/

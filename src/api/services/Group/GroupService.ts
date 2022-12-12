@@ -4,6 +4,7 @@ import GroupsModel from "../../models/Group/GroupsModel";
 import TokenData from "../../interfaces/Token/Token";
 import { ErrorReturn } from "../../interfaces/ReturnPattern/Returns";
 
+
 export default class createGroup {
   static async create(group: Grupos) {
     if (
@@ -105,6 +106,7 @@ export default class createGroup {
     const result = await GroupsModel.convitePendente(idUsuario);
 
     return result;
+
   }
 
   static async groupById(id: number) {
@@ -146,4 +148,6 @@ export default class createGroup {
     return result;
   }
 
+
 }
+
