@@ -452,7 +452,11 @@ export default class TestService {
                   
                     if(value.idQuestaoProva == userQuestion.idQuestaoProva) {
                       
-                      if(value.correta) correctAnswer = true
+                      if(value.correta) {
+                        correctAnswer = true
+                      } else {
+                        correctAnswer = false
+                      }
 
                       if(optionAnswers.find((choice) => { if(choice.idAlternativaProva == value.id) return choice })) selected = true
   
