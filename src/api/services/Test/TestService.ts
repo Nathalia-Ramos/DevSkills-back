@@ -423,7 +423,7 @@ export default class TestService {
   
                     if(userAnswer) {
                       const question = {
-                        id: userQuestion.id,
+                        id: (userQuestion.id + 1),
                         enunciado: userQuestion.questaoProva.enunciado,
                         tipo: userQuestion.questaoProva.questaoProvaTipo.tipo,
                         foto: userQuestion.questaoProva.foto,
@@ -455,7 +455,7 @@ export default class TestService {
                   })
     
                     const question = {
-                      id: userQuestion.id,
+                      id: (userQuestion.id + 1),
                       enunciado: userQuestion.questaoProva.enunciado,
                       tipo: userQuestion.questaoProva.questaoProvaTipo.tipo,
                       foto: userQuestion.questaoProva.foto,
