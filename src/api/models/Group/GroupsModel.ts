@@ -1,4 +1,12 @@
-import { Convite, ConviteStatus, Empresa, EmpresaTelefone, Grupo, GrupoUsuario, prisma, ProvaGrupo, Usuario } from "@prisma/client";
+import {
+  Convite,
+  ConviteStatus,
+  Empresa,
+  Grupo,
+  GrupoUsuario,
+  ProvaGrupo,
+  Usuario,
+} from "@prisma/client";
 import { prismaClient } from "../../../database/prismaClient";
 import Group from "../../interfaces/Groups/group";
 
@@ -380,101 +388,99 @@ export default class UserCompanyModel {
           select: {
             id: true,
             nome: true,
-            descricao: true
-          }
+            descricao: true,
+          },
         },
-         usuario:{
-          select:{
-            grupoUsuario:{
-              select:{
-                grupo:{
+        usuario: {
+          select: {
+            grupoUsuario: {
+              select: {
+                grupo: {
                   select: {
-                    provaGrupo:{
-                      select:{
-                        provaAndamento:{
-                          select:{
-                            empresa:{
-                              select:{
+                    provaGrupo: {
+                      select: {
+                        provaAndamento: {
+                          select: {
+                            empresa: {
+                              select: {
                                 id: true,
                                 nome_fantasia: true,
                                 logo: true,
                               },
                             },
-                            prova:{
-                              select:{
+                            prova: {
+                              select: {
                                 id: true,
                                 titulo: true,
-                                ativo: true
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-         },
-        conviteStatus:{
-          select:{
+                                ativo: true,
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        conviteStatus: {
+          select: {
             id: true,
-            status: true
-          }
-        }
-      }
-    })
-   }
-  
-   static async groupById(id: number) : Promise <Grupo | any>{
-    return await prismaClient.grupo.findFirst({
-      where:{
-        id: id
+            status: true,
+          },
+        },
       },
-      select:{
+    });
+  }
+
+  static async groupById(id: number): Promise<Grupo | any> {
+    return await prismaClient.grupo.findFirst({
+      where: {
+        id: id,
+      },
+      select: {
         id: true,
         nome: true,
         descricao: true,
-        provaGrupo:{
-          select:{
-            provaAndamento:{
-              select:{
-                prova:{
-                 select:{
-                  id: true,
-                  titulo: true,
-                  descricao: true,
-                  provaHabilidade:{
-                    select:{
-                      habilidade:{
-                        select:{
-                          id: true,
-                          nome: true,
-                          icone: true
-                        }
-                      }
-                    }
+        provaGrupo: {
+          select: {
+            provaAndamento: {
+              select: {
+                prova: {
+                  select: {
+                    id: true,
+                    titulo: true,
+                    descricao: true,
+                    provaHabilidade: {
+                      select: {
+                        habilidade: {
+                          select: {
+                            id: true,
+                            nome: true,
+                            icone: true,
+                          },
+                        },
+                      },
+                    },
+                    provaStack: {
+                      select: {
+                        stack: {
+                          select: {
+                            id: true,
+                            nome: true,
+                          },
+                        },
+                      },
+                    },
                   },
-                  provaStack:{
-                    select:{
-                      stack:{
-                        select:{
-                          id: true,
-                          nome: true
-                        }
-                      }
-                    }
-                  }
-                 }
-                }
-              }
-            }
-          }
-        }
-
-      }
-    })
-   }
+                },
+              },
+            },
+          },
+        },
+      },
+    });
   }
-
+}
