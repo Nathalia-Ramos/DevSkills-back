@@ -480,13 +480,20 @@ export default class UserDeveloperModel {
 
   static async createLogin(
     password: string,
-    id_usuario: number
-  ): Promise<LoginUsuario> {
+    id_usuario: number,
+  ): Promise<LoginUsuario | any> {
     return await prisma.loginUsuario.create({
       data: {
         senha: password,
         idUsuario: id_usuario,
       },
+      select:{
+        usuario:{
+          select:{
+            foto_perfil: true
+          }
+        }
+      }
     });
   }
 

@@ -23,6 +23,7 @@ import filter from "../../interfaces/Test/AdminFilter";
 import Test from "../../interfaces/Test/Test";
 import TestProgress from "../../interfaces/Test/TestProgress";
 import { Question } from "../../interfaces/Test/Tests";
+import { idText } from "typescript";
 
 export default class TestModel {
   static async createTest({
@@ -72,11 +73,25 @@ export default class TestModel {
                 include:{
                   questaoProva: {
                     include:{
-                      questaoProvaTipo: true
+                      questaoProvaTipo: true,
+                      alternativaProva: true,
                     }
-                  }
+                  },
                 }
             })
+  }
+
+  static async updateUserPoints(id_prova_usuario: number, points: number) {
+    return await prismaClient.usuarioProva.update({
+      where:{
+        id: id_prova_usuario
+      },
+      data:{
+        pontuacao: {
+          increment: points
+        }
+      }
+    })
   }
 
   static async findTextQuestions(id_prova: number) {
@@ -88,6 +103,17 @@ export default class TestModel {
             tipo: "DISSERTATIVA"
           }
         }
+      }
+    })
+  }
+
+  static async updateTestPoint(id_usuario_prova: number, points: number) {
+    return await prismaClient.usuarioProva.update({
+      where:{
+        id: id_usuario_prova
+      },
+      data:{
+        pontuacao: points
       }
     })
   }
@@ -329,6 +355,34 @@ export default class TestModel {
         idUsuario: id_usuario,
       },
     });
+  }
+
+  static async findTextAnswer(
+    id_questao: number,
+    id_usuario_prova: number) {
+    return await prismaClient.respostaQuestaoProva.findFirst({
+      where:{
+        idQuestaoProva: id_questao,
+        idUsuarioProva: id_usuario_prova
+      }
+    })
+  }
+
+  static async findChoiceAnswer(
+    id_questao: number,
+    id_usuario_prova: number
+  ) {
+    return await prismaClient.respostaAlternativaProva.findMany({
+      where:{
+        idUsuarioProva: id_usuario_prova,
+        alternativaProva:{
+          idQuestaoProva: id_questao
+        }
+      },
+      include:{
+        alternativaProva: true
+      }
+    })
   }
 
   static async findUserTestByID(id_prova_usuario: number) {

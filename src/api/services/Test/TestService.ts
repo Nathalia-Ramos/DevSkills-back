@@ -426,6 +426,7 @@ export default class TestService {
                         id: userQuestion.id,
                         enunciado: userQuestion.questaoProva.enunciado,
                         tipo: userQuestion.questaoProva.questaoProvaTipo.tipo,
+                        foto: userQuestion.questaoProva.foto,
                         resposta: {
                           id: userAnswer.id,
                           texto: userAnswer.resposta
@@ -457,6 +458,7 @@ export default class TestService {
                       id: userQuestion.id,
                       enunciado: userQuestion.questaoProva.enunciado,
                       tipo: userQuestion.questaoProva.questaoProvaTipo.tipo,
+                      foto: userQuestion.questaoProva.foto,
                       acertou: userQuestion.questaoProva.alternativaProva.correta,
                       alternativas: options
                     }
@@ -471,6 +473,20 @@ export default class TestService {
             
               const userTest = userAnswer.usuario.usuarioProva[0]
               const user = userAnswer.usuario
+    
+              let userPercentage : number = 0
+              
+              // const totalQuestions = allQuestions.length
+              if(userTest.pontuacao) {
+
+                const totalPoints = 100
+
+                const userPoints = userTest.pontuacao
+
+                userPercentage = Math.round((userPoints * 100) / totalPoints)
+
+              }
+
               let userTime : string = ''
 
               if(userTest.data_entrega) {
@@ -494,8 +510,10 @@ export default class TestService {
                 idProvaUsuario: userTest.id,
                 nome: user.nome,
                 tempo: userTime,
+
                 corrigida: userTest.pontuacao ? true : false,
                 pontuacao: userTest.pontuacao,
+                porcentagemAcertos: userPercentage,
                 questoes: questionData
               }
     
@@ -791,7 +809,7 @@ export default class TestService {
             error: "Prova já corrigida.",
             statusCode: 400
           }
-        } 
+        }
 
         for(let i = 0; i < correctAnswer.length; i++) {
           
@@ -842,16 +860,101 @@ export default class TestService {
               const updatedAnswer = await TestModel.correctAnswer(
                 answerExist.id,
                 correctQuestion.correta);
-                
+
               console.log(updatedAnswer);
+              
             } catch (error) {
               return {
                 error: error,
                 statusCode: 500,
               };
             }
+
           }       
         }
+        
+        const allQuestions = await TestModel.findAllQuestions(testExist.idProva)
+
+        const totalPoints = 100
+        const questionPoints = Math.floor(totalPoints / allQuestions.length)
+        let totalChecks : number = 0
+
+        console.log("cada questao vale: " + questionPoints)
+
+        // definindo pontuacao como 0
+        await TestModel.updateTestPoint(userTestExist.id, 0)
+        
+        allQuestions.forEach(async question => {
+          
+          const questionType = question.questaoProva.questaoProvaTipo.tipo
+
+          if(questionType == 'DISSERTATIVA') {
+            
+            const userAnswer = await TestModel.findTextAnswer(question.idQuestaoProva, userTestExist.id)
+
+            if(userAnswer) {
+              if(userAnswer?.correta) {
+                
+                const updatePoints = await TestModel.updateUserPoints(
+                userTestExist.id,
+                questionPoints)
+
+                totalChecks++
+                
+                console.log(totalChecks)
+                console.log('corrigiu a ' + question.idQuestaoProva);
+                
+              }
+            }
+
+          } else if (questionType == 'UNICA_ESCOLHA') {
+
+            const userAnswer = await TestModel.findChoiceAnswer(
+              question.idQuestaoProva,
+              userTestExist.id)
+
+            if(userAnswer) {
+              if(userAnswer[0].alternativaProva.correta) {
+                
+                const updatePoints = await TestModel.updateUserPoints(
+                  userTestExist.id,
+                  questionPoints)
+                  
+                  totalChecks++
+                  console.log('corrigiu a ' + question.idQuestaoProva);
+                  
+                }
+              }
+              
+            } else {
+              
+              const userAnswer = await TestModel.findChoiceAnswer(
+                question.idQuestaoProva,
+                userTestExist.id)
+                
+                userAnswer.forEach(async answer => {
+                  
+                  if(answer.alternativaProva.correta) {
+                    
+                    const updatePoints = await TestModel.updateUserPoints(
+                      userTestExist.id,
+                      questionPoints)
+                      
+                    totalChecks++
+                    console.log('corrigiu a ' + question.idQuestaoProva);
+              
+                }
+              });
+
+          }
+
+          if(totalChecks == allQuestions.length) {
+            await TestModel.updateTestPoint(userTestExist.id, 100)
+          }
+
+        })
+
+        // console.log(await TestModel.findUserTestByID(userTestExist.id))
 
         return {
           message: "Respostas corrigidas com sucesso!",
