@@ -44,9 +44,9 @@ export default class AnswerTestService {
 
                                         if (userAnswers.length > 0) {
 
-                                            const allQuestions = (await TestModel.findAllQuestions(userTestExist.provaAndamento.prova.id)).length
+                                            const allQuestions = await TestModel.findAllQuestions(userTestExist.provaAndamento.prova.id)
 
-                                            if(allQuestions != userAnswers.length) {
+                                            if(allQuestions.length != userAnswers.length) {
                                                 return {
                                                     error: "A prova consta como finalizada, porém, o usuário não respondeu todas as " + allQuestions + " questões.",
                                                     statusCode: 400
@@ -238,6 +238,98 @@ export default class AnswerTestService {
                                                     error: "Ocorreu um erro interno. INFOS: " + error,
                                                     statusCode: 500
                                                 }
+                                            }
+
+                                            for(let i = 0; i < allQuestions.length; i++){
+
+                                                const totalPoints = 100
+                                                const questionPoints = Math.floor(totalPoints / allQuestions.length)
+                                                let totalChecks : number = 0
+                                        
+                                                console.log("cada questao vale: " + questionPoints)
+                                        
+                                                // definindo pontuacao como 0
+                                                await TestModel.updateTestPoint(userTestExist.id, 0)
+                                                
+                                                allQuestions.forEach(async question => {
+                                                  
+                                                  const questionType = question.questaoProva.questaoProvaTipo.tipo
+                                        
+                                                  if(questionType == 'DISSERTATIVA') {
+                                                    
+                                                    const userAnswer = await TestModel.findTextAnswer(question.idQuestaoProva, userTestExist.id)
+                                        
+                                                    if(userAnswer) {
+                                                      if(userAnswer?.correta) {
+                                                        
+                                                        const updatePoints = await TestModel.updateTestPoints(
+                                                        userTestExist.id,
+                                                        questionPoints)
+                                        
+                                                        totalChecks++
+                                                        
+                                                        console.log(totalChecks)
+                                                        console.log('corrigiu a ' + question.idQuestaoProva);
+                                                        
+                                                      }
+                                                    }
+                                        
+                                                  } else if (questionType == 'UNICA_ESCOLHA') {
+                                        
+                                                    const userAnswer = await TestModel.findChoiceAnswer(
+                                                      question.idQuestaoProva,
+                                                      userTestExist.id)
+                                        
+                                                    if(userAnswer) {
+                                                      if(userAnswer[0].alternativaProva.correta) {
+                                                        
+                                                        const updatePoints = await TestModel.updateTestPoints(
+                                                          userTestExist.id,
+                                                          questionPoints)
+                                                          
+                                                          totalChecks++
+                                                          console.log('corrigiu a ' + question.idQuestaoProva);
+                                                          
+                                                        }
+                                                      }
+                                                      
+                                                    } else {
+                                                      
+                                                      const userAnswer = await TestModel.findChoiceAnswer(
+                                                        question.idQuestaoProva,
+                                                        userTestExist.id)
+                                                        
+                                                        userAnswer.forEach(async answer => {
+                                                          
+                                                          if(answer.alternativaProva.correta) {
+                                                            
+                                                            const updatePoints = await TestModel.updateTestPoints(
+                                                              userTestExist.id,
+                                                              questionPoints)
+                                                              
+                                                            totalChecks++
+                                                            console.log('corrigiu a ' + question.idQuestaoProva);
+                                                      
+                                                        }
+                                                      });
+                                        
+                                                  }
+                                        
+                                                  if(totalChecks == allQuestions.length) {
+                                                    await TestModel.updateTestPoint(userTestExist.id, 100)
+                                                  }
+
+                                                  try {
+                                                        const userPoints = totalChecks * questionPoints
+                                                        await TestModel.updateUserPoints(userTestExist.idUsuario, userPoints)
+                                                  } catch (error) {
+                                                        return {
+                                                            error: error,
+                                                            statusCode: 500
+                                                        }                                                   
+                                                  }
+
+                                                })
                                             }
 
                                             return {
