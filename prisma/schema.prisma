@@ -18,7 +18,7 @@ model Usuario {
   tag                  String   @db.VarChar(20)
   ativo                Boolean  @db.TinyInt
   pontuacao_plataforma Int      @db.Int
-  foto_perfil          String?  @db.VarChar(150)
+  foto_perfil          String?  @db.Text
   biografia            String?  @db.Text
   link_github          String?  @db.Text
   link_portfolio       String?  @db.Text
@@ -441,7 +441,7 @@ model Empresa {
   nome_fantasia String  @db.VarChar(180)
   ativo         Boolean @db.TinyInt
   biografia     String? @db.Text
-  logo          String? @db.VarChar(120)
+  logo          String? @db.Text
 
   // Relacionamento com EnderecoEmpresa
   enderecoEmpresa EnderecoEmpresa @relation(fields: [idEndereco], references: [id])
