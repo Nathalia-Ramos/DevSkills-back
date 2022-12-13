@@ -81,13 +81,26 @@ export default class TestModel {
             })
   }
 
-  static async updateUserPoints(id_prova_usuario: number, points: number) {
+  static async updateTestPoints(id_prova_usuario: number, points: number) {
     return await prismaClient.usuarioProva.update({
       where:{
         id: id_prova_usuario
       },
       data:{
         pontuacao: {
+          increment: points
+        }
+      }
+    })
+  }
+
+  static async updateUserPoints(id_usuario: number, points: number) {
+    return await prismaClient.usuario.update({
+      where:{
+        id: id_usuario
+      },
+      data:{
+        pontuacao_plataforma:{
           increment: points
         }
       }

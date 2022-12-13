@@ -1028,6 +1028,16 @@ export default class TestService {
 
         })
 
+        try {
+          const userPoints = totalChecks * questionPoints
+          await TestModel.updateUserPoints(userTestExist.idUsuario, userPoints)
+        } catch (error) {
+            return {
+              error: error,
+              statusCode: 500
+            }                                                   
+        }
+
         // console.log(await TestModel.findUserTestByID(userTestExist.id))
 
         return {
