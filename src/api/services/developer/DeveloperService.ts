@@ -185,6 +185,7 @@ export default class DeveloperService {
               id: userExist.id,
               tag: userExist.tag,
               fotoPerfil: userExist.foto_perfil,
+              nome: userExist.nome,
             },
             userType: "DEVELOPER",
             statusCode: 200,
