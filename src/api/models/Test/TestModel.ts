@@ -94,19 +94,6 @@ export default class TestModel {
     })
   }
 
-  static async updateUserPoints(id_usuario: number, points: number) {
-    return await prismaClient.usuario.update({
-      where:{
-        id: id_usuario
-      },
-      data:{
-        pontuacao_plataforma:{
-          increment: points
-        }
-      }
-    })
-  }
-
   static async findTextQuestions(id_prova: number) {
     return await prismaClient.provasTodasQuestoes.findMany({
       where:{

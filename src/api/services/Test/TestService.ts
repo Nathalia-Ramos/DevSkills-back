@@ -107,7 +107,7 @@ export default class TestService {
                 };
               }
               console.log(questions);
-            } catch (error: any) {
+            } catch (error) {
               console.error(error);
             }
             return ReturnMessages.Success;
@@ -313,7 +313,7 @@ export default class TestService {
         let skillsTest : skillsTest[] = []
         let stacksTest : stacksTest[] = []
 
-        testExist.prova.provaHabilidade.forEach((skill) => {
+        testExist.prova.provaHabilidade.forEach((skill: any) => {
 
           const skillData = {
             id: skill.habilidade.id,
@@ -325,7 +325,7 @@ export default class TestService {
 
         })
 
-        testExist.prova.provaStack.forEach((stack) => {
+        testExist.prova.provaStack.forEach((stack: any) => {
 
           const stackData = {
             id: stack.stack.id,
@@ -411,7 +411,7 @@ export default class TestService {
             
             const textAnswers = userInfo[0]?.respostaQuestaoProva
             
-            const textQuestionIDS = textAnswers.map((value) => value.idQuestaoProva)
+            const textQuestionIDS = textAnswers.map((value: any) => value.idQuestaoProva)
   
             for(let i = 0; i < allQuestions.length; i++) {
             
@@ -421,7 +421,7 @@ export default class TestService {
       
                 if(textQuestionIDS.includes(userQuestion.idQuestaoProva)) {
                   
-                  const userAnswer = textAnswers.find((value) => value.idQuestaoProva == userQuestion.idQuestaoProva)
+                  const userAnswer = textAnswers.find((value: any) => value.idQuestaoProva == userQuestion.idQuestaoProva)
 
                   if(userAnswer) {
                     const question = {
@@ -458,7 +458,7 @@ export default class TestService {
                         correctAnswer = false
                       }
 
-                      if(optionAnswers.find((choice) => { if(choice.idAlternativaProva == value.id) return choice })) selected = true
+                      if(optionAnswers.find((choice: any) => { if(choice.idAlternativaProva == value.id) return choice })) selected = true
   
                       options.push({
                         id: value.id,
@@ -958,7 +958,7 @@ export default class TestService {
         // definindo pontuacao como 0
         await TestModel.updateTestPoint(userTestExist.id, 0)
         
-        allQuestions.forEach(async question => {
+        allQuestions.forEach(async (question: any) => {
           
           const questionType = question.questaoProva.questaoProvaTipo.tipo
 
@@ -969,7 +969,7 @@ export default class TestService {
             if(userAnswer) {
               if(userAnswer?.correta) {
                 
-                const updatePoints = await TestModel.updateUserPoints(
+                const updatePoints = await TestModel.updateTestPoints(
                 userTestExist.id,
                 questionPoints)
 
@@ -990,7 +990,7 @@ export default class TestService {
             if(userAnswer) {
               if(userAnswer[0].alternativaProva.correta) {
                 
-                const updatePoints = await TestModel.updateUserPoints(
+                const updatePoints = await TestModel.updateTestPoints(
                   userTestExist.id,
                   questionPoints)
                   
@@ -1006,11 +1006,11 @@ export default class TestService {
                 question.idQuestaoProva,
                 userTestExist.id)
                 
-                userAnswer.forEach(async answer => {
+                userAnswer.forEach(async (answer: any) => {
                   
                   if(answer.alternativaProva.correta) {
                     
-                    const updatePoints = await TestModel.updateUserPoints(
+                    const updatePoints = await TestModel.updateTestPoints(
                       userTestExist.id,
                       questionPoints)
                       
@@ -1027,16 +1027,6 @@ export default class TestService {
           }
 
         })
-
-        try {
-          const userPoints = totalChecks * questionPoints
-          await TestModel.updateUserPoints(userTestExist.idUsuario, userPoints)
-        } catch (error) {
-            return {
-              error: error,
-              statusCode: 500
-            }                                                   
-        }
 
         // console.log(await TestModel.findUserTestByID(userTestExist.id))
 
