@@ -413,62 +413,132 @@ export default class TestService {
             
             const textQuestionIDS = textAnswers.map((value) => value.idQuestaoProva)
   
-              allQuestions.forEach((userQuestion: any) => {
-              
-                if(userQuestion.questaoProva.questaoProvaTipo.tipo === 'DISSERTATIVA') {
+            for(let i = 0; i < allQuestions.length; i++) {
+            
+              const userQuestion = allQuestions[i]
+
+              if(userQuestion.questaoProva.questaoProvaTipo.tipo === 'DISSERTATIVA') {
       
-                  if(textQuestionIDS.includes(userQuestion.idQuestaoProva)) {
-                    
-                    const userAnswer = textAnswers.find((value) => value.idQuestaoProva == userQuestion.idQuestaoProva)
-  
-                    if(userAnswer) {
-                      const question = {
-                        id: (userQuestion.id + 1),
-                        enunciado: userQuestion.questaoProva.enunciado,
-                        tipo: userQuestion.questaoProva.questaoProvaTipo.tipo,
-                        foto: userQuestion.questaoProva.foto,
-                        resposta: {
-                          id: userAnswer.id,
-                          texto: userAnswer.resposta
-                        }
-                      }
-                      
-                      questionData.push(question)
-                      // console.log('adicionou'+ question.id)
-                    }
-  
-                  }
-      
-                } else {
-      
-                  const options : questionAnswer[] = []
-      
-                  optionAnswers.forEach((value: any) =>{
-                      
-                      options.push({
-                        id: value.id,
-                        texto: value.alternativaProva.opcao,
-                        correta: value.alternativaProva.correta,
-                        selecionada: value.alternativaProva.idQuestaoProva === userQuestion.idQuestaoProva ? true : false
-                      })
-                    
-                  })
-    
+                if(textQuestionIDS.includes(userQuestion.idQuestaoProva)) {
+                  
+                  const userAnswer = textAnswers.find((value) => value.idQuestaoProva == userQuestion.idQuestaoProva)
+
+                  if(userAnswer) {
                     const question = {
                       id: (userQuestion.id + 1),
                       enunciado: userQuestion.questaoProva.enunciado,
                       tipo: userQuestion.questaoProva.questaoProvaTipo.tipo,
                       foto: userQuestion.questaoProva.foto,
-                      acertou: userQuestion.questaoProva.alternativaProva.correta,
-                      alternativas: options
+                      resposta: {
+                        id: userAnswer.id,
+                        texto: userAnswer.resposta
+                      }
                     }
-    
+                    
                     questionData.push(question)
                     // console.log('adicionou'+ question.id)
-                  
+                  }
+
                 }
+    
+              } else {
+    
+                const options : questionAnswer[] = []
+                const optionQuestions = userQuestion.questaoProva.alternativaProva
+                let correctAnswer = false
                 
-              })
+                optionQuestions.forEach((value: any) =>{
+                  let selected = false
+                  
+                    if(value.idQuestaoProva == userQuestion.idQuestaoProva) {
+                      
+                      if(value.correta) correctAnswer = true
+
+                      if(optionAnswers.find((choice) => { if(choice.idAlternativaProva == value.id) return choice })) selected = true
+  
+                      options.push({
+                        id: value.id,
+                        texto: value.opcao,
+                        correta: correctAnswer,
+                        selecionada: selected
+                      })
+                    }                  
+
+                  
+                })
+  
+                  const question = {
+                    id: (userQuestion.id + 1),
+                    enunciado: userQuestion.questaoProva.enunciado,
+                    tipo: userQuestion.questaoProva.questaoProvaTipo.tipo,
+                    foto: userQuestion.questaoProva.foto,
+                    acertou: correctAnswer,
+                    alternativas: options
+                  }
+  
+                  questionData.push(question)
+                  // console.log('adicionou'+ question.id)
+                
+              }
+
+            }
+
+              // allQuestions.forEach((userQuestion: any) => {
+              
+              //   if(userQuestion.questaoProva.questaoProvaTipo.tipo === 'DISSERTATIVA') {
+      
+              //     if(textQuestionIDS.includes(userQuestion.idQuestaoProva)) {
+                    
+              //       const userAnswer = textAnswers.find((value) => value.idQuestaoProva == userQuestion.idQuestaoProva)
+  
+              //       if(userAnswer) {
+              //         const question = {
+              //           id: (userQuestion.id + 1),
+              //           enunciado: userQuestion.questaoProva.enunciado,
+              //           tipo: userQuestion.questaoProva.questaoProvaTipo.tipo,
+              //           foto: userQuestion.questaoProva.foto,
+              //           resposta: {
+              //             id: userAnswer.id,
+              //             texto: userAnswer.resposta
+              //           }
+              //         }
+                      
+              //         questionData.push(question)
+              //         // console.log('adicionou'+ question.id)
+              //       }
+  
+              //     }
+      
+              //   } else {
+      
+              //     const options : questionAnswer[] = []
+      
+              //     optionAnswers.forEach((value: any) =>{
+                      
+              //         options.push({
+              //           id: value.id,
+              //           texto: value.alternativaProva.opcao,
+              //           correta: value.alternativaProva.correta,
+              //           selecionada: value.alternativaProva.idQuestaoProva === userQuestion.idQuestaoProva ? true : false
+              //         })
+                    
+              //     })
+    
+              //       const question = {
+              //         id: (userQuestion.id + 1),
+              //         enunciado: userQuestion.questaoProva.enunciado,
+              //         tipo: userQuestion.questaoProva.questaoProvaTipo.tipo,
+              //         foto: userQuestion.questaoProva.foto,
+              //         acertou: userQuestion.questaoProva.alternativaProva.correta,
+              //         alternativas: options
+              //       }
+    
+              //       questionData.push(question)
+              //       // console.log('adicionou'+ question.id)
+                  
+              //   }
+                
+              // })
               // console.log(questionData)
             
               const userTest = userAnswer.usuario.usuarioProva[0]
